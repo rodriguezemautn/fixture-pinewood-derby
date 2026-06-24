@@ -1,1 +1,123 @@
 @import 'tailwindcss';
+
+/* ─── Design System Racing ─────────────────────── */
+
+:root {
+	--racing-black: #0a0f1a;
+	--racing-dark: #0f172a;
+	--racing-gray: #1e293b;
+	--racing-amber: #f59e0b;
+	--racing-amber-light: #fbbf24;
+	--racing-red: #dc2626;
+	--racing-red-light: #ef4444;
+	--racing-green: #059669;
+	--racing-text: #e2e8f0;
+	--racing-text-dim: #64748b;
+	--racing-border: #334155;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	background: var(--racing-black);
+	color: var(--racing-text);
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Black Ops One', 'Inter', sans-serif;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+/* ─── Checkered pattern utility ──────────────── */
+.bg-checkered {
+	background-image:
+		linear-gradient(45deg, var(--racing-amber) 25%, transparent 25%),
+		linear-gradient(-45deg, var(--racing-amber) 25%, transparent 25%),
+		linear-gradient(45deg, transparent 75%, var(--racing-amber) 75%),
+		linear-gradient(-45deg, transparent 75%, var(--racing-amber) 75%);
+	background-size: 12px 12px;
+	background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+}
+
+/* ─── Racing stripe ──────────────────────────── */
+.bg-stripe {
+	background: repeating-linear-gradient(
+		90deg,
+		var(--racing-amber) 0,
+		var(--racing-amber) 4px,
+		transparent 4px,
+		transparent 12px
+	);
+}
+
+/* ─── Glow effects ───────────────────────────── */
+.glow-amber {
+	box-shadow: 0 0 15px rgba(245, 158, 11, 0.3), 0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+.glow-red {
+	box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+}
+
+/* ─── Animations ─────────────────────────────── */
+@keyframes pulse-amber {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.7; }
+}
+
+@keyframes slide-up {
+	from { opacity: 0; transform: translateY(20px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoom-in {
+	from { opacity: 0; transform: scale(0.95); }
+	to { opacity: 1; transform: scale(1); }
+}
+
+.animate-pulse-amber {
+	animation: pulse-amber 2s ease-in-out infinite;
+}
+
+.animate-slide-up {
+	animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-zoom-in {
+	animation: zoom-in 0.3s ease-out forwards;
+}
+
+/* ─── Speed lines animation ───────────────────── */
+@keyframes speed-lines {
+	0% { background-position: 0 0; }
+	100% { background-position: 24px 0; }
+}
+
+.bg-speed {
+	background: repeating-linear-gradient(
+		90deg,
+		rgba(245, 158, 11, 0.05) 0,
+		rgba(245, 158, 11, 0.05) 2px,
+		transparent 2px,
+		transparent 12px
+	);
+	background-size: 24px 100%;
+	animation: speed-lines 0.5s linear infinite;
+}
+
+/* ─── Responsive ──────────────────────────────── */
+@media (max-width: 640px) {
+	html { font-size: 14px; }
+	h1 { font-size: 1.75rem !important; }
+	h2 { font-size: 1.25rem !important; }
+}
