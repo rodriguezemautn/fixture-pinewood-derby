@@ -14,7 +14,11 @@ init-frontend:
 	@echo "📦 Initializing frontend..."
 	@cd frontend && npm install
 
-dev: dev-backend dev-frontend
+dev: kill-backend dev-backend dev-frontend
+
+kill-backend:
+	@echo "🔪 Liberando puerto 8080..."
+	@lsof -ti:8080 2>/dev/null | xargs -r kill -9 2>/dev/null || true
 
 dev-backend:
 	@echo "🚀 Starting backend..."
