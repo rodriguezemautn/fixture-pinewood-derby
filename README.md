@@ -37,6 +37,25 @@ make dev-backend   # Air hot-reload → http://localhost:8080
 make dev-frontend  # Vite dev server → http://localhost:5173
 ```
 
+### Acceso desde el celular (misma red WiFi)
+
+```bash
+# 1. Averiguá tu IP
+ip a | grep inet              # Linux
+ipconfig getifaddr en0        # macOS
+
+# 2. Iniciar servidores
+make dev-backend
+make dev-frontend
+
+# 3. Desde el celular, abrí:
+#    http://192.168.X.X:5173
+#    (reemplazá con tu IP)
+```
+
+El backend y frontend escuchan en todas las interfaces (`0.0.0.0`).  
+Las fotos subidas desde el celular se guardan en `uploads/`.
+
 ### Si el puerto 8080 está ocupado
 
 ```bash
