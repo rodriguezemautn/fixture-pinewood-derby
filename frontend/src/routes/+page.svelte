@@ -101,11 +101,11 @@
 				<p>Explorá las categorías disponibles y seguí las carreras en vivo</p>
 				<span class="card-link">👁️ Ver carreras →</span>
 			</a>
-			<a href="/login" class="info-card" in:fly={{ y: 20, duration: 400, delay: 600 }}>
+			<a href="/autos" class="info-card" in:fly={{ y: 20, duration: 400, delay: 600 }}>
 				<img src="/assets/D15_logo.jpg" alt="D15 Logo" class="card-img" />
 				<h3>Autos</h3>
-				<p>Registrá cada auto con su número, nombre, creador y foto</p>
-				<span class="card-link">🔐 Admin →</span>
+				<p>Explorá todos los autos registrados por categoría</p>
+				<span class="card-link">🏎️ Ver autos →</span>
 			</a>
 			<a href="/carreras" class="info-card" in:fly={{ y: 20, duration: 400, delay: 700 }}>
 				<img src="/assets/derbi.jpg" alt="Derbi" class="card-img" />

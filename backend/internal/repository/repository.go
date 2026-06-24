@@ -15,6 +15,7 @@ type CategoriaRepository interface {
 // AutoRepository define operaciones sobre autos.
 type AutoRepository interface {
 	ListByCategoria(categoriaID string) ([]domain.Auto, error)
+	ListAll() ([]domain.Auto, error)
 	GetByID(id string) (*domain.Auto, error)
 	Save(a *domain.Auto) error
 	Update(a *domain.Auto) error

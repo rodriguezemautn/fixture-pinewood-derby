@@ -11,6 +11,14 @@ type autoMock struct {
 	autos map[string]*domain.Auto
 }
 
+func (m *autoMock) ListAll() ([]domain.Auto, error) {
+	var res []domain.Auto
+	for _, a := range m.autos {
+		res = append(res, *a)
+	}
+	return res, nil
+}
+
 func (m *autoMock) ListByCategoria(categoriaID string) ([]domain.Auto, error) {
 	var res []domain.Auto
 	for _, a := range m.autos {

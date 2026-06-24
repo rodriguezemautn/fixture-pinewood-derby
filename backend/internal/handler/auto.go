@@ -28,6 +28,7 @@ func NewAutoHandler(svc service.AutoService) Handler {
 func (h *autoHandler) Register(r Router) {
 	r.Get("/api/categorias/{categoriaId}/autos", h.ListByCategoria)
 	r.Post("/api/categorias/{categoriaId}/autos", h.Create)
+	r.Get("/api/autos", h.ListAll)
 	r.Get("/api/autos/{id}", h.GetByID)
 	r.Put("/api/autos/{id}", h.Update)
 	r.Delete("/api/autos/{id}", h.Delete)
@@ -109,6 +110,20 @@ type createAutoRequest struct {
 func (h *autoHandler) ListByCategoria(w http.ResponseWriter, r *http.Request) {
 	categoriaID := chi.URLParam(r, "categoriaId")
 	autos, err := h.svc.ListByCategoria(categoriaID)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if autos == nil {
+		autos = []domain.Auto{}
+	}
+	writeJSON(w, http.StatusOK, autos)
+}
+
+func (h *autoHandler) ListAll(w http.ResponseWriter, r *http.Request) {
+	// Necesitamos acceso a todas las categorías para agrupar
+	// Por ahora listamos todos los autos planos
+	autos, err := h.svc.ListAll()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err.Error())
 		return

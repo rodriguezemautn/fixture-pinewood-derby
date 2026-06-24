@@ -18,6 +18,26 @@ func NewAutoRepository(db *sql.DB) *AutoRepository {
 	return &AutoRepository{db: db}
 }
 
+func (r *AutoRepository) ListAll() ([]domain.Auto, error) {
+	rows, err := r.db.Query(
+		`SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at
+		 FROM autos ORDER BY categoria_id, numero ASC`)
+	if err != nil {
+		return nil, fmt.Errorf("query all autos: %w", err)
+	}
+	defer rows.Close()
+
+	var autos []domain.Auto
+	for rows.Next() {
+		var a domain.Auto
+		if err := rows.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("scan auto: %w", err)
+		}
+		autos = append(autos, a)
+	}
+	return autos, rows.Err()
+}
+
 func (r *AutoRepository) ListByCategoria(categoriaID string) ([]domain.Auto, error) {
 	rows, err := r.db.Query(
 		`SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at

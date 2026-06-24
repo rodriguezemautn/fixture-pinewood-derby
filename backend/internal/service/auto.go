@@ -23,6 +23,10 @@ func (s *autoService) ListByCategoria(categoriaID string) ([]domain.Auto, error)
 	return s.autoRepo.ListByCategoria(categoriaID)
 }
 
+func (s *autoService) ListAll() ([]domain.Auto, error) {
+	return s.autoRepo.ListAll()
+}
+
 func (s *autoService) GetByID(id string) (*domain.Auto, error) {
 	return s.autoRepo.GetByID(id)
 }
