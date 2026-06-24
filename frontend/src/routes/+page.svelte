@@ -5,6 +5,7 @@
 
 	let loaded = $state(false);
 	let categorias = $state<any[]>([]);
+	let fixturesStatus = $state<Record<string, string>>({});
 	let loadingCats = $state(true);
 
 	$effect(() => {
@@ -18,13 +19,28 @@
 	async function cargarCategorias() {
 		try {
 			const res = await fetch('/api/categorias');
-			if (res.ok) categorias = await res.json();
+			if (res.ok) {
+				const cats = await res.json();
+				categorias = cats;
+				// Verificar estado de fixture de cada categoría
+				for (const cat of cats) {
+					fetch(`/api/categorias/${cat.id}/fixture`).then(r => {
+						if (r.ok) r.json().then(f => {
+							if (f && f.estado) fixturesStatus[cat.id] = f.estado;
+						});
+					}).catch(() => {});
+				}
+			}
 		} catch {} finally {
 			loadingCats = false;
 		}
 	}
 
 	const isAutenticado = $derived(browser ? !!localStorage.getItem('auth_token') : false);
+
+	function estadoCat(catId: string): string {
+		return fixturesStatus[catId] || '';
+	}
 </script>
 
 <svelte:head>
@@ -34,6 +50,7 @@
 <!-- ════ HERO ════ -->
 <section class="hero">
 	<div class="hero-bg"></div>
+	<div class="hero-speed"></div>
 	<div class="hero-content">
 		{#if loaded}
 			<div class="hero-logo" in:fly={{ y: -30, duration: 600 }}>
@@ -67,7 +84,11 @@
 		</div>
 
 		{#if loadingCats}
-			<p class="loading-hint">Cargando categorías...</p>
+			<div class="categorias-grid">
+				<div class="skeleton-card"></div>
+				<div class="skeleton-card"></div>
+				<div class="skeleton-card"></div>
+			</div>
 		{:else if categorias.length === 0}
 			<div class="empty-carreras" in:fade>
 				<img src="/assets/emblema.jpg" alt="Emblema" class="empty-img" />
@@ -77,10 +98,17 @@
 		{:else}
 			<div class="categorias-grid">
 				{#each categorias as cat (cat.id)}
-					<a href="/carreras/{cat.id}" class="categoria-card" in:fly={{ y: 20, duration: 400 }}>
+					<a href="/carreras/{cat.id}" class="categoria-card" class:live={estadoCat(cat.id) === 'en_curso'} class:finalizado={estadoCat(cat.id) === 'finalizado'} in:fly={{ y: 20, duration: 400 }}>
 						<span class="cat-nombre">{cat.nombre}</span>
 						<span class="cat-edades">{cat.edad_min} - {cat.edad_max} años</span>
-						<span class="cat-cta">👁️ Ver Carreras</span>
+						<span class="cat-badge-row">
+							{#if estadoCat(cat.id) === 'en_curso'}
+								<span class="badge-live">🔴 En Vivo</span>
+							{:else if estadoCat(cat.id) === 'finalizado'}
+								<span class="badge-done">🏁 Finalizado</span>
+							{/if}
+							<span class="cat-cta">👁️ Ver Carreras →</span>
+						</span>
 					</a>
 				{/each}
 			</div>
@@ -146,6 +174,24 @@
 			radial-gradient(ellipse at 80% 50%, rgba(220,38,38,0.05) 0%, transparent 50%);
 	}
 
+	.hero-speed {
+		position: absolute; inset: 0; opacity: 0.3;
+		background: repeating-linear-gradient(
+			90deg,
+			rgba(245, 158, 11, 0.04) 0,
+			rgba(245, 158, 11, 0.04) 2px,
+			transparent 2px,
+			transparent 20px
+		);
+		background-size: 40px 100%;
+		animation: hero-speed-move 0.8s linear infinite;
+	}
+
+	@keyframes hero-speed-move {
+		0% { background-position: 0 0; }
+		100% { background-position: 40px 0; }
+	}
+
 	.hero-content {
 		position: relative;
 		z-index: 1;
@@ -193,7 +239,18 @@
 	.section-title h2 { color: var(--racing-amber); font-size: 1.5rem; margin: 0; }
 	.section-desc { color: var(--racing-text-dim); font-size: 0.95rem; margin: 0.5rem 0 0; }
 
-	.loading-hint { text-align: center; color: var(--racing-text-dim); padding: 2rem; }
+	/* Skeleton loader */
+	.skeleton-card { height: 80px; background: var(--racing-gray); border-radius: 0.5rem; position: relative; overflow: hidden; }
+	.skeleton-card::after {
+		content: ''; position: absolute; inset: 0;
+		background: repeating-linear-gradient(90deg, transparent 0, rgba(245,158,11,0.05) 50%, transparent 100%);
+		background-size: 200% 100%;
+		animation: skeleton-loading 1.5s ease-in-out infinite;
+	}
+	@keyframes skeleton-loading {
+		0% { background-position: 200% 0; }
+		100% { background-position: -200% 0; }
+	}
 
 	.empty-carreras { text-align: center; padding: 3rem 1rem; }
 	.empty-img { width: 80px; border-radius: 50%; opacity: 0.4; margin-bottom: 1rem; }
@@ -224,7 +281,14 @@
 
 	.cat-nombre { color: var(--racing-amber); font-weight: 700; font-size: 1.1rem; }
 	.cat-edades { color: var(--racing-text-dim); font-size: 0.85rem; }
-	.cat-cta { margin-top: 0.5rem; color: var(--racing-amber); font-size: 0.85rem; font-weight: 600; }
+	.cat-badge-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+	.cat-cta { color: var(--racing-amber); font-size: 0.85rem; font-weight: 600; }
+
+	.badge-live { font-size: 0.75rem; color: #fca5a5; background: rgba(220,38,38,0.2); padding: 0.15rem 0.5rem; border-radius: 1rem; font-weight: 700; }
+	.badge-done { font-size: 0.75rem; color: #a3e635; background: rgba(101,163,13,0.2); padding: 0.15rem 0.5rem; border-radius: 1rem; font-weight: 700; }
+
+	.categoria-card.live { border-color: #ef4444; }
+	.categoria-card.finalizado { border-color: #65a30d; }
 
 	/* ─── Info Cards ──────────────────────────── */
 	.info-grid {

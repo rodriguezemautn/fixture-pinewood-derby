@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { browser } from '$app/environment';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	let { children } = $props();
@@ -20,10 +20,26 @@
 		goto('/login');
 	}
 
-	let role = $state('');
-	if (browser) {
-		role = localStorage.getItem('auth_role') ?? '';
-	}
+	// Breadcrumbs
+	const breadcrumbs = $derived.by(() => {
+		const path = $page.url.pathname;
+		const parts = path.split('/').filter(Boolean);
+		const crumbs: {label: string; href: string}[] = [];
+		let accumulated = '';
+
+		for (const part of parts) {
+			accumulated += '/' + part;
+			let label = part;
+			if (part === 'admin') label = 'Admin';
+			else if (part === 'categorias') label = 'Categorías';
+			else if (part === 'autos') label = 'Autos';
+			else if (part === 'fixture') label = 'Fixture';
+			// IDs de UUID los mostramos truncados
+			else if (/^[0-9a-f-]{36}$/.test(part)) label = 'Detalle';
+			crumbs.push({ label, href: accumulated });
+		}
+		return crumbs;
+	});
 </script>
 
 <div class="admin-layout">
@@ -41,6 +57,13 @@
 		</div>
 		<div class="admin-nav-stripe"></div>
 	</nav>
+
+	<div class="admin-breadcrumbs">
+		{#each breadcrumbs as crumb, i}
+			{#if i > 0}<span class="crumb-sep">›</span>{/if}
+			<a href={crumb.href} class="crumb">{crumb.label}</a>
+		{/each}
+	</div>
 
 	<div class="admin-body" in:fade={{ duration: 200 }}>
 		{@render children()}
@@ -135,6 +158,16 @@
 			transparent 12px
 		);
 	}
+
+	.admin-breadcrumbs {
+		display: flex; align-items: center; gap: 0.3rem;
+		max-width: 1200px; margin: 0.5rem auto 0; padding: 0 1rem;
+		font-size: 0.8rem; color: var(--racing-text-dim);
+	}
+
+	.crumb { color: var(--racing-text-dim); text-decoration: none; }
+	.crumb:hover { color: var(--racing-amber); }
+	.crumb-sep { color: var(--racing-border); font-size: 1rem; }
 
 	.admin-body {
 		padding: 1.5rem 1rem;

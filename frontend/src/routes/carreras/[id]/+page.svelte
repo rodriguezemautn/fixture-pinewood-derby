@@ -17,10 +17,32 @@
 
 	let podiumHeat = $state<{orden: string[]; label: string} | null>(null);
 	let showCelebration = $state(false);
+	let polling = $state(false);
 
 	onMount(() => {
 		cargarDatos();
+		// Polling cada 10s si está en vivo
+		const interval = setInterval(() => {
+			if (fixture?.estado !== 'finalizado') {
+				cargarDatosSilencioso();
+			}
+		}, 10000);
+		return () => clearInterval(interval);
 	});
+
+	async function cargarDatosSilencioso() {
+		polling = true;
+		try {
+			const [fixtureRes, posRes] = await Promise.all([
+				fetch(`/api/categorias/${categoriaId}/fixture`),
+				fetch(`/api/categorias/${categoriaId}/posiciones`)
+			]);
+			if (fixtureRes.ok) fixture = await fixtureRes.json();
+			if (posRes.ok) posiciones = await posRes.json();
+		} catch {} finally {
+			polling = false;
+		}
+	}
 
 	async function cargarDatos() {
 		loading = true;
@@ -97,13 +119,18 @@
 	</header>
 
 	{#if loading}
-		<p class="loading">Cargando...</p>
+		<div class="skeleton-grid">
+			<div class="skeleton-card"></div>
+			<div class="skeleton-card"></div>
+			<div class="skeleton-card"></div>
+		</div>
 	{/if}
 
 	{#if fixture}
 		<div class="status-bar" in:fade>
 			<span class="status-badge" class:live={fixture.estado !== 'finalizado'}>
 				{fixture.estado === 'finalizado' ? '🏁 Finalizado' : '🔴 En Vivo'}
+				{#if polling}<span class="live-dot"></span>{/if}
 			</span>
 			<span class="heats-info">{fixture.heats?.length ?? 0} carreras</span>
 		</div>
@@ -243,7 +270,7 @@
 </div>
 
 <Podium ordenLlegada={podiumHeat?.orden ?? []} autoNombres={autoNombres} autoNumeros={autoNumeros} label={podiumHeat?.label ?? ''} show={podiumHeat !== null} onclose={() => podiumHeat = null} />
-<Celebration winner={finalWinner?.nombre ?? ''} winnerNumero={finalWinner?.numero ?? 0} autoNombres={{}} show={showCelebration} onclose={() => showCelebration = false} />
+<Celebration winner={finalWinner?.nombre ?? ''} winnerNumero={finalWinner?.numero ?? 0} autoNombres={autoNombres} show={showCelebration} onclose={() => showCelebration = false} />
 
 <style>
 	.carrera-page { min-height: 100vh; background: var(--racing-black); }
@@ -257,6 +284,31 @@
 	.header-stripe { height: 3px; margin-top: 0.75rem; background: repeating-linear-gradient(90deg, var(--racing-amber) 0, var(--racing-amber) 8px, transparent 8px, transparent 16px); }
 
 	.loading { text-align: center; color: #64748b; padding: 3rem; }
+
+	/* Skeleton loader */
+	.skeleton-grid { display: grid; gap: 1rem; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+	.skeleton-card { height: 80px; background: var(--racing-gray); border-radius: 0.5rem; position: relative; overflow: hidden; }
+	.skeleton-card::after {
+		content: ''; position: absolute; inset: 0;
+		background: repeating-linear-gradient(90deg, transparent 0, rgba(245,158,11,0.05) 50%, transparent 100%);
+		background-size: 200% 100%;
+		animation: skeleton-loading 1.5s ease-in-out infinite;
+	}
+	@keyframes skeleton-loading {
+		0% { background-position: 200% 0; }
+		100% { background-position: -200% 0; }
+	}
+
+	.live-dot {
+		display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+		background: #22c55e; margin-left: 0.4rem;
+		animation: pulse-dot 1.5s ease-in-out infinite;
+		vertical-align: middle;
+	}
+	@keyframes pulse-dot {
+		0%, 100% { opacity: 1; transform: scale(1); }
+		50% { opacity: 0.4; transform: scale(0.8); }
+	}
 
 	.status-bar { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; max-width: 800px; margin: 0 auto; }
 	.status-badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 700; background: #334155; color: #94a3b8; }
