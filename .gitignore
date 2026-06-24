@@ -1,8 +1,15 @@
 # Binaries
 backend/bin/
+backend/tmp/
+bin/
 *.exe
 *.test
 *.out
+
+# Database
+*.db
+*.db-wal
+*.db-shm
 
 # Frontend
 frontend/node_modules/
