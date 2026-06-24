@@ -12,6 +12,7 @@
 	let categoria = $state<any>(null);
 	let autoNombres = $state<Record<string, string>>({});
 	let autoNumeros = $state<Record<string, number>>({});
+	let autosLista = $state<any[]>([]);
 	let loading = $state(true);
 
 	let podiumHeat = $state<{orden: string[]; label: string} | null>(null);
@@ -37,6 +38,7 @@
 
 			if (autosRes.ok) {
 				const autos = await autosRes.json();
+				autosLista = autos;
 				for (const a of autos) {
 					autoNombres[a.id] = a.nombre;
 					autoNumeros[a.id] = a.numero;
@@ -123,6 +125,27 @@
 						{/each}
 					</tbody>
 				</table>
+			</div>
+		</section>
+	{/if}
+
+	<!-- ─── Autos Registrados ─── -->
+	{#if autosLista.length > 0}
+		<section class="section" in:fade>
+			<h2>🏎️ Autos Registrados</h2>
+			<div class="autos-grid">
+				{#each autosLista as auto (auto.id)}
+					<div class="auto-card">
+						{#if auto.foto_url}
+							<img src={auto.foto_url} alt={auto.nombre} class="auto-foto" />
+						{/if}
+						<div class="auto-info">
+							<span class="auto-numero">#{auto.numero}</span>
+							<span class="auto-nombre">{auto.nombre}</span>
+							<span class="auto-creador">por {auto.creador}</span>
+						</div>
+					</div>
+				{/each}
 			</div>
 		</section>
 	{/if}
@@ -228,6 +251,26 @@
 	.empty-img { width: 100px; border-radius: 50%; opacity: 0.5; margin-bottom: 1rem; }
 	.empty-state h2 { color: var(--racing-text-dim); }
 	.empty-state p { color: var(--racing-text-dim); font-size: 0.9rem; }
+
+	/* ─── Autos grid ─── */
+	.autos-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 0.75rem;
+	}
+
+	.auto-card {
+		display: flex; align-items: center; gap: 0.75rem;
+		background: var(--racing-dark); border: 1px solid var(--racing-border);
+		border-radius: 0.5rem; padding: 0.75rem;
+	}
+
+	.auto-foto { width: 48px; height: 48px; object-fit: cover; border-radius: 0.25rem; border: 1px solid var(--racing-border); }
+
+	.auto-info { display: flex; flex-direction: column; gap: 0.1rem; }
+	.auto-numero { color: var(--racing-amber); font-weight: 700; font-size: 1rem; }
+	.auto-nombre { color: var(--racing-text); font-size: 0.9rem; }
+	.auto-creador { color: var(--racing-text-dim); font-size: 0.8rem; }
 
 	.carrera-footer { text-align: center; padding: 2rem 1rem; color: var(--racing-text-dim); font-size: 0.8rem; }
 	.footer-stripe { height: 2px; background: repeating-linear-gradient(90deg, var(--racing-red) 0, var(--racing-red) 6px, transparent 6px, transparent 12px); margin-bottom: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; }
