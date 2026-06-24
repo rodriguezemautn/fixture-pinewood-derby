@@ -1,0 +1,25 @@
+# Binaries
+backend/bin/
+*.exe
+*.test
+*.out
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.svelte-kit/
+frontend/.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE (personal settings only)
+.idea/
+
+# Go
+vendor/
+
+# Env
+.env
+.env.local

@@ -1,0 +1,64 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: Go 1.26.1 + Svelte 5 (PWA)
+  Architecture: Hexagonal/Clean Architecture (Go backend), REST API + WebSocket, SvelteKit PWA frontend
+  Testing: Go testing (built-in), httptest for integration, go vet + gofmt
+  Database: SQLite (embebido, portable, offline-first)
+  Style: Frontend gamer/de carreras con animaciones visuales
+
+strict_tdd: true
+
+testing:
+  runner:
+    command: go test ./...
+    framework: Go testing (built-in)
+  layers:
+    unit: true
+    integration: true
+    e2e: false
+  coverage:
+    available: true
+    command: go test -cover ./...
+  quality:
+    linter: go vet
+    formatter: gofmt
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected modules/packages
+    - Vincular cada propuesta con los requerimientos del SRS
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Escribir specs en español (dominio del proyecto)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Incluir diagramas de entidades y rutas de API
+  tasks:
+    - Group tasks by phase (infrastructure, implementation, testing)
+    - Use hierarchical numbering (1.1, 1.2, etc.)
+    - Keep tasks small enough to complete in one session
+  apply:
+    - Follow existing code patterns and conventions
+    - RED-GREEN-REFACTOR estricto (strict TDD mode)
+    - Escribir tests first antes de implementación
+    - Commits convencionales
+    - Commits atómicos por tarea
+  verify:
+    - Run tests (go test ./...)
+    - Verificar que go vet no produzca errores
+    - Compare implementation against every spec scenario
+    - Build command: go build ./...
+  archive:
+    - Warn before merging destructive deltas (large removals)
+    - Sync delta specs to main specs after verification
+
+reporting:
+  progress:
+    - Enviar informe de avance después de cada fase
+    - Incluir checklist de tareas completadas vs pendientes
+  format: markdown
