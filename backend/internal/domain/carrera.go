@@ -3,31 +3,31 @@ package domain
 
 // Categoria representa una categoría de carrera por edad.
 type Categoria struct {
-	ID        string
-	Nombre    string
-	EdadMin   int
-	EdadMax   int
-	CreatedAt string
-	UpdatedAt string
+	ID        string `json:"id"`
+	Nombre    string `json:"nombre"`
+	EdadMin   int    `json:"edad_min"`
+	EdadMax   int    `json:"edad_max"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // Auto representa un auto de madera registrado en una categoría.
 type Auto struct {
-	ID          string
-	CategoriaID string
-	Numero      int
-	Nombre      string
-	Creador     string
-	Edad        int
-	FotoURL     string
-	CreatedAt   string
-	UpdatedAt   string
+	ID          string `json:"id"`
+	CategoriaID string `json:"categoria_id"`
+	Numero      int    `json:"numero"`
+	Nombre      string `json:"nombre"`
+	Creador     string `json:"creador"`
+	Edad        int    `json:"edad"`
+	FotoURL     string `json:"foto_url"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
 }
 
 // Carrera representa una instancia de carrera con hasta 4 autos.
 type Carrera struct {
-	ID           string
-	CategoriaID  string
-	AutoIDs      []string // IDs de los autos participantes (máx 4)
-	OrdenLlegada []string // IDs de autos en orden de llegada
+	ID           string   `json:"id"`
+	CategoriaID  string   `json:"categoria_id"`
+	AutoIDs      []string `json:"auto_ids"`
+	OrdenLlegada []string `json:"orden_llegada"`
 }

@@ -2,29 +2,29 @@ package domain
 
 // Fixture representa un fixture de carreras para una categoría.
 type Fixture struct {
-	ID          string
-	CategoriaID string
-	Estado      string   // "pendiente", "en_curso", "finalizado"
-	Rondas      int
-	Heats       []Heat
-	Final       *Carrera
+	ID          string `json:"id"`
+	CategoriaID string `json:"categoria_id"`
+	Estado      string `json:"estado"`
+	Rondas      int    `json:"rondas"`
+	Heats       []Heat `json:"heats"`
+	Final       *Carrera `json:"final,omitempty"`
 }
 
 // Heat representa una carrera individual en el fixture.
 type Heat struct {
-	ID       string
-	Numero   int
-	AutoIDs  []string // IDs de los autos en esta heat
-	Completado bool
-	OrdenLlegada []string
+	ID           string   `json:"id"`
+	Numero       int      `json:"numero"`
+	AutoIDs      []string `json:"auto_ids"`
+	Completado   bool     `json:"completado"`
+	OrdenLlegada []string `json:"orden_llegada,omitempty"`
 }
 
 // Standing representa la posición de un auto en la tabla general.
 type Standing struct {
-	AutoID    string
-	Nombre    string
-	Numero    int
-	Puntos    int
-	Posiciones map[int]int // posición -> cantidad (ej: {1: 2, 2: 1, 3: 0, 4: 1})
-	Carreras  int
+	AutoID    string   `json:"auto_id"`
+	Nombre    string   `json:"nombre"`
+	Numero    int      `json:"numero"`
+	Puntos    int      `json:"puntos"`
+	Posiciones map[int]int `json:"posiciones"`
+	Carreras  int      `json:"carreras"`
 }
