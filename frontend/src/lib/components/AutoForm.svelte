@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { apiFetch } from '$lib/api';
+
 	interface Auto {
 		id: string;
 		numero: number;
@@ -34,14 +36,12 @@
 
 		try {
 			const res = isEditing
-				? await fetch(`/api/autos/${auto!.id}`, {
+				? await apiFetch(`/api/autos/${auto!.id}`, {
 					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(body)
 				})
-				: await fetch(`/api/categorias/${categoriaId}/autos`, {
+				: await apiFetch(`/api/categorias/${categoriaId}/autos`, {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(body)
 				});
 

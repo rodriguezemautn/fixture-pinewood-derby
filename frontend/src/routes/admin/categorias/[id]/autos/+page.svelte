@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AutoForm from '$lib/components/AutoForm.svelte';
+	import { apiFetch } from '$lib/api';
 
 	let { data } = $props();
 	let { autos, categoria, categoriaId } = $derived(data);
@@ -25,7 +26,7 @@
 
 	async function handleDelete(id: string) {
 		if (!confirm('¿Eliminar este auto?')) return;
-		await fetch(`/api/autos/${id}`, { method: 'DELETE' });
+		await apiFetch(`/api/autos/${id}`, { method: 'DELETE' });
 		window.location.reload();
 	}
 

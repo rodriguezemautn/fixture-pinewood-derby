@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CategoriaForm from '$lib/components/CategoriaForm.svelte';
+	import { apiFetch } from '$lib/api';
 
 	let { data } = $props();
 	let { categorias } = $derived(data);
@@ -25,7 +26,7 @@
 
 	async function handleDelete(id: string) {
 		if (!confirm('¿Eliminar esta categoría?')) return;
-		await fetch(`/api/categorias/${id}`, { method: 'DELETE' });
+		await apiFetch(`/api/categorias/${id}`, { method: 'DELETE' });
 		window.location.reload();
 	}
 

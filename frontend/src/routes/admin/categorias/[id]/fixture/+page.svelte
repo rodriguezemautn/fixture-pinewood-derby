@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
+	import { apiFetch } from '$lib/api';
 
 	let { data } = $props();
 	let { fixture, posiciones, categoriaId, categoria } = $derived(data);
@@ -15,7 +16,7 @@
 		loading = true;
 		error = '';
 		try {
-			const res = await fetch(`/api/categorias/${categoriaId}/fixture?rondas=${rondas}`, { method: 'POST' });
+			const res = await apiFetch(`/api/categorias/${categoriaId}/fixture?rondas=${rondas}`, { method: 'POST' });
 			if (!res.ok) {
 				const d = await res.json();
 				error = d.error || 'Error al generar fixture';
@@ -33,7 +34,7 @@
 		loading = true;
 		error = '';
 		try {
-			const res = await fetch(`/api/carreras/${heatId}/resultado`, {
+			const res = await apiFetch(`/api/carreras/${heatId}/resultado`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ orden_llegada: orden })
@@ -54,7 +55,7 @@
 		loading = true;
 		error = '';
 		try {
-			const res = await fetch(`/api/categorias/${categoriaId}/final`, { method: 'POST' });
+			const res = await apiFetch(`/api/categorias/${categoriaId}/final`, { method: 'POST' });
 			if (!res.ok) {
 				const d = await res.json();
 				error = d.error || 'Error al generar final';

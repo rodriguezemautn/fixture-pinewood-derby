@@ -1,7 +1,29 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { browser } from '$app/environment';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	let { children } = $props();
+
+	// Auth guard: si no hay token, redirigir al login
+	if (browser) {
+		const token = localStorage.getItem('auth_token');
+		if (!token) {
+			goto('/login');
+		}
+	}
+
+	function logout() {
+		localStorage.removeItem('auth_token');
+		localStorage.removeItem('auth_role');
+		goto('/login');
+	}
+
+	let role = $state('');
+	if (browser) {
+		role = localStorage.getItem('auth_role') ?? '';
+	}
 </script>
 
 <div class="admin-layout">
@@ -15,6 +37,7 @@
 				<a href="/admin/categorias" class="admin-link">Categorías</a>
 				<a href="/" class="admin-link">Ver Carrera</a>
 			</div>
+			<button class="btn-logout" onclick={logout}>Salir</button>
 		</div>
 		<div class="admin-nav-stripe"></div>
 	</nav>
@@ -83,6 +106,23 @@
 	.admin-link:hover {
 		color: var(--racing-amber);
 		background: rgba(245,158,11,0.1);
+	}
+
+	.btn-logout {
+		padding: 0.35rem 0.75rem;
+		background: transparent;
+		border: 1px solid var(--racing-red);
+		color: var(--racing-red);
+		border-radius: 0.25rem;
+		cursor: pointer;
+		font-size: 0.8rem;
+		font-weight: 600;
+		transition: all 0.2s;
+	}
+
+	.btn-logout:hover {
+		background: var(--racing-red);
+		color: white;
 	}
 
 	.admin-nav-stripe {

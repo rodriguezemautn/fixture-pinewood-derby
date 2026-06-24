@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { apiFetch } from '$lib/api';
+
 	interface Categoria {
 		id: string;
 		nombre: string;
@@ -30,9 +32,8 @@
 		const method = isEditing ? 'PUT' : 'POST';
 
 		try {
-			const res = await fetch(url, {
+			const res = await apiFetch(url, {
 				method,
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body)
 			});
 

@@ -38,11 +38,12 @@ func main() {
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler()
+	authHandler := handler.NewAuthHandler()
 	categoriaHandler := handler.NewCategoriaHandler(categoriaSvc)
 	autoHandler := handler.NewAutoHandler(autoSvc)
 	fixtureHandler := handler.NewFixtureHandler(fixtureSvc)
 
-	r := router.New(healthHandler, categoriaHandler, autoHandler, fixtureHandler)
+	r := router.New(healthHandler, authHandler, categoriaHandler, autoHandler, fixtureHandler)
 
 	addr := ":" + port
 	log.Printf("🚀 Servidor iniciado en http://localhost%s", addr)
