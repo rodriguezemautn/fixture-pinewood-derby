@@ -13,6 +13,7 @@
 			</a>
 			<div class="admin-links">
 				<a href="/admin/categorias" class="admin-link">Categorías</a>
+				<a href="/" class="admin-link">Ver Carrera</a>
 			</div>
 		</div>
 		<div class="admin-nav-stripe"></div>

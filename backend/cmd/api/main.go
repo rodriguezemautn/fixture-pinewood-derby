@@ -29,17 +29,20 @@ func main() {
 	// Repositorios
 	categoriaRepo := sqliteRepo.NewCategoriaRepository(db)
 	autoRepo := sqliteRepo.NewAutoRepository(db)
+	fixtureRepo := sqliteRepo.NewFixtureRepository(db)
 
 	// Servicios
 	categoriaSvc := service.NewCategoriaService(categoriaRepo)
 	autoSvc := service.NewAutoService(autoRepo, categoriaRepo)
+	fixtureSvc := service.NewFixtureService(fixtureRepo)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler()
 	categoriaHandler := handler.NewCategoriaHandler(categoriaSvc)
 	autoHandler := handler.NewAutoHandler(autoSvc)
+	fixtureHandler := handler.NewFixtureHandler(fixtureSvc)
 
-	r := router.New(healthHandler, categoriaHandler, autoHandler)
+	r := router.New(healthHandler, categoriaHandler, autoHandler, fixtureHandler)
 
 	addr := ":" + port
 	log.Printf("🚀 Servidor iniciado en http://localhost%s", addr)

@@ -53,6 +53,30 @@ func Migrate(db *sql.DB) error {
 			UNIQUE(categoria_id, numero),
 			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 		)`,
+		`CREATE TABLE IF NOT EXISTS fixtures (
+			id TEXT PRIMARY KEY,
+			categoria_id TEXT NOT NULL,
+			rondas INTEGER NOT NULL DEFAULT 3,
+			estado TEXT NOT NULL DEFAULT 'pendiente',
+			created_at TEXT NOT NULL DEFAULT (datetime('now')),
+			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+		)`,
+		`CREATE TABLE IF NOT EXISTS heats (
+			id TEXT PRIMARY KEY,
+			fixture_id TEXT NOT NULL,
+			numero INTEGER NOT NULL,
+			completado INTEGER NOT NULL DEFAULT 0,
+			orden_llegada TEXT NOT NULL DEFAULT '',
+			created_at TEXT NOT NULL DEFAULT (datetime('now')),
+			FOREIGN KEY (fixture_id) REFERENCES fixtures(id)
+		)`,
+		`CREATE TABLE IF NOT EXISTS heat_autos (
+			heat_id TEXT NOT NULL,
+			auto_id TEXT NOT NULL,
+			PRIMARY KEY (heat_id, auto_id),
+			FOREIGN KEY (heat_id) REFERENCES heats(id),
+			FOREIGN KEY (auto_id) REFERENCES autos(id)
+		)`,
 	}
 
 	for i, m := range migrations {

@@ -67,6 +67,7 @@
 					<td>{cat.edad_max}</td>
 					<td class="actions">
 						<a href="/admin/categorias/{cat.id}/autos" class="btn btn-sm btn-racing">🏎️ Autos</a>
+						<a href="/admin/categorias/{cat.id}/fixture" class="btn btn-sm btn-fixture">🏁 Fixture</a>
 						<button class="btn btn-sm" onclick={() => handleEdit(cat.id)}>Editar</button>
 						<button class="btn btn-sm btn-danger" onclick={() => handleDelete(cat.id)}>Eliminar</button>
 					</td>
@@ -141,6 +142,15 @@
 
 	.btn-racing:hover {
 		background: #047857;
+	}
+
+	.btn-fixture {
+		background: #dc2626;
+		color: white;
+	}
+
+	.btn-fixture:hover {
+		background: #b91c1c;
 	}
 
 	.table-container {
