@@ -24,7 +24,11 @@ Last updated: 2026-06-24
 | sdd-archive | Archive | Close out completed changes |
 
 ### Domain Skills (project-level)
-None yet — project is in initial state.
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **ui-ux-pro-max** | `.opencode/skills/ui-ux-pro-max/` | UI/UX design intelligence: 67 styles, 161 color palettes, 57 font pairings, design system generator |
+| go-testing | system | Go testing patterns for Gentleman.Dots |
+| skill-creator | system | New AI skill creation |
 
 ### User Skills (system-wide)
 | Skill | Trigger | Purpose |
