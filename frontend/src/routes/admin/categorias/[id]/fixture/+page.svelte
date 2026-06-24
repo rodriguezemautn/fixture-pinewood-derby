@@ -76,6 +76,9 @@
 			<a href="/admin/categorias/{categoriaId}/autos" class="back-link">← Autos</a>
 			<h1>{categoria?.nombre ?? 'Cargando...'}</h1>
 		</div>
+		<a href="/carreras/{categoriaId}" class="btn btn-view" target="_blank">
+			👁️ Vista Pública
+		</a>
 	</div>
 
 	{#if error}
@@ -261,6 +264,7 @@
 	.btn-primary { background: var(--racing-amber); color: var(--racing-black); }
 	.btn-primary:hover { background: var(--racing-amber-light); }
 	.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+	.btn-view { text-decoration: none; }
 	.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; background: #334155; color: #e2e8f0; }
 	.btn-sm:hover { background: #475569; }
 
