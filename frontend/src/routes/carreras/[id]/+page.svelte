@@ -63,6 +63,17 @@
 		};
 	});
 
+	// Top 3 del podio final
+	let top3 = $derived.by(() => {
+		if (!posiciones || posiciones.length === 0 || fixture?.estado !== 'finalizado') return [];
+		return posiciones.slice(0, 3).map((p: any) => ({
+			id: p.auto_id,
+			nombre: autoNombres[p.auto_id] || p.nombre || p.auto_id,
+			numero: autoNumeros[p.auto_id] ?? p.numero,
+			puntos: p.puntos
+		}));
+	});
+
 	function showPodium(heat: any) {
 		podiumHeat = { orden: heat.orden_llegada, label: `Heat #${heat.numero}` };
 	}
@@ -75,6 +86,7 @@
 <div class="carrera-page">
 	<header class="carrera-header">
 		<div class="header-inner">
+			<a href="/carreras" class="back-link">← Categorías</a>
 			<img src="/assets/derby_logo.jpg" alt="Derby" class="logo" />
 			<div>
 				<h1>{categoria?.nombre ?? 'Categoría'}</h1>
@@ -97,10 +109,42 @@
 		</div>
 	{/if}
 
-	{#if finalWinner && fixture?.estado === 'finalizado'}
-		<div class="final-cta" in:fly={{ y: 20, duration: 500 }}>
-			<button class="btn-champion" onclick={() => showCelebration = true}>🏆 ¡Ver Campeón!</button>
-		</div>
+	{#if fixture?.estado === 'finalizado' && top3.length > 0}
+		<section class="section podium-section" in:fly={{ y: 20, duration: 500 }}>
+			<div class="podium-header">
+				<h2>🏆 Podio Final</h2>
+				<button class="btn-celebrate" onclick={() => showCelebration = true}>🎉 Celebrar</button>
+			</div>
+			<div class="podio">
+				{#if top3[1]}
+					<div class="podio-step second">
+						<span class="podio-medal">🥈</span>
+						<span class="podio-numero">#{top3[1].numero}</span>
+						<span class="podio-nombre">{top3[1].nombre}</span>
+						<span class="podio-puntos">{top3[1].puntos} pts</span>
+						<div class="podio-bar" style="height: 80px">2°</div>
+					</div>
+				{/if}
+				{#if top3[0]}
+					<div class="podio-step first">
+						<span class="podio-medal">🥇</span>
+						<span class="podio-numero">#{top3[0].numero}</span>
+						<span class="podio-nombre">{top3[0].nombre}</span>
+						<span class="podio-puntos">{top3[0].puntos} pts</span>
+						<div class="podio-bar" style="height: 120px">1°</div>
+					</div>
+				{/if}
+				{#if top3[2]}
+					<div class="podio-step third">
+						<span class="podio-medal">🥉</span>
+						<span class="podio-numero">#{top3[2].numero}</span>
+						<span class="podio-nombre">{top3[2].nombre}</span>
+						<span class="podio-puntos">{top3[2].puntos} pts</span>
+						<div class="podio-bar" style="height: 60px">3°</div>
+					</div>
+				{/if}
+			</div>
+		</section>
 	{/if}
 
 	{#if posiciones?.length > 0}
@@ -204,7 +248,9 @@
 <style>
 	.carrera-page { min-height: 100vh; background: var(--racing-black); }
 	.carrera-header { background: linear-gradient(180deg, #0a0f1a, #0f172a); padding: 1rem; }
-	.header-inner { display: flex; align-items: center; gap: 1rem; max-width: 800px; margin: 0 auto; }
+	.header-inner { display: flex; align-items: center; gap: 1rem; max-width: 800px; margin: 0 auto; flex-wrap: wrap; }
+	.back-link { color: var(--racing-text-dim); text-decoration: none; font-size: 0.85rem; width: 100%; }
+	.back-link:hover { color: var(--racing-amber); }
 	.logo { height: 48px; width: auto; border-radius: 0.25rem; }
 	h1 { color: var(--racing-amber); font-size: 1.5rem; margin: 0; }
 	.subtitle { color: var(--racing-text-dim); font-size: 0.8rem; margin: 0; }
@@ -217,8 +263,35 @@
 	.status-badge.live { background: rgba(220,38,38,0.2); color: #fca5a5; }
 	.heats-info { color: var(--racing-text-dim); font-size: 0.85rem; }
 
-	.final-cta { text-align: center; padding: 1rem; }
-	.btn-champion { padding: 1rem 3rem; background: linear-gradient(135deg, var(--racing-amber), #f59e0b); color: var(--racing-black); font-weight: 900; font-size: 1.3rem; border: none; border-radius: 0.5rem; cursor: pointer; box-shadow: 0 0 30px rgba(245,158,11,0.4); }
+	/* ─── Podio Final ─── */
+	.podium-section { background: linear-gradient(180deg, #0f172a, #1a1f2e); border: 2px solid var(--racing-amber); border-radius: 0.75rem; padding: 2rem 1rem; }
+
+	.podium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+	.podium-header h2 { margin: 0; color: var(--racing-amber); font-size: 1.5rem; text-shadow: 0 0 20px rgba(245,158,11,0.3); }
+
+	.btn-celebrate { padding: 0.5rem 1.25rem; background: linear-gradient(135deg, var(--racing-amber), #f59e0b); color: var(--racing-black); font-weight: 800; font-size: 0.9rem; border: none; border-radius: 0.25rem; cursor: pointer; transition: all 0.2s; }
+	.btn-celebrate:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(245,158,11,0.4); }
+
+	.podio { display: flex; justify-content: center; align-items: flex-end; gap: 1rem; max-width: 600px; margin: 0 auto; }
+
+	.podio-step {
+		display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+		flex: 1; max-width: 160px;
+	}
+
+	.podio-medal { font-size: 2rem; }
+	.podio-numero { color: var(--racing-amber); font-weight: 700; font-size: 1.2rem; }
+	.podio-nombre { color: var(--racing-text); font-weight: 600; font-size: 0.9rem; text-align: center; }
+	.podio-puntos { color: var(--racing-text-dim); font-size: 0.8rem; }
+
+	.podio-bar {
+		width: 100%; display: flex; align-items: center; justify-content: center;
+		border-radius: 0.25rem 0.25rem 0 0; font-weight: 900; font-size: 1.2rem; color: var(--racing-black);
+	}
+
+	.first .podio-bar { background: linear-gradient(180deg, #ffd700, #f59e0b); }
+	.second .podio-bar { background: linear-gradient(180deg, #c0c0c0, #94a3b8); }
+	.third .podio-bar { background: linear-gradient(180deg, #cd7f32, #92400e); }
 
 	.section { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; }
 	.section h2 { color: var(--racing-amber); font-size: 1.2rem; margin-bottom: 1rem; }
