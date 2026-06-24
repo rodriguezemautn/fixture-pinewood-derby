@@ -3,10 +3,12 @@ package domain
 
 // Categoria representa una categoría de carrera por edad.
 type Categoria struct {
-	ID      string
-	Nombre  string
-	EdadMin int
-	EdadMax int
+	ID        string
+	Nombre    string
+	EdadMin   int
+	EdadMax   int
+	CreatedAt string
+	UpdatedAt string
 }
 
 // Auto representa un auto de madera registrado en una categoría.

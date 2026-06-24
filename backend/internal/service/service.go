@@ -6,7 +6,10 @@ import "github.com/ema/fixture/backend/internal/domain"
 // CategoriaService define operaciones de negocio sobre categorías.
 type CategoriaService interface {
 	List() ([]domain.Categoria, error)
+	GetByID(id string) (*domain.Categoria, error)
 	Create(nombre string, edadMin, edadMax int) (*domain.Categoria, error)
+	Update(id, nombre string, edadMin, edadMax int) (*domain.Categoria, error)
+	Delete(id string) error
 }
 
 // CarreraService define operaciones de negocio sobre carreras.

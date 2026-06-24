@@ -8,6 +8,7 @@ type CategoriaRepository interface {
 	List() ([]domain.Categoria, error)
 	GetByID(id string) (*domain.Categoria, error)
 	Save(c *domain.Categoria) error
+	Update(c *domain.Categoria) error
 	Delete(id string) error
 }
 

@@ -6,8 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ema/fixture/backend/internal/database"
 	"github.com/ema/fixture/backend/internal/handler"
+	sqliteRepo "github.com/ema/fixture/backend/internal/repository/sqlite"
 	"github.com/ema/fixture/backend/internal/router"
+	"github.com/ema/fixture/backend/internal/service"
 )
 
 func main() {
@@ -16,8 +19,24 @@ func main() {
 		port = "8080"
 	}
 
+	// Inicializar base de datos
+	db, err := database.New("fixture.db")
+	if err != nil {
+		log.Fatalf("Error al inicializar DB: %v", err)
+	}
+	defer db.Close()
+
+	// Repositorios
+	categoriaRepo := sqliteRepo.NewCategoriaRepository(db)
+
+	// Servicios
+	categoriaSvc := service.NewCategoriaService(categoriaRepo)
+
+	// Handlers
 	healthHandler := handler.NewHealthHandler()
-	r := router.New(healthHandler)
+	categoriaHandler := handler.NewCategoriaHandler(categoriaSvc)
+
+	r := router.New(healthHandler, categoriaHandler)
 
 	addr := ":" + port
 	log.Printf("🚀 Servidor iniciado en http://localhost%s", addr)
