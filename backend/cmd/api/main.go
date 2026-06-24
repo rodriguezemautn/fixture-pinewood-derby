@@ -45,6 +45,11 @@ func main() {
 
 	r := router.New(healthHandler, authHandler, categoriaHandler, autoHandler, fixtureHandler)
 
+	// Servir archivos estáticos (uploads)
+	os.MkdirAll("uploads", 0755)
+	r.Handle("/uploads/*", http.StripPrefix("/uploads/",
+		http.FileServer(http.Dir("uploads"))))
+
 	addr := ":" + port
 	log.Printf("🚀 Servidor iniciado en http://localhost%s", addr)
 	if err := http.ListenAndServe(addr, r); err != nil {

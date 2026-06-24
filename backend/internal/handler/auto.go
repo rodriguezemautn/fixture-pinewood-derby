@@ -2,12 +2,19 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/ema/fixture/backend/internal/domain"
 	"github.com/ema/fixture/backend/internal/service"
 	"github.com/go-chi/chi/v5"
 )
+
+var UploadDir = "uploads"
 
 type autoHandler struct {
 	svc service.AutoService
@@ -19,13 +26,76 @@ func NewAutoHandler(svc service.AutoService) Handler {
 }
 
 func (h *autoHandler) Register(r Router) {
-	// Rutas anidadas por categoría
 	r.Get("/api/categorias/{categoriaId}/autos", h.ListByCategoria)
 	r.Post("/api/categorias/{categoriaId}/autos", h.Create)
-	// Rutas directas por ID
 	r.Get("/api/autos/{id}", h.GetByID)
 	r.Put("/api/autos/{id}", h.Update)
 	r.Delete("/api/autos/{id}", h.Delete)
+	r.Post("/api/autos/{id}/foto", h.UploadFoto)
+}
+
+// UploadFoto recibe un archivo de foto y lo guarda en el FS local.
+func (h *autoHandler) UploadFoto(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	// Verificar que el auto existe
+	a, err := h.svc.GetByID(id)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if a == nil {
+		writeError(w, http.StatusNotFound, "auto no encontrado")
+		return
+	}
+
+	// Parsear multipart form (max 10MB)
+	r.ParseMultipartForm(10 << 20)
+	file, header, err := r.FormFile("foto")
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "archivo 'foto' requerido")
+		return
+	}
+	defer file.Close()
+
+	// Validar extensión
+	ext := filepath.Ext(header.Filename)
+	extValida := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true, ".webp": true}
+	if !extValida[ext] {
+		writeError(w, http.StatusBadRequest, "formato no soportado: use jpg, png, gif o webp")
+		return
+	}
+
+	// Crear directorio uploads si no existe
+	os.MkdirAll(UploadDir, 0755)
+
+	// Nombre único
+	nombre := fmt.Sprintf("%s_%d%s", id, time.Now().Unix(), ext)
+	ruta := filepath.Join(UploadDir, nombre)
+
+	// Guardar archivo
+	dst, err := os.Create(ruta)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "error al guardar archivo")
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, file); err != nil {
+		writeError(w, http.StatusInternalServerError, "error al escribir archivo")
+		return
+	}
+
+	// Actualizar FotoURL en la DB
+	fotoURL := "/uploads/" + nombre
+	if _, err := h.svc.Update(id, a.Numero, a.Nombre, a.Creador, a.Edad, fotoURL); err != nil {
+		// Si falla la actualización, intentamos borrar el archivo
+		os.Remove(ruta)
+		writeError(w, http.StatusInternalServerError, "error al actualizar auto")
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"foto_url": fotoURL})
 }
 
 type createAutoRequest struct {

@@ -22,10 +22,20 @@
 	let creador = $state(auto?.creador ?? '');
 	let edad = $state(auto?.edad ?? 8);
 	let fotoUrl = $state(auto?.foto_url ?? '');
+	let fotoFile = $state<File | null>(null);
+	let fotoPreview = $state<string | null>(null);
 	let error = $state('');
 	let loading = $state(false);
 
 	const isEditing = $derived(auto !== null);
+
+	function handleFileChange(e: Event) {
+		const input = e.target as HTMLInputElement;
+		if (input.files && input.files[0]) {
+			fotoFile = input.files[0];
+			fotoPreview = URL.createObjectURL(input.files[0]);
+		}
+	}
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -35,6 +45,7 @@
 		const body = { numero, nombre, creador, edad, foto_url: fotoUrl };
 
 		try {
+			// Primero crear/actualizar el auto
 			const res = isEditing
 				? await apiFetch(`/api/autos/${auto!.id}`, {
 					method: 'PUT',
@@ -49,6 +60,25 @@
 				const data = await res.json();
 				error = data.error || 'Error al guardar';
 				return;
+			}
+
+			const autoCreado = await res.json();
+
+			// Si hay foto para subir, subirla
+			if (fotoFile) {
+				const formData = new FormData();
+				formData.append('foto', fotoFile);
+
+				const fotoRes = await apiFetch(`/api/autos/${autoCreado.id}/foto`, {
+					method: 'POST',
+					body: formData,
+					headers: {} // dejar que fetch setee Content-Type con boundary
+				});
+
+				if (!fotoRes.ok) {
+					error = 'Auto guardado pero la foto no pudo subirse';
+					return;
+				}
 			}
 
 			onsaved();
@@ -93,9 +123,16 @@
 			</label>
 
 			<label>
-				Foto (URL)
-				<input type="url" bind:value={fotoUrl} placeholder="https://ejemplo.com/foto.jpg" />
+				Foto
+				<input type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture="environment" onchange={handleFileChange} />
+				<span class="file-hint">Foto desde el celular o archivo</span>
 			</label>
+
+			{#if fotoPreview}
+				<div class="preview">
+					<img src={fotoPreview} alt="Preview" class="preview-img" />
+				</div>
+			{/if}
 
 			{#if error}
 				<p class="error">{error}</p>
@@ -131,11 +168,7 @@
 		max-width: 500px;
 	}
 
-	h2 {
-		color: #f59e0b;
-		margin: 0 0 1.5rem 0;
-	}
-
+	h2 { color: #f59e0b; margin: 0 0 1.5rem 0; }
 	form { display: flex; flex-direction: column; gap: 1rem; }
 
 	label {
@@ -155,23 +188,16 @@
 		font-size: 1rem;
 	}
 
-	input:focus {
-		outline: none;
-		border-color: #f59e0b;
-	}
+	input:focus { outline: none; border-color: #f59e0b; }
+	input[type="file"] { font-size: 0.85rem; padding: 0.4rem; }
 
-	.error {
-		color: #ef4444;
-		font-size: 0.875rem;
-		margin: 0;
-	}
+	.file-hint { color: #64748b; font-size: 0.75rem; }
 
-	.buttons {
-		display: flex;
-		gap: 0.5rem;
-		justify-content: flex-end;
-		margin-top: 1rem;
-	}
+	.preview { text-align: center; }
+	.preview-img { max-width: 150px; max-height: 150px; border-radius: 0.25rem; border: 1px solid #334155; }
+
+	.error { color: #ef4444; font-size: 0.875rem; margin: 0; }
+	.buttons { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
 
 	.btn {
 		padding: 0.5rem 1.5rem;
