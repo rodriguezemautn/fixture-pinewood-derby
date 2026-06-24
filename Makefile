@@ -19,11 +19,11 @@ dev: dev-backend dev-frontend
 dev-backend:
 	@echo "🚀 Starting backend..."
 	@cd $(BACKEND_DIR) && air \
-		--build.cmd "go build -o ../bin/api ./cmd/api" \
-		--build.bin "../bin/api" \
+		--build.cmd "go build -o ./tmp/main ./cmd/api" \
+		--build.bin "./tmp/main" \
 		--build.delay "1" \
 		--build.include_dir "cmd internal" \
-		--build.exclude_dir "bin" \
+		--build.exclude_dir "tmp" \
 		--build.stop_on_error "true" \
 		--log.main_only "true" 2>&1 | sed 's/^/[backend] /'
 
@@ -59,6 +59,7 @@ fmt:
 clean:
 	@echo "🧹 Cleaning..."
 	@rm -rf $(BIN_DIR)
+	@rm -rf backend/tmp
 	@cd frontend && rm -rf build .svelte-kit
 
 # ─── All ───────────────────────────────────────────────────
