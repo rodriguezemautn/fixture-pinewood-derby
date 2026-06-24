@@ -1,12 +1,40 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { page } from '$app/stores';
 	import AutoForm from '$lib/components/AutoForm.svelte';
 	import { apiFetch } from '$lib/api';
 
-	let { data } = $props();
-	let { autos, categoria, categoriaId } = $derived(data);
+	const categoriaId = $derived($page.params.id);
+
+	let autos = $state<any[]>([]);
+	let categoria = $state<any>(null);
+	let loading = $state(true);
+	let error = $state('');
 
 	let showForm = $state(false);
 	let editingId = $state<string | null>(null);
+
+	onMount(() => {
+		cargarDatos();
+	});
+
+	async function cargarDatos() {
+		loading = true;
+		error = '';
+		try {
+			const [autosRes, catRes] = await Promise.all([
+				fetch(`/api/categorias/${categoriaId}/autos`),
+				fetch(`/api/categorias/${categoriaId}`)
+			]);
+			if (autosRes.ok) autos = await autosRes.json();
+			if (catRes.ok) categoria = await catRes.json();
+		} catch (e) {
+			error = 'Error al cargar datos. ¿El backend está corriendo?';
+		} finally {
+			loading = false;
+		}
+	}
 
 	function handleEdit(id: string) {
 		editingId = id;
@@ -18,16 +46,21 @@
 		editingId = null;
 	}
 
-	function handleSaved() {
+	async function handleSaved() {
 		showForm = false;
 		editingId = null;
-		window.location.reload();
+		await cargarDatos();
 	}
 
 	async function handleDelete(id: string) {
 		if (!confirm('¿Eliminar este auto?')) return;
-		await apiFetch(`/api/autos/${id}`, { method: 'DELETE' });
-		window.location.reload();
+		try {
+			const res = await apiFetch(`/api/autos/${id}`, { method: 'DELETE' });
+			if (!res.ok) throw new Error('Error al eliminar');
+			await cargarDatos();
+		} catch (e) {
+			alert('Error al eliminar el auto');
+		}
 	}
 
 	const editingAuto = $derived(
@@ -45,6 +78,10 @@
 	</button>
 </div>
 
+{#if error}
+	<div class="error" in:fade>{error}</div>
+{/if}
+
 {#if showForm}
 	<AutoForm
 		auto={editingAuto}
@@ -55,43 +92,51 @@
 {/if}
 
 <div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Nombre</th>
-				<th>Creador</th>
-				<th>Edad</th>
-				<th>Foto</th>
-				<th>Acciones</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each autos as auto (auto.id)}
+	{#if loading}
+		<p class="loading">Cargando...</p>
+	{:else}
+		<table>
+			<thead>
 				<tr>
-					<td class="numero">{auto.numero}</td>
-					<td>{auto.nombre}</td>
-					<td>{auto.creador}</td>
-					<td>{auto.edad}</td>
-					<td>
-						{#if auto.foto_url}
-							<img src={auto.foto_url} alt={auto.nombre} class="auto-foto" />
-						{:else}
-							<span class="no-foto">—</span>
-						{/if}
-					</td>
-					<td class="actions">
-						<button class="btn btn-sm" onclick={() => handleEdit(auto.id)}>Editar</button>
-						<button class="btn btn-sm btn-danger" onclick={() => handleDelete(auto.id)}>Eliminar</button>
-					</td>
+					<th>#</th>
+					<th>Nombre</th>
+					<th>Creador</th>
+					<th>Edad</th>
+					<th>Foto</th>
+					<th>Acciones</th>
 				</tr>
-			{:else}
-				<tr>
-					<td colspan="6" class="empty">No hay autos registrados en esta categoría</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#each autos as auto (auto.id)}
+					<tr>
+						<td class="numero">{auto.numero}</td>
+						<td>{auto.nombre}</td>
+						<td>{auto.creador}</td>
+						<td>{auto.edad}</td>
+						<td>
+							{#if auto.foto_url}
+								<img src={auto.foto_url} alt={auto.nombre} class="auto-foto" />
+							{:else}
+								<span class="no-foto">—</span>
+							{/if}
+						</td>
+						<td class="actions">
+							<button class="btn btn-sm" onclick={() => handleEdit(auto.id)}>Editar</button>
+							<button class="btn btn-sm btn-danger" onclick={() => handleDelete(auto.id)}>Eliminar</button>
+						</td>
+					</tr>
+				{:else}
+					<tr>
+						<td colspan="6" class="empty">No hay autos registrados en esta categoría</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	{/if}
+</div>
+
+<div class="nav-links">
+	<a href="/admin/categorias/{categoriaId}/fixture" class="btn btn-fixture">🏁 Ir al Fixture</a>
 </div>
 
 <style>
@@ -116,8 +161,21 @@
 		font-size: 0.875rem;
 	}
 
-	.back-link:hover {
-		color: #f59e0b;
+	.back-link:hover { color: #f59e0b; }
+
+	.error {
+		color: #fca5a5;
+		background: rgba(220,38,38,0.15);
+		padding: 0.75rem 1rem;
+		border-radius: 0.25rem;
+		margin-bottom: 1rem;
+		font-size: 0.9rem;
+	}
+
+	.loading {
+		text-align: center;
+		color: #64748b;
+		padding: 3rem;
 	}
 
 	.btn {
@@ -129,28 +187,24 @@
 		transition: all 0.2s;
 	}
 
-	.btn-primary {
-		background: #f59e0b;
-		color: #0f172a;
-	}
-
+	.btn-primary { background: #f59e0b; color: #0f172a; }
 	.btn-primary:hover { background: #d97706; }
-
-	.btn-sm {
-		padding: 0.25rem 0.75rem;
-		font-size: 0.875rem;
-		background: #334155;
-		color: #e2e8f0;
-	}
-
+	.btn-sm { padding: 0.25rem 0.75rem; font-size: 0.875rem; background: #334155; color: #e2e8f0; }
 	.btn-sm:hover { background: #475569; }
+	.btn-danger { background: #dc2626; color: white; }
+	.btn-danger:hover { background: #b91c1c; }
 
-	.btn-danger {
+	.btn-fixture {
+		display: inline-block;
+		padding: 0.5rem 1rem;
 		background: #dc2626;
 		color: white;
+		text-decoration: none;
+		border-radius: 0.25rem;
+		font-weight: 600;
 	}
 
-	.btn-danger:hover { background: #b91c1c; }
+	.btn-fixture:hover { background: #b91c1c; }
 
 	.table-container {
 		background: #1e293b;
@@ -171,33 +225,11 @@
 		letter-spacing: 0.05em;
 	}
 
-	td {
-		padding: 1rem;
-		border-top: 1px solid #334155;
-	}
-
-	.numero {
-		font-weight: bold;
-		color: #f59e0b;
-		font-size: 1.25rem;
-	}
-
-	.auto-foto {
-		width: 48px;
-		height: 48px;
-		object-fit: cover;
-		border-radius: 0.25rem;
-		border: 1px solid #334155;
-	}
-
+	td { padding: 1rem; border-top: 1px solid #334155; }
+	.numero { font-weight: bold; color: #f59e0b; font-size: 1.25rem; }
+	.auto-foto { width: 48px; height: 48px; object-fit: cover; border-radius: 0.25rem; border: 1px solid #334155; }
 	.no-foto { color: #475569; }
-
 	.actions { display: flex; gap: 0.5rem; }
-
-	.empty {
-		text-align: center;
-		color: #64748b;
-		padding: 3rem;
-		font-style: italic;
-	}
+	.empty { text-align: center; color: #64748b; padding: 3rem; font-style: italic; }
+	.nav-links { margin-top: 1.5rem; }
 </style>

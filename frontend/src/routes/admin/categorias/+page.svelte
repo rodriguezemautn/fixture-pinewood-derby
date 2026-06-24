@@ -1,12 +1,33 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import CategoriaForm from '$lib/components/CategoriaForm.svelte';
 	import { apiFetch } from '$lib/api';
 
-	let { data } = $props();
-	let { categorias } = $derived(data);
+	let categorias = $state<any[]>([]);
+	let loading = $state(true);
+	let error = $state('');
 
 	let showForm = $state(false);
 	let editingId = $state<string | null>(null);
+
+	onMount(() => {
+		cargarCategorias();
+	});
+
+	async function cargarCategorias() {
+		loading = true;
+		error = '';
+		try {
+			const res = await fetch('/api/categorias');
+			if (!res.ok) throw new Error('Error al cargar');
+			categorias = await res.json();
+		} catch (e) {
+			error = 'No se pudieron cargar las categorías. ¿El backend está corriendo?';
+		} finally {
+			loading = false;
+		}
+	}
 
 	function handleEdit(id: string) {
 		editingId = id;
@@ -18,16 +39,21 @@
 		editingId = null;
 	}
 
-	function handleSaved() {
+	async function handleSaved() {
 		showForm = false;
 		editingId = null;
-		window.location.reload();
+		await cargarCategorias();
 	}
 
 	async function handleDelete(id: string) {
 		if (!confirm('¿Eliminar esta categoría?')) return;
-		await apiFetch(`/api/categorias/${id}`, { method: 'DELETE' });
-		window.location.reload();
+		try {
+			const res = await apiFetch(`/api/categorias/${id}`, { method: 'DELETE' });
+			if (!res.ok) throw new Error('Error al eliminar');
+			await cargarCategorias();
+		} catch (e) {
+			alert('Error al eliminar la categoría');
+		}
 	}
 
 	const editingCategoria = $derived(
@@ -42,6 +68,10 @@
 	</button>
 </div>
 
+{#if error}
+	<div class="error" in:fade>{error}</div>
+{/if}
+
 {#if showForm}
 	<CategoriaForm
 		categoria={editingCategoria}
@@ -51,35 +81,39 @@
 {/if}
 
 <div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th>Nombre</th>
-				<th>Edad Mín</th>
-				<th>Edad Máx</th>
-				<th>Acciones</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each categorias as cat (cat.id)}
+	{#if loading}
+		<p class="loading">Cargando...</p>
+	{:else}
+		<table>
+			<thead>
 				<tr>
-					<td>{cat.nombre}</td>
-					<td>{cat.edad_min}</td>
-					<td>{cat.edad_max}</td>
-					<td class="actions">
-						<a href="/admin/categorias/{cat.id}/autos" class="btn btn-sm btn-racing">🏎️ Autos</a>
-						<a href="/admin/categorias/{cat.id}/fixture" class="btn btn-sm btn-fixture">🏁 Fixture</a>
-						<button class="btn btn-sm" onclick={() => handleEdit(cat.id)}>Editar</button>
-						<button class="btn btn-sm btn-danger" onclick={() => handleDelete(cat.id)}>Eliminar</button>
-					</td>
+					<th>Nombre</th>
+					<th>Edad Mín</th>
+					<th>Edad Máx</th>
+					<th>Acciones</th>
 				</tr>
-			{:else}
-				<tr>
-					<td colspan="4" class="empty">No hay categorías registradas</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#each categorias as cat (cat.id)}
+					<tr>
+						<td>{cat.nombre}</td>
+						<td>{cat.edad_min}</td>
+						<td>{cat.edad_max}</td>
+						<td class="actions">
+							<a href="/admin/categorias/{cat.id}/autos" class="btn btn-sm btn-racing">🏎️ Autos</a>
+							<a href="/admin/categorias/{cat.id}/fixture" class="btn btn-sm btn-fixture">🏁 Fixture</a>
+							<button class="btn btn-sm" onclick={() => handleEdit(cat.id)}>Editar</button>
+							<button class="btn btn-sm btn-danger" onclick={() => handleDelete(cat.id)}>Eliminar</button>
+						</td>
+					</tr>
+				{:else}
+					<tr>
+						<td colspan="4" class="empty">No hay categorías registradas</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	{/if}
 </div>
 
 <style>
@@ -96,6 +130,21 @@
 		margin: 0;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
+	}
+
+	.error {
+		color: #fca5a5;
+		background: rgba(220,38,38,0.15);
+		padding: 0.75rem 1rem;
+		border-radius: 0.25rem;
+		margin-bottom: 1rem;
+		font-size: 0.9rem;
+	}
+
+	.loading {
+		text-align: center;
+		color: #64748b;
+		padding: 3rem;
 	}
 
 	.btn {
