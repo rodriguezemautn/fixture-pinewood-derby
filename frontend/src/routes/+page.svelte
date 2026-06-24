@@ -95,21 +95,24 @@
 			<h2>¿Cómo funciona?</h2>
 		</div>
 		<div class="info-grid" in:fade={{ duration: 500, delay: 400 }}>
-			<div class="info-card" in:fly={{ y: 20, duration: 400, delay: 500 }}>
+			<a href="/carreras" class="info-card" in:fly={{ y: 20, duration: 400, delay: 500 }}>
 				<img src="/assets/auto_madera.jpg" alt="Auto de madera" class="card-img" />
 				<h3>Categorías</h3>
-				<p>Agrupá los participantes por edades y creá categorías personalizadas</p>
-			</div>
-			<div class="info-card" in:fly={{ y: 20, duration: 400, delay: 600 }}>
+				<p>Explorá las categorías disponibles y seguí las carreras en vivo</p>
+				<span class="card-link">👁️ Ver carreras →</span>
+			</a>
+			<a href="/login" class="info-card" in:fly={{ y: 20, duration: 400, delay: 600 }}>
 				<img src="/assets/D15_logo.jpg" alt="D15 Logo" class="card-img" />
 				<h3>Autos</h3>
 				<p>Registrá cada auto con su número, nombre, creador y foto</p>
-			</div>
-			<div class="info-card" in:fly={{ y: 20, duration: 400, delay: 700 }}>
+				<span class="card-link">🔐 Admin →</span>
+			</a>
+			<a href="/carreras" class="info-card" in:fly={{ y: 20, duration: 400, delay: 700 }}>
 				<img src="/assets/derbi.jpg" alt="Derbi" class="card-img" />
 				<h3>Carreras</h3>
-				<p>Scheduler automático de fixture con carreras de hasta 4 autos</p>
-			</div>
+				<p>Seguí las carreras en vivo con posiciones, podios y resultados</p>
+				<span class="card-link">🏁 Ver carreras →</span>
+			</a>
 		</div>
 	{/if}
 </section>
@@ -233,12 +236,15 @@
 	}
 
 	.info-card {
+		display: flex; flex-direction: column; align-items: center;
 		background: var(--racing-gray); border: 1px solid var(--racing-border);
 		border-radius: 0.5rem; padding: 1.5rem; text-align: center;
-		transition: all 0.3s;
+		text-decoration: none; transition: all 0.3s;
 	}
 
 	.info-card:hover { border-color: var(--racing-amber); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+	.card-link { margin-top: 0.75rem; color: var(--racing-amber); font-weight: 600; font-size: 0.85rem; }
 
 	.card-img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem; border: 2px solid var(--racing-border); }
 	.info-card h3 { color: var(--racing-amber); margin: 0 0 0.5rem 0; font-size: 1.25rem; }

@@ -35,7 +35,7 @@
 			</a>
 			<div class="admin-links">
 				<a href="/admin/categorias" class="admin-link">Categorías</a>
-				<a href="/" class="admin-link">Ver Carrera</a>
+				<a href="/carreras" class="admin-link">Ver Carreras</a>
 			</div>
 			<button class="btn-logout" onclick={logout}>Salir</button>
 		</div>
