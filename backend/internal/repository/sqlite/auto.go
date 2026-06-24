@@ -13,15 +13,21 @@ type AutoRepository struct {
 	db *sql.DB
 }
 
-// NewAutoRepository crea un nuevo repositorio SQLite de autos.
 func NewAutoRepository(db *sql.DB) *AutoRepository {
 	return &AutoRepository{db: db}
 }
 
+const autoCols = "id, categoria_id, numero, nombre, creador, edad, peso, foto_url, created_at, updated_at"
+
+func scanAuto(scanner interface {
+	Scan(dest ...interface{}) error
+}, a *domain.Auto) error {
+	return scanner.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.Peso, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt)
+}
+
 func (r *AutoRepository) ListAll() ([]domain.Auto, error) {
 	rows, err := r.db.Query(
-		`SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at
-		 FROM autos ORDER BY categoria_id, numero ASC`)
+		`SELECT ` + autoCols + ` FROM autos ORDER BY categoria_id, numero ASC`)
 	if err != nil {
 		return nil, fmt.Errorf("query all autos: %w", err)
 	}
@@ -30,7 +36,7 @@ func (r *AutoRepository) ListAll() ([]domain.Auto, error) {
 	var autos []domain.Auto
 	for rows.Next() {
 		var a domain.Auto
-		if err := rows.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt); err != nil {
+		if err := scanAuto(rows, &a); err != nil {
 			return nil, fmt.Errorf("scan auto: %w", err)
 		}
 		autos = append(autos, a)
@@ -40,8 +46,7 @@ func (r *AutoRepository) ListAll() ([]domain.Auto, error) {
 
 func (r *AutoRepository) ListByCategoria(categoriaID string) ([]domain.Auto, error) {
 	rows, err := r.db.Query(
-		`SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at
-		 FROM autos WHERE categoria_id = ? ORDER BY numero ASC`, categoriaID)
+		`SELECT `+autoCols+` FROM autos WHERE categoria_id = ? ORDER BY numero ASC`, categoriaID)
 	if err != nil {
 		return nil, fmt.Errorf("query autos: %w", err)
 	}
@@ -50,7 +55,7 @@ func (r *AutoRepository) ListByCategoria(categoriaID string) ([]domain.Auto, err
 	var autos []domain.Auto
 	for rows.Next() {
 		var a domain.Auto
-		if err := rows.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt); err != nil {
+		if err := scanAuto(rows, &a); err != nil {
 			return nil, fmt.Errorf("scan auto: %w", err)
 		}
 		autos = append(autos, a)
@@ -60,10 +65,8 @@ func (r *AutoRepository) ListByCategoria(categoriaID string) ([]domain.Auto, err
 
 func (r *AutoRepository) GetByID(id string) (*domain.Auto, error) {
 	var a domain.Auto
-	err := r.db.QueryRow(
-		`SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at
-		 FROM autos WHERE id = ?`, id).
-		Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt)
+	err := scanAuto(r.db.QueryRow(
+		`SELECT `+autoCols+` FROM autos WHERE id = ?`, id), &a)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -79,9 +82,9 @@ func (r *AutoRepository) Save(a *domain.Auto) error {
 	a.UpdatedAt = now
 
 	_, err := r.db.Exec(
-		`INSERT INTO autos (id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		a.ID, a.CategoriaID, a.Numero, a.Nombre, a.Creador, a.Edad, a.FotoURL, a.CreatedAt, a.UpdatedAt)
+		`INSERT INTO autos (id, categoria_id, numero, nombre, creador, edad, peso, foto_url, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		a.ID, a.CategoriaID, a.Numero, a.Nombre, a.Creador, a.Edad, a.Peso, a.FotoURL, a.CreatedAt, a.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("insert auto: %w", err)
 	}
@@ -92,9 +95,9 @@ func (r *AutoRepository) Update(a *domain.Auto) error {
 	a.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
 
 	res, err := r.db.Exec(
-		`UPDATE autos SET numero = ?, nombre = ?, creador = ?, edad = ?, foto_url = ?, updated_at = ?
+		`UPDATE autos SET numero = ?, nombre = ?, creador = ?, edad = ?, peso = ?, foto_url = ?, updated_at = ?
 		 WHERE id = ?`,
-		a.Numero, a.Nombre, a.Creador, a.Edad, a.FotoURL, a.UpdatedAt, a.ID)
+		a.Numero, a.Nombre, a.Creador, a.Edad, a.Peso, a.FotoURL, a.UpdatedAt, a.ID)
 	if err != nil {
 		return fmt.Errorf("update auto: %w", err)
 	}

@@ -79,8 +79,9 @@
 								<div class="auto-info">
 									<span class="auto-numero">#{auto.numero}</span>
 									<span class="auto-nombre">{auto.nombre}</span>
-									<span class="auto-creador">por {auto.creador}</span>
-									<span class="auto-edad">{auto.edad} años</span>
+								<span class="auto-creador">por {auto.creador}</span>
+								<span class="auto-edad">{auto.edad} años</span>
+								{#if auto.peso > 0}<span class="auto-peso">{auto.peso}g</span>{/if}
 								</div>
 							</div>
 						{/each}
@@ -146,6 +147,7 @@
 	.auto-nombre { color: var(--racing-text); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 	.auto-creador { color: var(--racing-text-dim); font-size: 0.8rem; }
 	.auto-edad { color: var(--racing-text-dim); font-size: 0.75rem; }
+	.auto-peso { color: var(--racing-amber); font-size: 0.75rem; font-weight: 600; }
 
 	.total { text-align: center; color: var(--racing-text-dim); font-size: 0.85rem; padding: 1rem; }
 

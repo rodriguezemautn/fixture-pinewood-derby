@@ -17,8 +17,8 @@ type AutoService interface {
 	ListByCategoria(categoriaID string) ([]domain.Auto, error)
 	ListAll() ([]domain.Auto, error)
 	GetByID(id string) (*domain.Auto, error)
-	Create(categoriaID string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error)
-	Update(id string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error)
+	Create(categoriaID string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error)
+	Update(id string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error)
 	Delete(id string) error
 }
 

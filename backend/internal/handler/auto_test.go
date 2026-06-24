@@ -39,12 +39,12 @@ func (m *mockAutoService) GetByID(id string) (*domain.Auto, error) {
 	}
 	return a, nil
 }
-func (m *mockAutoService) Create(categoriaID string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error) {
-	a := &domain.Auto{ID: "new-auto", CategoriaID: categoriaID, Numero: numero, Nombre: nombre, Creador: creador, Edad: edad, FotoURL: fotoURL}
+func (m *mockAutoService) Create(categoriaID string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error) {
+	a := &domain.Auto{ID: "new-auto", CategoriaID: categoriaID, Numero: numero, Nombre: nombre, Creador: creador, Edad: edad, Peso: peso, FotoURL: fotoURL}
 	m.autos[a.ID] = a
 	return a, nil
 }
-func (m *mockAutoService) Update(id string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error) {
+func (m *mockAutoService) Update(id string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error) {
 	a, ok := m.autos[id]
 	if !ok {
 		return nil, nil
@@ -53,6 +53,7 @@ func (m *mockAutoService) Update(id string, numero int, nombre, creador string, 
 	a.Nombre = nombre
 	a.Creador = creador
 	a.Edad = edad
+	a.Peso = peso
 	a.FotoURL = fotoURL
 	return a, nil
 }

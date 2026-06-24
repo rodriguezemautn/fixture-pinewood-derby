@@ -82,7 +82,7 @@ func TestAutoService_Create_Success(t *testing.T) {
 	autoR, catR := newAutoMocks()
 	svc := NewAutoService(autoR, catR)
 
-	a, err := svc.Create("cat-1", 1, "Turbo", "Juan", 10, "")
+	a, err := svc.Create("cat-1", 1, "Turbo", "Juan", 10, 0, "")
 	if err != nil {
 		t.Fatalf("create failed: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestAutoService_Create_CategoriaNotFound(t *testing.T) {
 	catR := &categoriaMock{data: make(map[string]*domain.Categoria)}
 	svc := NewAutoService(autoR, catR)
 
-	_, err := svc.Create("no-existe", 1, "Test", "J", 10, "")
+	_, err := svc.Create("no-existe", 1, "Test", "J", 10, 0, "")
 	if err == nil {
 		t.Error("expected error for nonexistent categoria")
 	}
@@ -109,8 +109,8 @@ func TestAutoService_Create_DuplicateNumero(t *testing.T) {
 	autoR, catR := newAutoMocks()
 	svc := NewAutoService(autoR, catR)
 
-	svc.Create("cat-1", 1, "A", "J", 10, "")
-	_, err := svc.Create("cat-1", 1, "B", "J", 10, "")
+	svc.Create("cat-1", 1, "A", "J", 10, 0, "")
+	_, err := svc.Create("cat-1", 1, "B", "J", 10, 0, "")
 	if err == nil {
 		t.Error("expected error for duplicate numero")
 	}
@@ -135,7 +135,7 @@ func TestAutoService_Create_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := svc.Create("cat-1", tt.numero, tt.nombre, tt.creador, tt.edad, "")
+			_, err := svc.Create("cat-1", tt.numero, tt.nombre, tt.creador, tt.edad, 0, "")
 			if err == nil {
 				t.Error("expected error, got nil")
 			}
@@ -147,8 +147,8 @@ func TestAutoService_Update_Success(t *testing.T) {
 	autoR, catR := newAutoMocks()
 	svc := NewAutoService(autoR, catR)
 
-	created, _ := svc.Create("cat-1", 1, "Old", "J", 10, "")
-	updated, err := svc.Update(created.ID, 2, "New", "M", 12, "foto.jpg")
+	created, _ := svc.Create("cat-1", 1, "Old", "J", 10, 0, "")
+	updated, err := svc.Update(created.ID, 2, "New", "M", 12, 0, "foto.jpg")
 	if err != nil {
 		t.Fatalf("update failed: %v", err)
 	}
@@ -161,7 +161,7 @@ func TestAutoService_Delete(t *testing.T) {
 	autoR, catR := newAutoMocks()
 	svc := NewAutoService(autoR, catR)
 
-	created, _ := svc.Create("cat-1", 1, "Test", "J", 10, "")
+	created, _ := svc.Create("cat-1", 1, "Test", "J", 10, 0, "")
 	if err := svc.Delete(created.ID); err != nil {
 		t.Fatalf("delete failed: %v", err)
 	}

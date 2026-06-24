@@ -7,6 +7,7 @@
 		nombre: string;
 		creador: string;
 		edad: number;
+		peso: number;
 		foto_url: string;
 	}
 
@@ -21,6 +22,7 @@
 	let nombre = $state(auto?.nombre ?? '');
 	let creador = $state(auto?.creador ?? '');
 	let edad = $state(auto?.edad ?? 8);
+	let peso = $state(auto?.peso ?? 0);
 	let fotoUrl = $state(auto?.foto_url ?? '');
 	let fotoFile = $state<File | null>(null);
 	let fotoPreview = $state<string | null>(null);
@@ -42,7 +44,7 @@
 		error = '';
 		loading = true;
 
-		const body = { numero, nombre, creador, edad, foto_url: fotoUrl };
+		const body = { numero, nombre, creador, edad, peso, foto_url: fotoUrl };
 
 		try {
 			// Primero crear/actualizar el auto
@@ -120,6 +122,12 @@
 			<label>
 				Edad
 				<input type="number" bind:value={edad} min="1" max="99" required />
+			</label>
+
+			<label>
+				Peso (gramos)
+				<input type="number" bind:value={peso} min="0" max="5000" placeholder="Ej: 150" />
+				<span class="file-hint">Peso del auto en gramos</span>
 			</label>
 
 			<label>

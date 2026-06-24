@@ -214,6 +214,7 @@
 							<span class="auto-numero">#{auto.numero}</span>
 							<span class="auto-nombre">{auto.nombre}</span>
 							<span class="auto-creador">por {auto.creador}</span>
+							{#if auto.peso > 0}<span class="auto-peso">{auto.peso}g</span>{/if}
 						</div>
 					</div>
 				{/each}
@@ -396,6 +397,7 @@
 	.auto-numero { color: var(--racing-amber); font-weight: 700; font-size: 1rem; }
 	.auto-nombre { color: var(--racing-text); font-size: 0.9rem; }
 	.auto-creador { color: var(--racing-text-dim); font-size: 0.8rem; }
+	.auto-peso { color: var(--racing-amber); font-size: 0.75rem; font-weight: 600; }
 
 	.carrera-footer { text-align: center; padding: 2rem 1rem; color: var(--racing-text-dim); font-size: 0.8rem; }
 	.footer-stripe { height: 2px; background: repeating-linear-gradient(90deg, var(--racing-red) 0, var(--racing-red) 6px, transparent 6px, transparent 12px); margin-bottom: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; }

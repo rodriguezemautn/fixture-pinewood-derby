@@ -89,7 +89,7 @@ func (h *autoHandler) UploadFoto(w http.ResponseWriter, r *http.Request) {
 
 	// Actualizar FotoURL en la DB
 	fotoURL := "/uploads/" + nombre
-	if _, err := h.svc.Update(id, a.Numero, a.Nombre, a.Creador, a.Edad, fotoURL); err != nil {
+	if _, err := h.svc.Update(id, a.Numero, a.Nombre, a.Creador, a.Edad, a.Peso, fotoURL); err != nil {
 		// Si falla la actualización, intentamos borrar el archivo
 		os.Remove(ruta)
 		writeError(w, http.StatusInternalServerError, "error al actualizar auto")
@@ -104,6 +104,7 @@ type createAutoRequest struct {
 	Nombre  string `json:"nombre"`
 	Creador string `json:"creador"`
 	Edad    int    `json:"edad"`
+	Peso    int    `json:"peso"`
 	FotoURL string `json:"foto_url"`
 }
 
@@ -143,7 +144,7 @@ func (h *autoHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a, err := h.svc.Create(categoriaID, req.Numero, req.Nombre, req.Creador, req.Edad, req.FotoURL)
+	a, err := h.svc.Create(categoriaID, req.Numero, req.Nombre, req.Creador, req.Edad, req.Peso, req.FotoURL)
 	if err != nil {
 		code := http.StatusBadRequest
 		if err.Error() == "categoria "+categoriaID+" no encontrada" {
@@ -179,7 +180,7 @@ func (h *autoHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a, err := h.svc.Update(id, req.Numero, req.Nombre, req.Creador, req.Edad, req.FotoURL)
+	a, err := h.svc.Update(id, req.Numero, req.Nombre, req.Creador, req.Edad, req.Peso, req.FotoURL)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return

@@ -31,8 +31,7 @@ func (s *autoService) GetByID(id string) (*domain.Auto, error) {
 	return s.autoRepo.GetByID(id)
 }
 
-func (s *autoService) Create(categoriaID string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error) {
-	// Validar que la categoría existe
+func (s *autoService) Create(categoriaID string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error) {
 	cat, err := s.categoriaRepo.GetByID(categoriaID)
 	if err != nil {
 		return nil, fmt.Errorf("verificar categoria: %w", err)
@@ -41,11 +40,10 @@ func (s *autoService) Create(categoriaID string, numero int, nombre, creador str
 		return nil, fmt.Errorf("categoria %s no encontrada", categoriaID)
 	}
 
-	if err := validateAuto(numero, nombre, creador, edad); err != nil {
+	if err := validateAuto(numero, nombre, creador, edad, peso); err != nil {
 		return nil, err
 	}
 
-	// Validar número único por categoría
 	exists, err := s.autoRepo.ExistsByNumero(categoriaID, numero)
 	if err != nil {
 		return nil, fmt.Errorf("verificar numero: %w", err)
@@ -61,6 +59,7 @@ func (s *autoService) Create(categoriaID string, numero int, nombre, creador str
 		Nombre:      strings.TrimSpace(nombre),
 		Creador:     strings.TrimSpace(creador),
 		Edad:        edad,
+		Peso:        peso,
 		FotoURL:     fotoURL,
 	}
 
@@ -70,8 +69,8 @@ func (s *autoService) Create(categoriaID string, numero int, nombre, creador str
 	return a, nil
 }
 
-func (s *autoService) Update(id string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error) {
-	if err := validateAuto(numero, nombre, creador, edad); err != nil {
+func (s *autoService) Update(id string, numero int, nombre, creador string, edad int, peso int, fotoURL string) (*domain.Auto, error) {
+	if err := validateAuto(numero, nombre, creador, edad, peso); err != nil {
 		return nil, err
 	}
 
@@ -83,7 +82,6 @@ func (s *autoService) Update(id string, numero int, nombre, creador string, edad
 		return nil, fmt.Errorf("auto %s not found", id)
 	}
 
-	// Si cambió el número, verificar unicidad
 	if a.Numero != numero {
 		exists, err := s.autoRepo.ExistsByNumero(a.CategoriaID, numero)
 		if err != nil {
@@ -98,6 +96,7 @@ func (s *autoService) Update(id string, numero int, nombre, creador string, edad
 	a.Nombre = strings.TrimSpace(nombre)
 	a.Creador = strings.TrimSpace(creador)
 	a.Edad = edad
+	a.Peso = peso
 	a.FotoURL = fotoURL
 
 	if err := s.autoRepo.Update(a); err != nil {
@@ -106,11 +105,7 @@ func (s *autoService) Update(id string, numero int, nombre, creador string, edad
 	return a, nil
 }
 
-func (s *autoService) Delete(id string) error {
-	return s.autoRepo.Delete(id)
-}
-
-func validateAuto(numero int, nombre, creador string, edad int) error {
+func validateAuto(numero int, nombre, creador string, edad int, peso int) error {
 	if strings.TrimSpace(nombre) == "" {
 		return fmt.Errorf("nombre es requerido")
 	}
@@ -123,5 +118,15 @@ func validateAuto(numero int, nombre, creador string, edad int) error {
 	if edad < 1 {
 		return fmt.Errorf("edad debe ser mayor a 0")
 	}
+	if peso < 0 {
+		return fmt.Errorf("peso no puede ser negativo")
+	}
+	if peso > 5000 {
+		return fmt.Errorf("peso no puede superar 5000g (5kg)")
+	}
 	return nil
+}
+
+func (s *autoService) Delete(id string) error {
+	return s.autoRepo.Delete(id)
 }

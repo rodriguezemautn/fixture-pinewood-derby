@@ -24,7 +24,7 @@ func setupAutoDB(t *testing.T) *sql.DB {
 			id TEXT PRIMARY KEY, categoria_id TEXT NOT NULL,
 			numero INTEGER NOT NULL, nombre TEXT NOT NULL,
 			creador TEXT NOT NULL, edad INTEGER NOT NULL,
-			foto_url TEXT NOT NULL DEFAULT '',
+			peso INTEGER NOT NULL DEFAULT 0, foto_url TEXT NOT NULL DEFAULT '',
 			created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
 			UNIQUE(categoria_id, numero),
 			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
@@ -43,7 +43,7 @@ func TestAutoRepository_SaveAndListByCategoria(t *testing.T) {
 	defer db.Close()
 	repo := NewAutoRepository(db)
 
-	a := &domain.Auto{ID: "a1", CategoriaID: "cat-1", Numero: 1, Nombre: "Turbo", Creador: "Juan", Edad: 10}
+	a := &domain.Auto{ID: "a1", CategoriaID: "cat-1", Numero: 1, Nombre: "Turbo", Creador: "Juan", Edad: 10, Peso: 0}
 	if err := repo.Save(a); err != nil {
 		t.Fatalf("save failed: %v", err)
 	}
@@ -87,7 +87,7 @@ func TestAutoRepository_Update(t *testing.T) {
 	repo.Save(&domain.Auto{ID: "a2", CategoriaID: "cat-1", Numero: 2, Nombre: "Test", Creador: "J", Edad: 8})
 
 	// Update numero to avoid unique conflict
-	updated := &domain.Auto{ID: "a1", CategoriaID: "cat-1", Numero: 10, Nombre: "New", Creador: "J", Edad: 10, FotoURL: "foto.jpg"}
+	updated := &domain.Auto{ID: "a1", CategoriaID: "cat-1", Numero: 10, Nombre: "New", Creador: "J", Peso: 0, FotoURL: "foto.jpg"}
 	if err := repo.Update(updated); err != nil {
 		t.Fatalf("update failed: %v", err)
 	}

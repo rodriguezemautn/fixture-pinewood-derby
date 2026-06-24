@@ -19,6 +19,7 @@ type Auto struct {
 	Nombre      string `json:"nombre"`
 	Creador     string `json:"creador"`
 	Edad        int    `json:"edad"`
+	Peso        int    `json:"peso"`
 	FotoURL     string `json:"foto_url"`
 	CreatedAt   string `json:"created_at"`
 	UpdatedAt   string `json:"updated_at"`

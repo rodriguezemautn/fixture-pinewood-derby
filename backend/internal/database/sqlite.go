@@ -47,12 +47,14 @@ func Migrate(db *sql.DB) error {
 			nombre TEXT NOT NULL,
 			creador TEXT NOT NULL,
 			edad INTEGER NOT NULL,
+			peso INTEGER NOT NULL DEFAULT 0,
 			foto_url TEXT NOT NULL DEFAULT '',
 			created_at TEXT NOT NULL DEFAULT (datetime('now')),
 			updated_at TEXT NOT NULL DEFAULT (datetime('now')),
 			UNIQUE(categoria_id, numero),
 			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 		)`,
+		`ALTER TABLE autos ADD COLUMN peso INTEGER NOT NULL DEFAULT 0`,
 		`CREATE TABLE IF NOT EXISTS fixtures (
 			id TEXT PRIMARY KEY,
 			categoria_id TEXT NOT NULL,
@@ -81,6 +83,10 @@ func Migrate(db *sql.DB) error {
 
 	for i, m := range migrations {
 		if _, err := db.Exec(m); err != nil {
+			// ALTER TABLE puede fallar si la columna ya existe
+			if len(m) >= 11 && m[:11] == "ALTER TABLE" {
+				continue
+			}
 			return fmt.Errorf("migration %d failed: %w", i+1, err)
 		}
 	}
