@@ -40,6 +40,19 @@ func Migrate(db *sql.DB) error {
 			created_at TEXT NOT NULL DEFAULT (datetime('now')),
 			updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 		)`,
+		`CREATE TABLE IF NOT EXISTS autos (
+			id TEXT PRIMARY KEY,
+			categoria_id TEXT NOT NULL,
+			numero INTEGER NOT NULL,
+			nombre TEXT NOT NULL,
+			creador TEXT NOT NULL,
+			edad INTEGER NOT NULL,
+			foto_url TEXT NOT NULL DEFAULT '',
+			created_at TEXT NOT NULL DEFAULT (datetime('now')),
+			updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+			UNIQUE(categoria_id, numero),
+			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+		)`,
 	}
 
 	for i, m := range migrations {

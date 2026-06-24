@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-
 	let { children } = $props();
 </script>
 
 <div class="admin-layout">
 	<nav class="admin-nav">
-		<a href="/admin/categorias" class="nav-link">Categorías</a>
+		<a href="/admin/categorias" class="nav-link">🏎️ Categorías</a>
 		<a href="/" class="nav-link">← Ver Carrera</a>
 	</nav>
 	<main class="admin-content">

@@ -14,12 +14,14 @@ type Categoria struct {
 // Auto representa un auto de madera registrado en una categoría.
 type Auto struct {
 	ID          string
+	CategoriaID string
 	Numero      int
 	Nombre      string
 	Creador     string
 	Edad        int
 	FotoURL     string
-	CategoriaID string
+	CreatedAt   string
+	UpdatedAt   string
 }
 
 // Carrera representa una instancia de carrera con hasta 4 autos.

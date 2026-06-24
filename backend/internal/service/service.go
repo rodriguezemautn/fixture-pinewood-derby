@@ -12,6 +12,15 @@ type CategoriaService interface {
 	Delete(id string) error
 }
 
+// AutoService define operaciones de negocio sobre autos.
+type AutoService interface {
+	ListByCategoria(categoriaID string) ([]domain.Auto, error)
+	GetByID(id string) (*domain.Auto, error)
+	Create(categoriaID string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error)
+	Update(id string, numero int, nombre, creador string, edad int, fotoURL string) (*domain.Auto, error)
+	Delete(id string) error
+}
+
 // CarreraService define operaciones de negocio sobre carreras.
 type CarreraService interface {
 	RegistrarOrdenLlegada(carreraID string, orden []string) error
