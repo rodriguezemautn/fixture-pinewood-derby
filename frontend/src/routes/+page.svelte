@@ -47,10 +47,41 @@
 	<title>Fixture — Pinewood Derby D15</title>
 </svelte:head>
 
-<!-- ════ HERO ════ -->
+<!-- ════ HERO — Arcade Racing Scene ════ -->
 <section class="hero">
-	<div class="hero-bg"></div>
-	<div class="hero-speed"></div>
+	<div class="hero-bg">
+		<!-- Cielo atardecer -->
+		<div class="sky"></div>
+
+		<!-- Montañas lejanas -->
+		<div class="mountains"></div>
+
+		<!-- Estación de tren -->
+		<div class="station">
+			<div class="station-body"></div>
+			<div class="station-roof"></div>
+			<div class="station-sign">
+				<span class="sign-text">BERAZATEGUI</span>
+			</div>
+			<div class="station-platform"></div>
+		</div>
+
+		<!-- Árboles pixel art -->
+		<div class="tree t1"><div class="trunk"></div><div class="foliage"></div></div>
+		<div class="tree t2"><div class="trunk"></div><div class="foliage"></div></div>
+		<div class="tree t3"><div class="trunk"></div><div class="foliage"></div></div>
+		<div class="tree t4"><div class="trunk"></div><div class="foliage"></div></div>
+
+		<!-- Ruta en perspectiva -->
+		<div class="road">
+			<div class="road-line l1"></div>
+			<div class="road-line l2"></div>
+		</div>
+
+		<!-- Líneas de velocidad -->
+		<div class="hero-speed"></div>
+	</div>
+
 	<div class="hero-content">
 		{#if loaded}
 			<div class="hero-logo" in:fly={{ y: -30, duration: 600 }}>
@@ -155,46 +186,208 @@
 </section>
 
 <style>
-	/* ─── Hero ─────────────────────────────────── */
+	/* ═══════════════════════════════════════════════════
+	   ARCADE RACING SCENE — Hero
+	   ═══════════════════════════════════════════════════ */
+
 	.hero {
 		position: relative;
-		min-height: 60vh;
+		min-height: 65vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		background: linear-gradient(135deg, var(--arcade-black) 0%, #1a1f2e 50%, var(--arcade-dark) 100%);
 	}
 
+	/* ─── Contenedor de la escena ─────────────── */
 	.hero-bg {
 		position: absolute;
 		inset: 0;
-		background:
-			radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 50%),
-			radial-gradient(ellipse at 80% 50%, rgba(220,38,38,0.05) 0%, transparent 50%);
+		background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 20%, #e85d3a 45%, #f09030 55%, #2a3a1a 56%, #1a2a10 100%);
 	}
 
+	/* Cielo estrellado (puntitos) */
+	.sky {
+		position: absolute; inset: 0;
+		background-image:
+			radial-gradient(1px 1px at 10% 5%, rgba(255,255,255,0.6) 100%, transparent),
+			radial-gradient(1px 1px at 25% 12%, rgba(255,255,255,0.4) 100%, transparent),
+			radial-gradient(1.5px 1.5px at 40% 3%, rgba(255,255,255,0.7) 100%, transparent),
+			radial-gradient(1px 1px at 55% 8%, rgba(255,255,255,0.5) 100%, transparent),
+			radial-gradient(1px 1px at 70% 4%, rgba(255,255,255,0.6) 100%, transparent),
+			radial-gradient(1.5px 1.5px at 85% 10%, rgba(255,255,255,0.4) 100%, transparent),
+			radial-gradient(1px 1px at 15% 18%, rgba(255,255,255,0.3) 100%, transparent),
+			radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.5) 100%, transparent),
+			radial-gradient(1px 1px at 90% 6%, rgba(255,255,255,0.4) 100%, transparent),
+			radial-gradient(1.5px 1.5px at 50% 2%, rgba(255,255,255,0.6) 100%, transparent);
+		pointer-events: none;
+	}
+
+	/* Montañas */
+	.mountains {
+		position: absolute; bottom: 44%; left: 0; right: 0; height: 20%;
+		background:
+			/* Montaña lejana 1 */
+			linear-gradient(135deg, transparent 33%, #2a1a3a 33%, #2a1a3a 38%, transparent 38%),
+			linear-gradient(225deg, transparent 33%, #2a1a3a 33%, #2a1a3a 38%, transparent 38%),
+			/* Montaña lejana 2 */
+			linear-gradient(135deg, transparent 50%, #3a2a4a 50%, #3a2a4a 55%, transparent 55%),
+			linear-gradient(225deg, transparent 50%, #3a2a4a 50%, #3a2a4a 55%, transparent 55%),
+			/* Montaña cercana */
+			linear-gradient(135deg, transparent 60%, #1a2a1a 60%, #1a2a1a 68%, transparent 68%),
+			linear-gradient(225deg, transparent 60%, #1a2a1a 60%, #1a2a1a 68%, transparent 68%);
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+		pointer-events: none;
+	}
+
+	/* ─── Árboles pixel art ──────────────────── */
+	.tree {
+		position: absolute; z-index: 2; pointer-events: none;
+	}
+	.trunk {
+		position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+		width: 6px; height: 20px; background: #4a3520;
+	}
+	.foliage {
+		position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+		width: 24px; height: 24px;
+		background: #2d5a1e;
+		box-shadow:
+			4px 4px 0 #3a6e28,
+			-4px 4px 0 #3a6e28,
+			0 -4px 0 #3a6e28,
+			4px 0 0 #3a6e28,
+			-4px 0 0 #3a6e28,
+			0 4px 0 #3a6e28,
+			8px 8px 0 #4a8030,
+			-8px 8px 0 #4a8030,
+			0 -8px 0 #4a8030;
+	}
+
+	.t1 { bottom: 42%; left: 5%; }
+	.t2 { bottom: 40%; left: 18%; }
+	.t3 { bottom: 38%; right: 22%; }
+	.t4 { bottom: 41%; right: 6%; }
+	.t1 .foliage { width: 28px; height: 28px; }
+	.t1 .trunk { height: 26px; }
+
+	/* ─── Estación de tren ────────────────────── */
+	.station {
+		position: absolute;
+		bottom: 44%;
+		right: 12%;
+		width: 120px;
+		height: 80px;
+		z-index: 3;
+		pointer-events: none;
+	}
+
+	.station-body {
+		position: absolute;
+		bottom: 14px; left: 10px; right: 10px; height: 50px;
+		background: #8a6a3a;
+		box-shadow:
+			-4px 0 0 #6a4a2a,
+			4px 0 0 #6a4a2a,
+			0 -2px 0 #a08050,
+			inset 0 8px 0 #7a5a30,
+			inset 0 10px 0 #6a4a2a;
+	}
+
+	/* Ventanas de la estación */
+	.station-body::before {
+		content: '';
+		position: absolute; top: 12px; left: 8px; right: 8px;
+		height: 12px;
+		background:
+			linear-gradient(90deg, transparent 0, transparent 8px, #ffd700 8px, #ffd700 20px, transparent 20px, transparent 28px, #ffd700 28px, #ffd700 40px, transparent 40px);
+		opacity: 0.6;
+	}
+
+	.station-roof {
+		position: absolute;
+		top: 0; left: 0; right: 0; height: 16px;
+		background: #5a3a1a;
+		clip-path: polygon(5% 100%, 0% 0%, 100% 0%, 95% 100%);
+	}
+
+	.station-platform {
+		position: absolute;
+		bottom: 0; left: -10px; right: -10px; height: 6px;
+		background: #666;
+		box-shadow: 0 2px 0 #888;
+	}
+
+	/* Cartel BERAZATEGUI */
+	.station-sign {
+		position: absolute;
+		top: -18px; left: 50%; transform: translateX(-50%);
+		background: var(--orange);
+		padding: 3px 8px;
+		z-index: 4;
+		box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+		white-space: nowrap;
+	}
+
+	.sign-text {
+		font-family: 'VT323', monospace;
+		font-size: 0.7rem;
+		color: var(--arcade-black);
+		font-weight: 700;
+		letter-spacing: 0.15em;
+	}
+
+	/* ─── Ruta en perspectiva ─────────────────── */
+	.road {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 70%;
+		height: 44%;
+		background: #3a3a3a;
+		clip-path: polygon(30% 0%, 70% 0%, 85% 100%, 15% 100%);
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	/* Líneas de la ruta (divisoria central) */
+	.road-line {
+		position: absolute;
+		left: 50%; transform: translateX(-50%);
+		width: 4px;
+		background: repeating-linear-gradient(180deg, var(--orange) 0px, var(--orange) 10px, transparent 10px, transparent 20px);
+		opacity: 0.7;
+	}
+	.road-line.l1 { bottom: 0; height: 70%; }
+	.road-line.l2 { bottom: 65%; height: 35%; width: 3px; opacity: 0.4; }
+
+	/* ─── Speed lines ─────────────────────────── */
 	.hero-speed {
-		position: absolute; inset: 0; opacity: 0.3;
+		position: absolute; inset: 0; z-index: 5;
 		background: repeating-linear-gradient(
 			90deg,
-			rgba(245, 158, 11, 0.04) 0,
-			rgba(245, 158, 11, 0.04) 2px,
-			transparent 2px,
-			transparent 20px
+			rgba(255, 255, 255, 0.03) 0,
+			rgba(255, 255, 255, 0.03) 1px,
+			transparent 1px,
+			transparent 30px
 		);
-		background-size: 40px 100%;
-		animation: hero-speed-move 0.8s linear infinite;
+		background-size: 60px 100%;
+		animation: hero-speed-move 0.6s linear infinite;
+		pointer-events: none;
 	}
 
 	@keyframes hero-speed-move {
 		0% { background-position: 0 0; }
-		100% { background-position: 40px 0; }
+		100% { background-position: 60px 0; }
 	}
 
+	/* ─── Hero content ────────────────────────── */
 	.hero-content {
 		position: relative;
-		z-index: 1;
+		z-index: 10;
 		text-align: center;
 		padding: 2rem 1rem;
 		max-width: 800px;
@@ -205,13 +398,13 @@
 	.emblema {
 		width: 100px; height: auto; border-radius: 50%;
 		border: 3px solid var(--orange);
-		box-shadow: 0 0 20px rgba(245,158,11,0.3);
+		box-shadow: 0 0 20px rgba(245,158,11,0.5);
 	}
 
 	.hero-title { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
 	.title-line { display: block; }
-	.title-line:first-child { font-size: 3rem; color: var(--orange); text-shadow: 0 0 20px rgba(245,158,11,0.3); }
-	.subtitle { font-size: 1.25rem; color: var(--text-dim); font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0.2em; }
+	.title-line:first-child { font-size: 3rem; color: var(--orange); text-shadow: 0 0 20px rgba(245,158,11,0.5), 0 0 40px rgba(245,158,11,0.2); }
+	.subtitle { font-size: 1.25rem; color: var(--text-primary); font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0.2em; }
 	.hero-desc { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
 
 	.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
@@ -221,14 +414,16 @@
 		background: linear-gradient(135deg, var(--orange), var(--orange-glow));
 		color: var(--arcade-black); font-weight: 800; font-size: 1.1rem;
 		text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;
-		border-radius: 0.25rem; box-shadow: 0 0 20px rgba(245,158,11,0.3);
+		border: 2px solid var(--orange-border);
+		box-shadow: 3px 3px 0 0 var(--orange-border), 0 0 20px rgba(245,158,11,0.3);
 		transition: all 0.2s;
 	}
-	.btn-racing-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(245,158,11,0.5); }
+	.btn-racing-primary:hover { transform: translateY(-3px); box-shadow: 3px 3px 0 0 var(--orange), 0 0 30px rgba(245,158,11,0.5); }
 
 	.hero-stripe {
 		position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
-		background: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 10px, var(--arcade-black) 10px, var(--arcade-black) 20px);
+		background: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 10px, transparent 10px, transparent 20px);
+		z-index: 10;
 	}
 
 	/* ─── Section ─────────────────────────────── */

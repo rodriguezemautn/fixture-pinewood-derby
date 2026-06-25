@@ -1,8 +1,29 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 
 	let { children } = $props();
+
+	let theme = $state('dark');
+
+	onMount(() => {
+		const saved = localStorage.getItem('arcade-theme');
+		if (saved === 'light' || saved === 'dark') {
+			theme = saved;
+		}
+		applyTheme(theme);
+	});
+
+	function toggleTheme() {
+		theme = theme === 'dark' ? 'light' : 'dark';
+		localStorage.setItem('arcade-theme', theme);
+		applyTheme(theme);
+	}
+
+	function applyTheme(t: string) {
+		document.documentElement.setAttribute('data-theme', t);
+	}
 </script>
 
 <svelte:head>
@@ -23,6 +44,9 @@
 		</a>
 		<nav class="header-nav">
 			<a href="/admin/categorias" class="nav-btn">Admin</a>
+			<button class="theme-btn" onclick={toggleTheme} title="Cambiar tema">
+				{theme === 'dark' ? '☀️' : '🌙'}
+			</button>
 		</nav>
 	</div>
 	<div class="header-stripe"></div>
@@ -119,6 +143,23 @@
 		color: var(--arcade-black);
 		box-shadow: 2px 2px 0 0 var(--orange);
 		transform: translate(-1px, -1px);
+	}
+
+	.theme-btn {
+		padding: 0.35rem 0.6rem;
+		border: 2px solid var(--orange-border);
+		background: transparent;
+		cursor: pointer;
+		font-size: 1.1rem;
+		line-height: 1;
+		box-shadow: 2px 2px 0 0 var(--orange-border);
+		transition: all 0.15s ease;
+	}
+
+	.theme-btn:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: 2px 2px 0 0 var(--orange);
+		border-color: var(--orange);
 	}
 
 	.header-stripe {

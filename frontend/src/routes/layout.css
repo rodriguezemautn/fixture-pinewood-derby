@@ -5,42 +5,75 @@
    Paleta naranja retro + efectos pixel/CRT
    ═══════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════
+   TEMA OSCURO (default) — Arcade Racing
+   Alto contraste, fondos profundos, proyectable
+   ═══════════════════════════════════════════════════ */
 :root {
-	/* ═══════════════════════════════════════════════════
-	   Proyector-friendly: fondos más claros que #0A para
-	   que no se laven en proyectores. Se mantiene la
-	   estética arcade oscura pero con piso elevado.
-	   ═══════════════════════════════════════════════════ */
+	color-scheme: dark;
 
-	/* ─── Fondos (piso elevado para proyector) ─── */
-	--arcade-black:   #1A1F2E;  /* antes #0A0E17 — oscuro pero projectable */
-	--arcade-dark:    #232A3D;  /* antes #131A2E */
-	--arcade-surface: #2A3348;  /* antes #1E293B */
-	--arcade-card:    #303A50;  /* antes #243044 */
-	--arcade-hover:   #3A4660;  /* antes #2A3A50 */
+	--arcade-black:   #141824;
+	--arcade-dark:    #1C2233;
+	--arcade-surface: #242B3D;
+	--arcade-card:    #2A3348;
+	--arcade-hover:   #33405A;
 
-	/* ─── Naranja (más brillante para proyector) ─── */
-	--orange-glow:    #FBBF24;  /* antes #F59E0B — más brillante */
-	--orange:         #E07B0A;  /* antes #D97706 — un toque más vivo */
-	--orange-border:  #A85B0A;  /* antes #92400E — más visible */
+	--orange-glow:    #FBBF24;
+	--orange:         #E07B0A;
+	--orange-border:  #A85B0A;
 	--orange-dark:    #78350F;
 	--orange-dim:     #5A2D0E;
 
-	/* ─── Acentos (más brillantes para proyector) ─── */
-	--blue-neon:      #60A5FA;  /* antes #3B82F6 */
-	--red-race:       #EF4444;  /* antes #DC2626 */
+	--blue-neon:      #60A5FA;
+	--red-race:       #EF4444;
 	--red-race-light: #F87171;
-	--green-go:       #34D399;  /* antes #059669 */
+	--green-go:       #34D399;
 
-	/* ─── Texto (más contraste sobre fondos más claros) ─── */
-	--text-primary: #F0F4F8;  /* antes #E2E8F0 — más blanco */
-	--text-body:    #CED6E0;  /* antes #CBD5E1 */
-	--text-dim:     #8895A7;  /* antes #64748B — más claro y legible */
-	--text-muted:   #5C6A7D;  /* antes #475569 */
+	--text-primary: #F5F8FC;
+	--text-body:    #D8E0EA;
+	--text-dim:     #94A0B5;
+	--text-muted:   #6A768A;
 
-	/* ─── Bordes (más visibles sobre fondos más claros) ─── */
-	--border-color:  #3A4459;  /* antes #334155 */
-	--border-light:  #4A556D;  /* antes #475569 */
+	--border-color:  #3E4860;
+	--border-light:  #505A72;
+}
+
+/* ═══════════════════════════════════════════════════
+   TEMA CLARO — Naranja Retro suave
+   Fondo crema anaranjado, texto oscuro, vibrante
+   ═══════════════════════════════════════════════════ */
+[data-theme="light"] {
+	color-scheme: light;
+
+	--arcade-black:   #FFF5EB;
+	--arcade-dark:    #FFE8D0;
+	--arcade-surface: #FFFFFF;
+	--arcade-card:    #FFFAF5;
+	--arcade-hover:   #FFF0E0;
+
+	--orange-glow:    #F59E0B;
+	--orange:         #D97706;
+	--orange-border:  #B85C00;
+	--orange-dark:    #92400E;
+	--orange-dim:     #78350F;
+
+	--blue-neon:      #2563EB;
+	--red-race:       #DC2626;
+	--red-race-light: #EF4444;
+	--green-go:       #059669;
+
+	--text-primary: #1A1F2E;
+	--text-body:    #2E3648;
+	--text-dim:     #5C6A7D;
+	--text-muted:   #8895A7;
+
+	--border-color:  #D4C5B0;
+	--border-light:  #E0D5C5;
+}
+
+/* Transición suave al cambiar tema */
+html {
+	transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ─── Reset ──────────────────────────────────── */

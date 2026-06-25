@@ -20,6 +20,22 @@
 		goto('/login');
 	}
 
+	function toggleTheme() {
+		if (!browser) return;
+		const current = document.documentElement.getAttribute('data-theme') || 'dark';
+		const next = current === 'dark' ? 'light' : 'dark';
+		document.documentElement.setAttribute('data-theme', next);
+		localStorage.setItem('arcade-theme', next);
+	}
+
+	// Inicializar tema si ya estaba guardado
+	if (browser) {
+		const saved = localStorage.getItem('arcade-theme');
+		if (saved === 'light' || saved === 'dark') {
+			document.documentElement.setAttribute('data-theme', saved);
+		}
+	}
+
 	// Breadcrumbs
 	const breadcrumbs = $derived.by(() => {
 		const path = $page.url.pathname;
@@ -53,6 +69,7 @@
 				<a href="/admin/categorias" class="admin-link">Categorías</a>
 				<a href="/carreras" class="admin-link">Ver Carreras</a>
 			</div>
+			<button class="btn-theme" onclick={toggleTheme} title="Cambiar tema">🎨</button>
 			<button class="btn-logout" onclick={logout}>Salir</button>
 		</div>
 		<div class="admin-nav-stripe"></div>
@@ -129,6 +146,23 @@
 		color: var(--orange);
 		border-color: var(--orange-border);
 		box-shadow: 1.5px 1.5px 0 0 var(--orange-border);
+	}
+
+	.btn-theme {
+		padding: 0.35rem 0.5rem;
+		background: transparent;
+		border: 1.5px solid var(--orange-border);
+		color: var(--orange);
+		cursor: pointer;
+		font-size: 0.85rem;
+		line-height: 1;
+		box-shadow: 1.5px 1.5px 0 0 var(--orange-border);
+		transition: all 0.15s ease;
+	}
+	.btn-theme:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: 2px 2px 0 0 var(--orange);
+		border-color: var(--orange);
 	}
 
 	.btn-logout {
