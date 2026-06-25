@@ -24,6 +24,8 @@ func (h *fixtureHandler) Register(r Router) {
 	r.Get("/api/categorias/{categoriaId}/posiciones", h.Posiciones)
 	r.Post("/api/carreras/{heatId}/resultado", h.RegistrarResultado)
 	r.Post("/api/categorias/{categoriaId}/final", h.GenerarFinal)
+	r.Post("/api/categorias/{categoriaId}/archivar", h.Archivar)
+	r.Get("/api/categorias/{categoriaId}/archivos", h.GetArchivos)
 }
 
 func (h *fixtureHandler) Generar(w http.ResponseWriter, r *http.Request) {
@@ -93,4 +95,24 @@ func (h *fixtureHandler) GenerarFinal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusCreated, final)
+}
+
+func (h *fixtureHandler) Archivar(w http.ResponseWriter, r *http.Request) {
+	if err := h.svc.Archivar(chi.URLParam(r, "categoriaId")); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *fixtureHandler) GetArchivos(w http.ResponseWriter, r *http.Request) {
+	archivos, err := h.svc.GetArchivos(chi.URLParam(r, "categoriaId"))
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if archivos == nil {
+		archivos = []map[string]any{}
+	}
+	writeJSON(w, http.StatusOK, archivos)
 }

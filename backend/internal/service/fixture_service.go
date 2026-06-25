@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ema/fixture/backend/internal/domain"
@@ -15,6 +16,8 @@ type FixtureService interface {
 	RegistrarResultado(heatID string, ordenLlegada []string) error
 	ObtenerPosiciones(categoriaID string) ([]domain.Standing, error)
 	GenerarFinal(categoriaID string) (*domain.Heat, error)
+	Archivar(categoriaID string) error
+	GetArchivos(categoriaID string) ([]map[string]any, error)
 }
 
 type fixtureService struct {
@@ -129,4 +132,56 @@ func (s *fixtureService) GenerarFinal(categoriaID string) (*domain.Heat, error) 
 
 	s.fixtureRepo.SetFixtureEstado(f.ID, "finalizado")
 	return final, nil
+}
+
+func (s *fixtureService) Archivar(categoriaID string) error {
+	// Obtener posiciones finales
+	posiciones, err := s.ObtenerPosiciones(categoriaID)
+	if err != nil {
+		return fmt.Errorf("obtener posiciones: %w", err)
+	}
+	if len(posiciones) == 0 {
+		return fmt.Errorf("no hay posiciones para archivar")
+	}
+
+	// Obtener categoría
+	f, err := s.fixtureRepo.GetByCategoria(categoriaID)
+	if err != nil || f == nil {
+		return fmt.Errorf("no hay fixture activo")
+	}
+
+	// Obtener nombre de categoría
+	autos, err := s.fixtureRepo.GetAllAutos(categoriaID)
+	if err != nil {
+		return fmt.Errorf("obtener autos: %w", err)
+	}
+
+	// Buscar nombre de categoría desde cualquier auto (todos tienen misma categoria_id)
+	catNombre := categoriaID
+	for _, a := range autos {
+		if a.CategoriaID == categoriaID {
+			// Intentar obtener el nombre de la categoría
+			break
+		}
+	}
+
+	// Convertir posiciones a JSON
+	resultadosB, _ := json.Marshal(posiciones)
+
+	// Guardar archivo
+	winner := posiciones[0]
+	if err := s.fixtureRepo.ArchivarCompetencia(
+		categoriaID, catNombre,
+		winner.AutoID, winner.Nombre, winner.Numero,
+		string(resultadosB),
+	); err != nil {
+		return fmt.Errorf("archivar: %w", err)
+	}
+
+	// Limpiar fixture para nueva competencia
+	return s.fixtureRepo.LimpiarFixture(categoriaID)
+}
+
+func (s *fixtureService) GetArchivos(categoriaID string) ([]map[string]any, error) {
+	return s.fixtureRepo.GetArchivosByCategoria(categoriaID)
 }

@@ -16,13 +16,40 @@
 
 	let rondas = $state(3);
 	let actionLoading = $state(false);
+	let archivos = $state<any[]>([]);
+	let showArchivos = $state(false);
 
 	// Estado para registro de resultado
 	let resultadoState = $state<Record<string, string[]>>({});
 
 	onMount(() => {
 		cargarDatos();
+		cargarArchivos();
 	});
+
+	async function cargarArchivos() {
+		try {
+			const res = await fetch(`/api/categorias/${categoriaId}/archivos`);
+			if (res.ok) archivos = await res.json();
+		} catch {}
+	}
+
+	async function archivarCompetencia() {
+		if (!confirm('¿Archivar esta competencia y empezar una nueva? Se borrarán los heats actuales.')) return;
+		actionLoading = true;
+		error = '';
+		try {
+			const res = await apiFetch(`/api/categorias/${categoriaId}/archivar`, { method: 'POST' });
+			if (!res.ok) {
+				const d = await res.json();
+				error = d.error || 'Error al archivar';
+				return;
+			}
+			await cargarDatos();
+			await cargarArchivos();
+		} catch { error = 'Error de conexión'; }
+		finally { actionLoading = false; }
+	}
 
 	async function cargarDatos() {
 		loading = true;
@@ -274,6 +301,31 @@
 					<button class="btn btn-racing" onclick={generarFinal} disabled={actionLoading}>🏆 Generar Carrera Final</button>
 				</div>
 			{/if}
+			{#if fixture?.estado === 'finalizado'}
+				<div class="final-section" in:fade>
+					<button class="btn btn-archive" onclick={archivarCompetencia} disabled={actionLoading}>📦 Archivar Competencia</button>
+				</div>
+			{/if}
+		</section>
+	{/if}
+
+	<!-- Archivos -->
+	{#if archivos.length > 0}
+		<section class="card" in:fade>
+			<div class="card-header">
+				<h2>📦 Competencias Anteriores</h2>
+				<button class="btn btn-sm" onclick={() => showArchivos = !showArchivos}>{showArchivos ? 'Ocultar' : 'Ver'}</button>
+			</div>
+			{#if showArchivos}
+				<div class="archivos-list">
+					{#each archivos as archivo (archivo.id)}
+						<div class="archivo-card">
+							<span class="archivo-fecha">{archivo.fecha?.split(' ')[0] || archivo.fecha}</span>
+							<span class="archivo-winner">🏆 #{archivo.winner_numero} {archivo.winner_nombre}</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</section>
 	{/if}
 
@@ -367,6 +419,14 @@
 	.pos-select:focus { outline: none; border-color: var(--racing-amber); }
 
 	.final-section { margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--racing-border); }
+
+	.btn-archive { padding: 0.5rem 1.5rem; background: #334155; color: #e2e8f0; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.2s; }
+	.btn-archive:hover { background: #475569; }
+
+	.archivos-list { display: flex; flex-direction: column; gap: 0.5rem; }
+	.archivo-card { display: flex; justify-content: space-between; align-items: center; background: var(--racing-black); border: 1px solid var(--racing-border); border-radius: 0.35rem; padding: 0.75rem 1rem; }
+	.archivo-fecha { color: var(--racing-text-dim); font-size: 0.85rem; }
+	.archivo-winner { color: var(--racing-amber); font-weight: 600; font-size: 0.9rem; }
 
 	/* Standings table */
 	.table-container { overflow-x: auto; }

@@ -79,6 +79,19 @@ func Migrate(db *sql.DB) error {
 			FOREIGN KEY (heat_id) REFERENCES heats(id),
 			FOREIGN KEY (auto_id) REFERENCES autos(id)
 		)`,
+		`ALTER TABLE heats ADD COLUMN registrado_at TEXT NOT NULL DEFAULT ''`,
+		`CREATE TABLE IF NOT EXISTS archivos_carrera (
+			id TEXT PRIMARY KEY,
+			categoria_id TEXT NOT NULL,
+			categoria_nombre TEXT NOT NULL,
+			fecha TEXT NOT NULL,
+			winner_id TEXT NOT NULL DEFAULT '',
+			winner_nombre TEXT NOT NULL DEFAULT '',
+			winner_numero INTEGER NOT NULL DEFAULT 0,
+			resultados TEXT NOT NULL DEFAULT '[]',
+			created_at TEXT NOT NULL DEFAULT (datetime('now')),
+			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+		)`,
 	}
 
 	for i, m := range migrations {

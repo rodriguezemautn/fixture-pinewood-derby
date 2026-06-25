@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/google/uuid"
+
 	"github.com/ema/fixture/backend/internal/domain"
 )
 
@@ -85,7 +87,8 @@ func (r *FixtureRepository) SaveHeat(heat *domain.Heat, fixtureID string) error 
 
 func (r *FixtureRepository) UpdateHeatResult(heatID string, ordenLlegada []string) error {
 	b, _ := json.Marshal(ordenLlegada)
-	res, err := r.db.Exec(`UPDATE heats SET completado = 1, orden_llegada = ? WHERE id = ?`,
+	res, err := r.db.Exec(
+		`UPDATE heats SET completado = 1, orden_llegada = ?, registrado_at = datetime('now') WHERE id = ?`,
 		string(b), heatID)
 	if err != nil {
 		return fmt.Errorf("update heat: %w", err)
@@ -252,10 +255,60 @@ func (r *FixtureRepository) GetAllAutos(categoriaIDs ...string) (map[string]*dom
 	autos := make(map[string]*domain.Auto)
 	for rows.Next() {
 		var a domain.Auto
-		if err := rows.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt); err != nil {
+		if err := rows.Scan(&a.ID, &a.CategoriaID, &a.Numero, &a.Nombre, &a.Creador, &a.Edad, &a.Peso, &a.FotoURL, &a.CreatedAt, &a.UpdatedAt); err != nil {
 			return nil, err
 		}
 		autos[a.ID] = &a
 	}
 	return autos, rows.Err()
+}
+
+// ─── Archivado ────────────────────────────────────────────────
+
+// ArchivarCompetencia guarda los resultados finales y resetea el fixture.
+func (r *FixtureRepository) ArchivarCompetencia(categoriaID, categoriaNombre, winnerID, winnerNombre string, winnerNumero int, resultadosJSON string) error {
+	id := uuid.New().String()
+	_, err := r.db.Exec(
+		`INSERT INTO archivos_carrera (id, categoria_id, categoria_nombre, fecha, winner_id, winner_nombre, winner_numero, resultados)
+		 VALUES (?, ?, ?, datetime('now'), ?, ?, ?, ?)`,
+		id, categoriaID, categoriaNombre, winnerID, winnerNombre, winnerNumero, resultadosJSON)
+	return err
+}
+
+// GetArchivosByCategoria retorna los archivos de una categoría.
+func (r *FixtureRepository) GetArchivosByCategoria(categoriaID string) ([]map[string]any, error) {
+	rows, err := r.db.Query(
+		`SELECT id, categoria_nombre, fecha, winner_nombre, winner_numero FROM archivos_carrera
+		 WHERE categoria_id = ? ORDER BY created_at DESC`, categoriaID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var archivos []map[string]any
+	for rows.Next() {
+		var id, nombre, fecha, wNombre string
+		var wNumero int
+		if err := rows.Scan(&id, &nombre, &fecha, &wNombre, &wNumero); err != nil {
+			return nil, err
+		}
+		archivos = append(archivos, map[string]any{
+			"id": id, "categoria_nombre": nombre, "fecha": fecha,
+			"winner_nombre": wNombre, "winner_numero": wNumero,
+		})
+	}
+	return archivos, nil
+}
+
+// LimpiarFixture elimina heats, heat_autos y fixture de una categoría.
+func (r *FixtureRepository) LimpiarFixture(categoriaID string) error {
+	f, err := r.GetByCategoria(categoriaID)
+	if err != nil || f == nil {
+		return err
+	}
+	// Borrar heat_autos, heats, y fixture
+	r.db.Exec(`DELETE FROM heat_autos WHERE heat_id IN (SELECT id FROM heats WHERE fixture_id = ?)`, f.ID)
+	r.db.Exec(`DELETE FROM heats WHERE fixture_id = ?`, f.ID)
+	r.db.Exec(`DELETE FROM fixtures WHERE id = ?`, f.ID)
+	return nil
 }
