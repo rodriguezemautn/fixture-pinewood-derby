@@ -36,20 +36,10 @@ export default defineConfig({
 	],
 	server: {
 		host: true,
-		allowedHosts: true,
 		proxy: {
-			'/api': {
-				target: 'http://localhost:8080',
-				changeOrigin: true
-			},
-			'/health': {
-				target: 'http://localhost:8080',
-				changeOrigin: true
-			},
-			'/uploads': {
-				target: 'http://localhost:8080',
-				changeOrigin: true
-			}
+			'/api': 'http://localhost:8080',
+			'/health': 'http://localhost:8080',
+			'/uploads': 'http://localhost:8080'
 		}
 	}
 });
