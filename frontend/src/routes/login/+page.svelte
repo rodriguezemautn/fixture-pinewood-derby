@@ -87,8 +87,8 @@
 	}
 
 	.login-card {
-		background: var(--racing-gray);
-		border: 1px solid var(--racing-amber);
+		background: var(--arcade-surface);
+		border: 1px solid var(--orange);
 		border-radius: 0.75rem;
 		padding: 2.5rem;
 		width: 100%;
@@ -103,18 +103,18 @@
 		width: 80px;
 		height: 80px;
 		border-radius: 50%;
-		border: 3px solid var(--racing-amber);
+		border: 3px solid var(--orange);
 		margin-bottom: 1rem;
 	}
 
 	h1 {
-		color: var(--racing-amber);
+		color: var(--orange);
 		font-size: 1.5rem;
 		margin: 0;
 	}
 
 	.login-sub {
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		font-size: 0.9rem;
 		margin: 0.5rem 0 0;
 	}
@@ -125,17 +125,17 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.35rem;
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		font-size: 0.85rem;
 		text-align: left;
 	}
 
 	input {
 		padding: 0.75rem;
-		border: 1px solid var(--racing-border);
+		border: 1px solid var(--border-color);
 		border-radius: 0.35rem;
-		background: var(--racing-black);
-		color: var(--racing-text);
+		background: var(--arcade-black);
+		color: var(--text-primary);
 		font-size: 1.25rem;
 		letter-spacing: 0.5em;
 		text-align: center;
@@ -143,7 +143,7 @@
 
 	input:focus {
 		outline: none;
-		border-color: var(--racing-amber);
+		border-color: var(--orange);
 		box-shadow: 0 0 10px rgba(245,158,11,0.2);
 	}
 
@@ -158,8 +158,8 @@
 
 	.btn-login {
 		padding: 0.75rem;
-		background: linear-gradient(135deg, var(--racing-amber), var(--racing-amber-light));
-		color: var(--racing-black);
+		background: linear-gradient(135deg, var(--orange), var(--orange-glow));
+		color: var(--arcade-black);
 		font-weight: 800;
 		font-size: 1rem;
 		border: none;
@@ -174,10 +174,10 @@
 	.back-link {
 		display: block;
 		margin-top: 1.5rem;
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		text-decoration: none;
 		font-size: 0.85rem;
 	}
 
-	.back-link:hover { color: var(--racing-amber); }
+	.back-link:hover { color: var(--orange); }
 </style>

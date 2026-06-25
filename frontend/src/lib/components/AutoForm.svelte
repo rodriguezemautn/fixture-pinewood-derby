@@ -168,55 +168,43 @@
 	}
 
 	.modal {
-		background: #1e293b;
-		border: 1px solid #f59e0b;
-		border-radius: 0.5rem;
+		background: var(--arcade-surface);
+		border: 2px solid var(--orange-border);
 		padding: 2rem;
 		width: 100%;
 		max-width: 500px;
+		box-shadow: 4px 4px 0 0 var(--orange-border);
 	}
 
-	h2 { color: #f59e0b; margin: 0 0 1.5rem 0; }
+	h2 { color: var(--orange); margin: 0 0 1.5rem 0; font-family: 'VT323', monospace; font-size: 1.3rem; letter-spacing: 0.05em; }
 	form { display: flex; flex-direction: column; gap: 1rem; }
 
 	label {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
-		color: #94a3b8;
+		color: var(--text-dim);
 		font-size: 0.875rem;
 	}
 
 	input {
 		padding: 0.5rem;
-		border: 1px solid #334155;
-		border-radius: 0.25rem;
-		background: #0f172a;
-		color: #e2e8f0;
-		font-size: 1rem;
+		border: 1.5px solid var(--border-color);
+		background: var(--arcade-black);
+		color: var(--text-primary);
+		font-family: 'VT323', monospace;
+		font-size: 1.05rem;
+		outline: none;
 	}
 
-	input:focus { outline: none; border-color: #f59e0b; }
+	input:focus { border-color: var(--orange); box-shadow: 0 0 8px rgba(217, 119, 6, 0.15); }
 	input[type="file"] { font-size: 0.85rem; padding: 0.4rem; }
 
-	.file-hint { color: #64748b; font-size: 0.75rem; }
+	.file-hint { color: var(--text-dim); font-size: 0.75rem; }
 
 	.preview { text-align: center; }
-	.preview-img { max-width: 150px; max-height: 150px; border-radius: 0.25rem; border: 1px solid #334155; }
+	.preview-img { max-width: 150px; max-height: 150px; border: 1.5px solid var(--border-color); }
 
-	.error { color: #ef4444; font-size: 0.875rem; margin: 0; }
+	.error { color: var(--red-race-light); font-size: 0.875rem; margin: 0; }
 	.buttons { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
-
-	.btn {
-		padding: 0.5rem 1.5rem;
-		border: none;
-		border-radius: 0.25rem;
-		cursor: pointer;
-		font-weight: 600;
-		font-size: 0.875rem;
-	}
-
-	.btn-cancel { background: #334155; color: #e2e8f0; }
-	.btn-save { background: #f59e0b; color: #0f172a; }
-	.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>

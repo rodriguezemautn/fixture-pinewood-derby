@@ -55,10 +55,10 @@
 </div>
 
 <style>
-	.page { min-height: 100vh; background: var(--racing-black); }
+	.page { min-height: 100vh; background: var(--arcade-black); }
 
 	.page-header {
-		background: linear-gradient(180deg, #0a0f1a, #0f172a);
+		background: linear-gradient(180deg, var(--arcade-black), var(--arcade-dark));
 		padding: 1rem;
 	}
 
@@ -68,22 +68,22 @@
 	}
 
 	.logo { height: 48px; width: auto; border-radius: 0.25rem; }
-	h1 { color: var(--racing-amber); font-size: 1.5rem; margin: 0; }
-	.subtitle { color: var(--racing-text-dim); font-size: 0.8rem; margin: 0; }
+	h1 { color: var(--orange); font-size: 1.5rem; margin: 0; }
+	.subtitle { color: var(--text-dim); font-size: 0.8rem; margin: 0; }
 
 	.header-stripe {
 		height: 3px; margin-top: 0.75rem;
-		background: repeating-linear-gradient(90deg, var(--racing-amber) 0, var(--racing-amber) 8px, transparent 8px, transparent 16px);
+		background: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 8px, transparent 8px, transparent 16px);
 	}
 
 	.main-content { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
 
-	.loading { text-align: center; color: var(--racing-text-dim); padding: 3rem; }
+	.loading { text-align: center; color: var(--text-dim); padding: 3rem; }
 
 	.empty { text-align: center; padding: 4rem 1rem; }
 	.empty-img { width: 100px; border-radius: 50%; opacity: 0.4; margin-bottom: 1rem; }
-	.empty h2 { color: var(--racing-text-dim); }
-	.empty p { color: var(--racing-text-dim); font-size: 0.9rem; }
+	.empty h2 { color: var(--text-dim); }
+	.empty p { color: var(--text-dim); font-size: 0.9rem; }
 
 	.categorias-grid {
 		display: grid;
@@ -93,20 +93,20 @@
 
 	.categoria-card {
 		display: flex; flex-direction: column; gap: 0.25rem;
-		background: var(--racing-gray); border: 1px solid var(--racing-border);
+		background: var(--arcade-surface); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 1.5rem;
 		text-decoration: none; transition: all 0.2s;
 	}
 
 	.categoria-card:hover {
-		border-color: var(--racing-amber);
+		border-color: var(--orange);
 		transform: translateY(-3px);
 		box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 	}
 
-	.cat-nombre { color: var(--racing-amber); font-weight: 700; font-size: 1.1rem; }
-	.cat-edades { color: var(--racing-text-dim); font-size: 0.85rem; }
-	.cat-cta { margin-top: 0.5rem; color: var(--racing-amber); font-size: 0.85rem; font-weight: 600; }
+	.cat-nombre { color: var(--orange); font-weight: 700; font-size: 1.1rem; }
+	.cat-edades { color: var(--text-dim); font-size: 0.85rem; }
+	.cat-cta { margin-top: 0.5rem; color: var(--orange); font-size: 0.85rem; font-weight: 600; }
 
 	@media (max-width: 640px) { .categorias-grid { grid-template-columns: 1fr; } }
 </style>

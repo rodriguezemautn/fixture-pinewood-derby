@@ -10,8 +10,8 @@
 	<title>Fixture — Pinewood Derby D15</title>
 </svelte:head>
 
-<!-- ════ HEADER RACING ════ -->
-<header class="racing-header">
+<!-- ════ HEADER ARCADE RACING ════ -->
+<header class="arcade-header">
 	<div class="header-inner">
 		<a href="/" class="logo-link">
 			<img
@@ -19,13 +19,14 @@
 				alt="Pinewood Derby"
 				class="logo-img"
 			/>
-			<span class="logo-text">Fixture D15</span>
+			<span class="logo-text font-pixel">Fixture D15</span>
 		</a>
 		<nav class="header-nav">
 			<a href="/admin/categorias" class="nav-btn">Admin</a>
 		</nav>
 	</div>
 	<div class="header-stripe"></div>
+	<div class="header-scanline"></div>
 </header>
 
 <!-- ════ MAIN CONTENT ════ -->
@@ -40,13 +41,28 @@
 </footer>
 
 <style>
-	/* ─── Header ─────────────────────────────── */
-	.racing-header {
-		background: linear-gradient(180deg, #0a0f1a 0%, #0f172a 100%);
-		border-bottom: 2px solid var(--racing-amber);
+	/* ─── Header Arcade ───────────────────────── */
+	.arcade-header {
+		background: linear-gradient(180deg, var(--arcade-black) 0%, var(--arcade-dark) 100%);
+		border-bottom: 2px solid var(--orange);
 		position: sticky;
 		top: 0;
 		z-index: 50;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.header-scanline {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: repeating-linear-gradient(
+			0deg,
+			transparent 0,
+			transparent 2px,
+			rgba(0, 0, 0, 0.12) 2px,
+			rgba(0, 0, 0, 0.12) 4px
+		);
 	}
 
 	.header-inner {
@@ -56,6 +72,8 @@
 		padding: 0.5rem 1rem;
 		max-width: 1200px;
 		margin: 0 auto;
+		position: relative;
+		z-index: 1;
 	}
 
 	.logo-link {
@@ -68,15 +86,14 @@
 	.logo-img {
 		height: 40px;
 		width: auto;
-		border-radius: 0.25rem;
+		image-rendering: pixelated;
+		border: 1.5px solid var(--orange-border);
 	}
 
 	.logo-text {
-		font-family: 'Black Ops One', sans-serif;
-		font-size: 1.25rem;
-		color: var(--racing-amber);
+		font-size: 0.85rem;
+		color: var(--orange);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
 	}
 
 	.header-nav {
@@ -85,29 +102,31 @@
 	}
 
 	.nav-btn {
-		padding: 0.4rem 1rem;
-		border: 1px solid var(--racing-amber);
-		border-radius: 0.25rem;
-		color: var(--racing-amber);
+		padding: 0.4rem 0.9rem;
+		border: 2px solid var(--orange-border);
+		color: var(--orange);
 		text-decoration: none;
-		font-weight: 600;
-		font-size: 0.875rem;
+		font-family: 'VT323', monospace;
+		font-size: 1rem;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		transition: all 0.2s;
+		letter-spacing: 0.08em;
+		transition: all 0.15s ease;
+		box-shadow: 2px 2px 0 0 var(--orange-border);
 	}
 
 	.nav-btn:hover {
-		background: var(--racing-amber);
-		color: var(--racing-black);
+		background: var(--orange);
+		color: var(--arcade-black);
+		box-shadow: 2px 2px 0 0 var(--orange);
+		transform: translate(-1px, -1px);
 	}
 
 	.header-stripe {
 		height: 3px;
 		background: repeating-linear-gradient(
 			90deg,
-			var(--racing-amber) 0,
-			var(--racing-amber) 8px,
+			var(--orange) 0,
+			var(--orange) 8px,
 			transparent 8px,
 			transparent 16px
 		);
@@ -120,19 +139,20 @@
 
 	/* ─── Footer ─────────────────────────────── */
 	.racing-footer {
-		background: var(--racing-dark);
+		background: var(--arcade-dark);
 		text-align: center;
 		padding: 1.5rem 1rem;
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		font-size: 0.8rem;
+		border-top: 1px solid var(--border-color);
 	}
 
 	.footer-stripe {
 		height: 2px;
 		background: repeating-linear-gradient(
 			90deg,
-			var(--racing-red) 0,
-			var(--racing-red) 6px,
+			var(--red-race) 0,
+			var(--red-race) 6px,
 			transparent 6px,
 			transparent 12px
 		);
@@ -140,7 +160,7 @@
 	}
 
 	@media (max-width: 640px) {
-		.logo-text { font-size: 1rem; }
+		.logo-text { font-size: 0.7rem; }
 		.logo-img { height: 32px; }
 	}
 </style>

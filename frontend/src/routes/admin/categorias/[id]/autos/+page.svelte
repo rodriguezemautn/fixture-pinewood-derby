@@ -325,33 +325,33 @@
 	.nav-links { margin-top: 1.5rem; }
 
 	/* Competencias */
-	.comp-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--racing-amber); }
+	.comp-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--orange); }
 
 	.comp-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
-	.comp-header h2 { color: var(--racing-amber); font-size: 1.25rem; margin: 0; }
+	.comp-header h2 { color: var(--orange); font-size: 1.25rem; margin: 0; }
 
 	.comp-create { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
-	.rondas-label { display: flex; align-items: center; gap: 0.3rem; color: var(--racing-text-dim); font-size: 0.85rem; }
-	.rondas-input { width: 60px; padding: 0.35rem; border: 1px solid var(--racing-border); border-radius: 0.25rem; background: var(--racing-black); color: var(--racing-text); text-align: center; }
-	.rondas-input:focus { outline: none; border-color: var(--racing-amber); }
+	.rondas-label { display: flex; align-items: center; gap: 0.3rem; color: var(--text-dim); font-size: 0.85rem; }
+	.rondas-input { width: 60px; padding: 0.35rem; border: 1px solid var(--border-color); border-radius: 0.25rem; background: var(--arcade-black); color: var(--text-primary); text-align: center; }
+	.rondas-input:focus { outline: none; border-color: var(--orange); }
 
-	.comp-hint { color: var(--racing-text-dim); font-size: 0.9rem; text-align: center; padding: 2rem; }
+	.comp-hint { color: var(--text-dim); font-size: 0.9rem; text-align: center; padding: 2rem; }
 
 	.comp-list { display: flex; flex-direction: column; gap: 0.5rem; }
 
 	.comp-card {
 		display: flex; justify-content: space-between; align-items: center;
-		background: var(--racing-dark); border: 1px solid var(--racing-border);
+		background: var(--arcade-dark); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 1rem 1.25rem; text-decoration: none;
 		transition: all 0.2s;
 	}
-	.comp-card:hover { border-color: var(--racing-amber); transform: translateX(4px); }
+	.comp-card:hover { border-color: var(--orange); transform: translateX(4px); }
 	.comp-card.finalizada { opacity: 0.7; }
-	.comp-card.finalizada:hover { border-color: var(--racing-text-dim); opacity: 1; }
+	.comp-card.finalizada:hover { border-color: var(--text-dim); opacity: 1; }
 
 	.comp-info { display: flex; flex-direction: column; gap: 0.15rem; }
-	.comp-nombre { color: var(--racing-amber); font-weight: 600; }
-	.comp-meta { color: var(--racing-text-dim); font-size: 0.8rem; }
+	.comp-nombre { color: var(--orange); font-weight: 600; }
+	.comp-meta { color: var(--text-dim); font-size: 0.8rem; }
 	.comp-estado { font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
 </style>

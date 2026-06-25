@@ -19,7 +19,7 @@
 				id: i,
 				x: Math.random() * 100,
 				delay: Math.random() * 2,
-				color: ['#f59e0b', '#ef4444', '#059669', '#3b82f6', '#8b5cf6', '#ec4899'][Math.floor(Math.random() * 6)],
+				color: [		'#D97706', '#DC2626', '#059669', '#3B82F6', '#8B5CF6', '#EC4899'][Math.floor(Math.random() * 6)],
 				size: Math.random() * 8 + 4
 			}));
 		} else {
@@ -68,7 +68,7 @@
 	.celebration-overlay {
 		position: fixed;
 		inset: 0;
-		background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0f1a 70%);
+		background: radial-gradient(ellipse at center, var(--arcade-dark) 0%, var(--arcade-black) 70%);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -101,7 +101,7 @@
 	}
 
 	.celebration-title {
-		color: var(--racing-amber);
+		color: var(--orange);
 		font-size: 4rem;
 		margin: 0 0 1rem 0;
 		text-shadow: 0 0 30px rgba(245,158,11,0.5);
@@ -118,7 +118,7 @@
 	.winner-numero {
 		font-size: 3rem;
 		font-weight: 900;
-		color: var(--racing-amber);
+		color: var(--orange);
 	}
 
 	.winner-name {
@@ -128,15 +128,15 @@
 	}
 
 	.celebration-sub {
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		font-size: 1.1rem;
 		margin-bottom: 2rem;
 	}
 
 	.btn-close {
 		padding: 0.75rem 2rem;
-		background: var(--racing-amber);
-		color: var(--racing-black);
+		background: var(--orange);
+		color: var(--arcade-black);
 		border: none;
 		border-radius: 0.25rem;
 		font-weight: 700;

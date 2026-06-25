@@ -453,24 +453,24 @@
 <style>
 	.page { max-width: 1000px; margin: 0 auto; }
 	.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
-	h1 { color: var(--racing-amber); font-size: 1.75rem; margin: 0.5rem 0 0 0; }
+	h1 { color: var(--orange); font-size: 1.75rem; margin: 0.5rem 0 0 0; }
 	.back-link { color: #64748b; text-decoration: none; font-size: 0.875rem; }
-	.back-link:hover { color: var(--racing-amber); }
+	.back-link:hover { color: var(--orange); }
 	.loading { text-align: center; color: #64748b; padding: 3rem; }
 
-	.card { background: var(--racing-gray); border: 1px solid var(--racing-border); border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+	.card { background: var(--arcade-surface); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
 	.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-	h2 { color: var(--racing-amber); margin: 0 0 1rem 0; font-size: 1.25rem; }
+	h2 { color: var(--orange); margin: 0 0 1rem 0; font-size: 1.25rem; }
 	.card h2 { margin: 0 0 1rem 0; }
-	.desc { color: var(--racing-text-dim); margin-bottom: 1rem; }
+	.desc { color: var(--text-dim); margin-bottom: 1rem; }
 	.form-row { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
 	label { display: flex; flex-direction: column; gap: 0.25rem; color: #94a3b8; font-size: 0.875rem; }
-	.input { padding: 0.5rem; border: 1px solid var(--racing-border); border-radius: 0.25rem; background: var(--racing-black); color: var(--racing-text); font-size: 1rem; }
-	.input:focus { outline: none; border-color: var(--racing-amber); }
+	.input { padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.25rem; background: var(--arcade-black); color: var(--text-primary); font-size: 1rem; }
+	.input:focus { outline: none; border-color: var(--orange); }
 
 	.btn { padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.2s; }
-	.btn-primary { background: var(--racing-amber); color: var(--racing-black); }
-	.btn-primary:hover { background: var(--racing-amber-light); }
+	.btn-primary { background: var(--orange); color: var(--arcade-black); }
+	.btn-primary:hover { background: var(--orange-glow); }
 	.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 	.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; background: #334155; color: #e2e8f0; }
 	.btn-sm:hover { background: #475569; }
@@ -479,72 +479,72 @@
 	.header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
 	.comp-select {
-		padding: 0.4rem 0.5rem; border: 1px solid var(--racing-border); border-radius: 0.25rem;
-		background: var(--racing-dark); color: var(--racing-text); font-size: 0.85rem;
+		padding: 0.4rem 0.5rem; border: 1px solid var(--border-color); border-radius: 0.25rem;
+		background: var(--arcade-dark); color: var(--text-primary); font-size: 0.85rem;
 	}
-	.comp-select:focus { outline: none; border-color: var(--racing-amber); }
+	.comp-select:focus { outline: none; border-color: var(--orange); }
 
 	.comp-status { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem; margin-bottom: 1rem; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 0.35rem; flex-wrap: wrap; }
-	.comp-status.finalizada { background: rgba(100,116,139,0.1); border-color: var(--racing-border); }
+	.comp-status.finalizada { background: rgba(100,116,139,0.1); border-color: var(--border-color); }
 	.comp-badge { font-weight: 700; font-size: 0.85rem; }
-	.comp-readonly { color: var(--racing-text-dim); font-size: 0.8rem; }
-	.btn-racing { background: linear-gradient(135deg, var(--racing-amber), var(--racing-amber-light)); color: var(--racing-black); font-weight: 800; font-size: 1.1rem; padding: 0.75rem 2rem; border: none; border-radius: 0.25rem; cursor: pointer; }
+	.comp-readonly { color: var(--text-dim); font-size: 0.8rem; }
+	.btn-racing { background: linear-gradient(135deg, var(--orange), var(--orange-glow)); color: var(--arcade-black); font-weight: 800; font-size: 1.1rem; padding: 0.75rem 2rem; border: none; border-radius: 0.25rem; cursor: pointer; }
 	.btn-racing:hover { transform: translateY(-2px); }
-	.badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; text-transform: uppercase; background: var(--racing-amber); color: var(--racing-black); font-weight: 700; }
-	.error-banner { background: rgba(220,38,38,0.2); border: 1px solid var(--racing-red); color: #fca5a5; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem; }
+	.badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; text-transform: uppercase; background: var(--orange); color: var(--arcade-black); font-weight: 700; }
+	.error-banner { background: rgba(220,38,38,0.2); border: 1px solid var(--red-race); color: #fca5a5; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem; }
 
 	/* Heats */
 	.heats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; }
-	.heat-card { background: var(--racing-black); border: 1px solid var(--racing-border); border-radius: 0.5rem; padding: 1rem; transition: all 0.2s; }
-	.heat-card:hover { border-color: var(--racing-amber); }
+	.heat-card { background: var(--arcade-black); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 1rem; transition: all 0.2s; }
+	.heat-card:hover { border-color: var(--orange); }
 	.heat-card.completed { border-color: #059669; }
 	.heat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
-	.heat-num { font-weight: 700; color: var(--racing-amber); }
+	.heat-num { font-weight: 700; color: var(--orange); }
 	.heat-status { font-size: 0.8rem; }
 
 	.heat-autos { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; }
-	.heat-auto-label { font-size: 0.9rem; color: var(--racing-text); padding: 0.2rem 0; }
+	.heat-auto-label { font-size: 0.9rem; color: var(--text-primary); padding: 0.2rem 0; }
 
 	.heat-result { font-size: 0.85rem; color: #059669; margin-bottom: 0.75rem; padding: 0.75rem; background: rgba(5,150,105,0.1); border-radius: 0.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; }
 	.podio-item { display: inline-flex; align-items: center; gap: 0.2rem; }
 	.medal { font-size: 1.1rem; }
-	.arrow { color: var(--racing-text-dim); margin: 0 0.2rem; }
+	.arrow { color: var(--text-dim); margin: 0 0.2rem; }
 
 	/* Result form */
-	.result-form { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--racing-border); }
-	.result-hint { font-size: 0.8rem; color: var(--racing-text-dim); margin: 0 0 0.5rem 0; }
+	.result-form { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); }
+	.result-hint { font-size: 0.8rem; color: var(--text-dim); margin: 0 0 0.5rem 0; }
 	.pos-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
-	.pos-auto { flex: 1; font-size: 0.9rem; color: var(--racing-text); }
+	.pos-auto { flex: 1; font-size: 0.9rem; color: var(--text-primary); }
 	.pos-select {
-		padding: 0.3rem 0.5rem; border: 1px solid var(--racing-border);
-		border-radius: 0.25rem; background: var(--racing-dark);
-		color: var(--racing-text); font-size: 0.85rem; min-width: 100px;
+		padding: 0.3rem 0.5rem; border: 1px solid var(--border-color);
+		border-radius: 0.25rem; background: var(--arcade-dark);
+		color: var(--text-primary); font-size: 0.85rem; min-width: 100px;
 	}
-	.pos-select:focus { outline: none; border-color: var(--racing-amber); }
+	.pos-select:focus { outline: none; border-color: var(--orange); }
 
-	.final-section { margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--racing-border); }
+	.final-section { margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
 
 	.btn-archive { padding: 0.5rem 1.5rem; background: #334155; color: #e2e8f0; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.2s; }
 	.btn-archive:hover { background: #475569; }
 
-	.desempate-form { margin-top: 1rem; padding: 1rem; background: var(--racing-black); border-radius: 0.35rem; text-align: left; }
-	.desempate-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.9rem; color: var(--racing-text); cursor: pointer; }
-	.desempate-item input { accent-color: var(--racing-amber); }
+	.desempate-form { margin-top: 1rem; padding: 1rem; background: var(--arcade-black); border-radius: 0.35rem; text-align: left; }
+	.desempate-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.9rem; color: var(--text-primary); cursor: pointer; }
+	.desempate-item input { accent-color: var(--orange); }
 
 	.archivos-list { display: flex; flex-direction: column; gap: 0.5rem; }
-	.archivo-card { display: flex; justify-content: space-between; align-items: center; background: var(--racing-black); border: 1px solid var(--racing-border); border-radius: 0.35rem; padding: 0.75rem 1rem; }
-	.archivo-fecha { color: var(--racing-text-dim); font-size: 0.85rem; }
-	.archivo-winner { color: var(--racing-amber); font-weight: 600; font-size: 0.9rem; }
+	.archivo-card { display: flex; justify-content: space-between; align-items: center; background: var(--arcade-black); border: 1px solid var(--border-color); border-radius: 0.35rem; padding: 0.75rem 1rem; }
+	.archivo-fecha { color: var(--text-dim); font-size: 0.85rem; }
+	.archivo-winner { color: var(--orange); font-weight: 600; font-size: 0.9rem; }
 
 	/* Standings table */
 	.table-container { overflow-x: auto; }
 	table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-	th { background: var(--racing-black); color: var(--racing-amber); padding: 0.75rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
-	td { padding: 0.75rem; border-top: 1px solid var(--racing-border); }
+	th { background: var(--arcade-black); color: var(--orange); padding: 0.75rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+	td { padding: 0.75rem; border-top: 1px solid var(--border-color); }
 	.top4 td { background: rgba(5,150,105,0.05); }
 	.winner td { background: rgba(245,158,11,0.1); font-weight: 700; }
-	.pos { color: var(--racing-amber); font-weight: 700; }
-	.pts { color: var(--racing-amber); font-weight: 700; font-size: 1.1rem; }
+	.pos { color: var(--orange); font-weight: 700; }
+	.pts { color: var(--orange); font-weight: 700; font-size: 1.1rem; }
 
 	@media (max-width: 640px) { .heats-grid { grid-template-columns: 1fr; } }
 </style>

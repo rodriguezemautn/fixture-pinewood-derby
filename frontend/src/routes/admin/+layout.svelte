@@ -47,7 +47,7 @@
 		<div class="admin-nav-inner">
 			<a href="/" class="admin-brand">
 				<img src="/assets/derby_logo.jpg" alt="Derby" class="admin-logo" />
-				<span>Fixture D15</span>
+				<span class="font-pixel" style="font-size: 0.7rem;">Fixture D15</span>
 			</a>
 			<div class="admin-links">
 				<a href="/admin/categorias" class="admin-link">Categorías</a>
@@ -73,12 +73,13 @@
 <style>
 	.admin-layout {
 		min-height: 100vh;
-		background: var(--racing-black);
+		background: var(--arcade-black);
 	}
 
 	.admin-nav {
-		background: linear-gradient(180deg, #0a0f1a, #0f172a);
-		border-bottom: 2px solid var(--racing-amber);
+		background: linear-gradient(180deg, var(--arcade-black), var(--arcade-dark));
+		border-bottom: 2px solid var(--orange);
+		position: relative;
 	}
 
 	.admin-nav-inner {
@@ -96,17 +97,15 @@
 		align-items: center;
 		gap: 0.5rem;
 		text-decoration: none;
-		color: var(--racing-amber);
-		font-family: 'Black Ops One', sans-serif;
-		font-size: 1rem;
+		color: var(--orange);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
 	}
 
 	.admin-logo {
 		height: 28px;
 		width: auto;
-		border-radius: 0.15rem;
+		image-rendering: pixelated;
+		border: 1px solid var(--orange-border);
 	}
 
 	.admin-links {
@@ -116,44 +115,49 @@
 
 	.admin-link {
 		padding: 0.4rem 0.75rem;
-		color: var(--racing-text-dim);
+		color: var(--text-dim);
 		text-decoration: none;
-		font-size: 0.85rem;
-		font-weight: 600;
+		font-family: 'VT323', monospace;
+		font-size: 1rem;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		border-radius: 0.25rem;
-		transition: all 0.2s;
+		letter-spacing: 0.08em;
+		border: 1.5px solid transparent;
+		transition: all 0.15s ease;
 	}
 
 	.admin-link:hover {
-		color: var(--racing-amber);
-		background: rgba(245,158,11,0.1);
+		color: var(--orange);
+		border-color: var(--orange-border);
+		box-shadow: 1.5px 1.5px 0 0 var(--orange-border);
 	}
 
 	.btn-logout {
-		padding: 0.35rem 0.75rem;
+		padding: 0.35rem 0.7rem;
 		background: transparent;
-		border: 1px solid var(--racing-red);
-		color: var(--racing-red);
-		border-radius: 0.25rem;
+		border: 1.5px solid var(--red-race);
+		color: var(--red-race);
 		cursor: pointer;
-		font-size: 0.8rem;
-		font-weight: 600;
-		transition: all 0.2s;
+		font-family: 'VT323', monospace;
+		font-size: 0.95rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		box-shadow: 1.5px 1.5px 0 0 var(--red-race);
+		transition: all 0.15s ease;
 	}
 
 	.btn-logout:hover {
-		background: var(--racing-red);
+		background: var(--red-race);
 		color: white;
+		transform: translate(-1px, -1px);
+		box-shadow: 2px 2px 0 0 var(--red-race);
 	}
 
 	.admin-nav-stripe {
 		height: 2px;
 		background: repeating-linear-gradient(
 			90deg,
-			var(--racing-amber) 0,
-			var(--racing-amber) 6px,
+			var(--orange) 0,
+			var(--orange) 6px,
 			transparent 6px,
 			transparent 12px
 		);
@@ -162,12 +166,14 @@
 	.admin-breadcrumbs {
 		display: flex; align-items: center; gap: 0.3rem;
 		max-width: 1200px; margin: 0.5rem auto 0; padding: 0 1rem;
-		font-size: 0.8rem; color: var(--racing-text-dim);
+		font-size: 0.85rem;
+		font-family: 'VT323', monospace;
+		color: var(--text-dim);
 	}
 
-	.crumb { color: var(--racing-text-dim); text-decoration: none; }
-	.crumb:hover { color: var(--racing-amber); }
-	.crumb-sep { color: var(--racing-border); font-size: 1rem; }
+	.crumb { color: var(--text-dim); text-decoration: none; transition: color 0.15s; }
+	.crumb:hover { color: var(--orange); }
+	.crumb-sep { color: var(--border-color); font-size: 1rem; }
 
 	.admin-body {
 		padding: 1.5rem 1rem;

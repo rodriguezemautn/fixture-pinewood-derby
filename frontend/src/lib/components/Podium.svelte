@@ -84,7 +84,7 @@
 	}
 
 	.podium-title {
-		color: var(--racing-amber);
+		color: var(--orange);
 		font-size: 2.5rem;
 		margin: 0 0 2rem 0;
 		text-shadow: 0 0 30px rgba(245,158,11,0.5);
@@ -121,13 +121,13 @@
 	}
 
 	.podium-pos {
-		color: var(--racing-black);
+		color: var(--arcade-black);
 		font-weight: 900;
 		font-size: 1.5rem;
 	}
 
 	.podium-name {
-		color: var(--racing-text);
+		color: var(--text-primary);
 		font-weight: 600;
 		font-size: 0.9rem;
 		text-align: center;
@@ -137,7 +137,7 @@
 	}
 
 	.numero {
-		color: var(--racing-amber);
+		color: var(--orange);
 		margin-right: 0.25rem;
 	}
 

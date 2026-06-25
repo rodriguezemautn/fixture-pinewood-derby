@@ -95,34 +95,34 @@
 </div>
 
 <style>
-	.page { min-height: 100vh; background: var(--racing-black); }
+	.page { min-height: 100vh; background: var(--arcade-black); }
 
-	.page-header { background: linear-gradient(180deg, #0a0f1a, #0f172a); padding: 1rem; }
+	.page-header { background: linear-gradient(180deg, var(--arcade-black), var(--arcade-dark)); padding: 1rem; }
 
 	.header-inner {
 		display: flex; align-items: center; gap: 1rem;
 		max-width: 800px; margin: 0 auto; flex-wrap: wrap;
 	}
 
-	.back-link { color: var(--racing-text-dim); text-decoration: none; font-size: 0.85rem; width: 100%; }
-	.back-link:hover { color: var(--racing-amber); }
+	.back-link { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; width: 100%; }
+	.back-link:hover { color: var(--orange); }
 
 	.logo { height: 48px; width: auto; border-radius: 0.25rem; }
-	h1 { color: var(--racing-amber); font-size: 1.5rem; margin: 0; }
-	.subtitle { color: var(--racing-text-dim); font-size: 0.8rem; margin: 0; }
-	.header-stripe { height: 3px; margin-top: 0.75rem; background: repeating-linear-gradient(90deg, var(--racing-amber) 0, var(--racing-amber) 8px, transparent 8px, transparent 16px); }
+	h1 { color: var(--orange); font-size: 1.5rem; margin: 0; }
+	.subtitle { color: var(--text-dim); font-size: 0.8rem; margin: 0; }
+	.header-stripe { height: 3px; margin-top: 0.75rem; background: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 8px, transparent 8px, transparent 16px); }
 
 	.main-content { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
 
-	.loading { text-align: center; color: var(--racing-text-dim); padding: 3rem; }
+	.loading { text-align: center; color: var(--text-dim); padding: 3rem; }
 
 	.empty { text-align: center; padding: 4rem 1rem; }
 	.empty-img { width: 100px; border-radius: 0.5rem; opacity: 0.4; margin-bottom: 1rem; }
-	.empty h2 { color: var(--racing-text-dim); font-size: 1.2rem; }
-	.empty p { color: var(--racing-text-dim); font-size: 0.9rem; }
+	.empty h2 { color: var(--text-dim); font-size: 1.2rem; }
+	.empty p { color: var(--text-dim); font-size: 0.9rem; }
 
 	.cat-section { margin-bottom: 2rem; }
-	.cat-title { color: var(--racing-amber); font-size: 1.1rem; margin: 0 0 0.75rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--racing-border); }
+	.cat-title { color: var(--orange); font-size: 1.1rem; margin: 0 0 0.75rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
 
 	.autos-grid {
 		display: grid;
@@ -132,24 +132,24 @@
 
 	.auto-card {
 		display: flex; align-items: center; gap: 0.75rem;
-		background: var(--racing-dark); border: 1px solid var(--racing-border);
+		background: var(--arcade-dark); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 0.75rem;
 		transition: border-color 0.2s;
 	}
 
-	.auto-card:hover { border-color: var(--racing-amber); }
+	.auto-card:hover { border-color: var(--orange); }
 
-	.auto-foto { width: 52px; height: 52px; object-fit: cover; border-radius: 0.25rem; border: 1px solid var(--racing-border); }
-	.auto-foto-placeholder { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--racing-gray); border-radius: 0.25rem; }
+	.auto-foto { width: 52px; height: 52px; object-fit: cover; border-radius: 0.25rem; border: 1px solid var(--border-color); }
+	.auto-foto-placeholder { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--arcade-surface); border-radius: 0.25rem; }
 
 	.auto-info { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-	.auto-numero { color: var(--racing-amber); font-weight: 700; font-size: 1rem; }
-	.auto-nombre { color: var(--racing-text); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-	.auto-creador { color: var(--racing-text-dim); font-size: 0.8rem; }
-	.auto-edad { color: var(--racing-text-dim); font-size: 0.75rem; }
-	.auto-peso { color: var(--racing-amber); font-size: 0.75rem; font-weight: 600; }
+	.auto-numero { color: var(--orange); font-weight: 700; font-size: 1rem; }
+	.auto-nombre { color: var(--text-primary); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.auto-creador { color: var(--text-dim); font-size: 0.8rem; }
+	.auto-edad { color: var(--text-dim); font-size: 0.75rem; }
+	.auto-peso { color: var(--orange); font-size: 0.75rem; font-weight: 600; }
 
-	.total { text-align: center; color: var(--racing-text-dim); font-size: 0.85rem; padding: 1rem; }
+	.total { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding: 1rem; }
 
 	@media (max-width: 640px) { .autos-grid { grid-template-columns: 1fr; } }
 </style>

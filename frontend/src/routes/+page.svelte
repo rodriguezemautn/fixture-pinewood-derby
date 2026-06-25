@@ -163,7 +163,7 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		background: linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0f172a 100%);
+		background: linear-gradient(135deg, var(--arcade-black) 0%, #1a1f2e 50%, var(--arcade-dark) 100%);
 	}
 
 	.hero-bg {
@@ -204,22 +204,22 @@
 
 	.emblema {
 		width: 100px; height: auto; border-radius: 50%;
-		border: 3px solid var(--racing-amber);
+		border: 3px solid var(--orange);
 		box-shadow: 0 0 20px rgba(245,158,11,0.3);
 	}
 
 	.hero-title { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
 	.title-line { display: block; }
-	.title-line:first-child { font-size: 3rem; color: var(--racing-amber); text-shadow: 0 0 20px rgba(245,158,11,0.3); }
-	.subtitle { font-size: 1.25rem; color: var(--racing-text-dim); font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0.2em; }
-	.hero-desc { color: var(--racing-text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
+	.title-line:first-child { font-size: 3rem; color: var(--orange); text-shadow: 0 0 20px rgba(245,158,11,0.3); }
+	.subtitle { font-size: 1.25rem; color: var(--text-dim); font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0.2em; }
+	.hero-desc { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
 
 	.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
 	.btn-racing-primary {
 		display: inline-block; padding: 0.75rem 2rem;
-		background: linear-gradient(135deg, var(--racing-amber), var(--racing-amber-light));
-		color: var(--racing-black); font-weight: 800; font-size: 1.1rem;
+		background: linear-gradient(135deg, var(--orange), var(--orange-glow));
+		color: var(--arcade-black); font-weight: 800; font-size: 1.1rem;
 		text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;
 		border-radius: 0.25rem; box-shadow: 0 0 20px rgba(245,158,11,0.3);
 		transition: all 0.2s;
@@ -228,19 +228,19 @@
 
 	.hero-stripe {
 		position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
-		background: repeating-linear-gradient(90deg, var(--racing-amber) 0, var(--racing-amber) 10px, var(--racing-black) 10px, var(--racing-black) 20px);
+		background: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 10px, var(--arcade-black) 10px, var(--arcade-black) 20px);
 	}
 
 	/* ─── Section ─────────────────────────────── */
-	.info-section { padding: 3rem 1rem; background: var(--racing-dark); }
-	.cards-section { background: var(--racing-black); }
+	.info-section { padding: 3rem 1rem; background: var(--arcade-dark); }
+	.cards-section { background: var(--arcade-black); }
 
 	.section-title { text-align: center; margin-bottom: 2rem; }
-	.section-title h2 { color: var(--racing-amber); font-size: 1.5rem; margin: 0; }
-	.section-desc { color: var(--racing-text-dim); font-size: 0.95rem; margin: 0.5rem 0 0; }
+	.section-title h2 { color: var(--orange); font-size: 1.5rem; margin: 0; }
+	.section-desc { color: var(--text-dim); font-size: 0.95rem; margin: 0.5rem 0 0; }
 
 	/* Skeleton loader */
-	.skeleton-card { height: 80px; background: var(--racing-gray); border-radius: 0.5rem; position: relative; overflow: hidden; }
+	.skeleton-card { height: 80px; background: var(--arcade-surface); border-radius: 0.5rem; position: relative; overflow: hidden; }
 	.skeleton-card::after {
 		content: ''; position: absolute; inset: 0;
 		background: repeating-linear-gradient(90deg, transparent 0, rgba(245,158,11,0.05) 50%, transparent 100%);
@@ -254,7 +254,7 @@
 
 	.empty-carreras { text-align: center; padding: 3rem 1rem; }
 	.empty-img { width: 80px; border-radius: 50%; opacity: 0.4; margin-bottom: 1rem; }
-	.empty-carreras p { color: var(--racing-text-dim); margin: 0; }
+	.empty-carreras p { color: var(--text-dim); margin: 0; }
 	.empty-sub { font-size: 0.85rem; margin-top: 0.5rem !important; }
 
 	/* ─── Categorias grid ─────────────────────── */
@@ -268,26 +268,26 @@
 
 	.categoria-card {
 		display: flex; flex-direction: column; gap: 0.25rem;
-		background: var(--racing-gray); border: 1px solid var(--racing-border);
+		background: var(--arcade-surface); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 1.5rem;
 		text-decoration: none; transition: all 0.2s;
 	}
 
 	.categoria-card:hover {
-		border-color: var(--racing-amber);
+		border-color: var(--orange);
 		transform: translateY(-3px);
 		box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 	}
 
-	.cat-nombre { color: var(--racing-amber); font-weight: 700; font-size: 1.1rem; }
-	.cat-edades { color: var(--racing-text-dim); font-size: 0.85rem; }
+	.cat-nombre { color: var(--orange); font-weight: 700; font-size: 1.1rem; }
+	.cat-edades { color: var(--text-dim); font-size: 0.85rem; }
 	.cat-badge-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
-	.cat-cta { color: var(--racing-amber); font-size: 0.85rem; font-weight: 600; }
+	.cat-cta { color: var(--orange); font-size: 0.85rem; font-weight: 600; }
 
 	.badge-live { font-size: 0.75rem; color: #fca5a5; background: rgba(220,38,38,0.2); padding: 0.15rem 0.5rem; border-radius: 1rem; font-weight: 700; }
 	.badge-done { font-size: 0.75rem; color: #a3e635; background: rgba(101,163,13,0.2); padding: 0.15rem 0.5rem; border-radius: 1rem; font-weight: 700; }
 
-	.categoria-card.live { border-color: #ef4444; }
+	.categoria-card.live { border-color: var(--red-race-light); }
 	.categoria-card.finalizado { border-color: #65a30d; }
 
 	/* ─── Info Cards ──────────────────────────── */
@@ -301,21 +301,21 @@
 
 	.info-card {
 		display: flex; flex-direction: column; align-items: center;
-		background: var(--racing-gray); border: 1px solid var(--racing-border);
+		background: var(--arcade-surface); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 1.5rem; text-align: center;
 		text-decoration: none; transition: all 0.3s;
 	}
 
-	.info-card:hover { border-color: var(--racing-amber); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+	.info-card:hover { border-color: var(--orange); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
 
-	.card-link { margin-top: 0.75rem; color: var(--racing-amber); font-weight: 600; font-size: 0.85rem; }
+	.card-link { margin-top: 0.75rem; color: var(--orange); font-weight: 600; font-size: 0.85rem; }
 
-	.card-img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem; border: 2px solid var(--racing-border); }
-	.info-card h3 { color: var(--racing-amber); margin: 0 0 0.5rem 0; font-size: 1.25rem; }
-	.info-card p { color: var(--racing-text-dim); font-size: 0.9rem; margin: 0; line-height: 1.5; }
+	.card-img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem; border: 2px solid var(--border-color); }
+	.info-card h3 { color: var(--orange); margin: 0 0 0.5rem 0; font-size: 1.25rem; }
+	.info-card p { color: var(--text-dim); font-size: 0.9rem; margin: 0; line-height: 1.5; }
 
 	/* ─── Sponsors ────────────────────────────── */
-	.sponsors { padding: 3rem 1rem; background: var(--racing-black); }
+	.sponsors { padding: 3rem 1rem; background: var(--arcade-black); }
 
 	.sponsor-logos {
 		display: flex; justify-content: center; align-items: center; gap: 2rem;
