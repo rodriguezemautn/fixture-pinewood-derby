@@ -285,75 +285,95 @@
 		pointer-events: none;
 	}
 
-	/* ─── Fábrica con chimenea ────────────────── */
+	/* ─── Fábrica grande con paredes naranjas ─── */
 	.factory {
 		position: absolute;
-		bottom: 44%;
-		left: 28%;
-		width: 100px;
-		height: 60px;
+		bottom: 43%;
+		left: 22%;
+		width: 160px;
+		height: 90px;
 		z-index: 2;
 		pointer-events: none;
 	}
 
 	.factory-building {
 		position: absolute;
-		bottom: 0; left: 20px; right: 20px; height: 40px;
-		background: #4a4a5a;
-		box-shadow: -3px 0 0 #3a3a4a, 3px 0 0 #3a3a4a;
+		bottom: 0; left: 30px; right: 30px; height: 60px;
+		background: #cc6633;
+		box-shadow:
+			-5px 0 0 #aa5522,
+			5px 0 0 #aa5522,
+			0 -2px 0 #dd7744;
 	}
 
+	/* Ventanas iluminadas */
 	.factory-building::after {
 		content: '';
-		position: absolute; top: 8px; left: 6px; right: 6px; height: 14px;
+		position: absolute; top: 12px; left: 10px; right: 10px; height: 18px;
 		background:
 			linear-gradient(90deg,
-				transparent 0, transparent 4px,
-				#ffd700 4px, #ffd700 12px,
-				transparent 12px, transparent 16px,
-				#ffd700 16px, #ffd700 24px,
-				transparent 24px, transparent 28px,
-				#ffd700 28px, #ffd700 36px,
-				transparent 36px, transparent 40px,
-				#ffd700 40px, #ffd700 48px,
-				transparent 48px);
-		opacity: 0.5;
+				transparent 0, transparent 6px,
+				#ffd700 6px, #ffd700 18px,
+				transparent 18px, transparent 24px,
+				#ffd700 24px, #ffd700 36px,
+				transparent 36px, transparent 42px,
+				#ffd700 42px, #ffd700 54px,
+				transparent 54px, transparent 60px,
+				#ffd700 60px, #ffd700 72px,
+				transparent 72px, transparent 78px,
+				#ffd700 78px, #ffd700 90px,
+				transparent 90px);
+		opacity: 0.6;
+		box-shadow: 0 0 8px rgba(255,215,0,0.2);
+	}
+
+	/* Puerta de la fábrica */
+	.factory-building::before {
+		content: '';
+		position: absolute;
+		bottom: 0; left: 50%; transform: translateX(-50%);
+		width: 18px; height: 24px;
+		background: #4a3520;
+		border-radius: 3px 3px 0 0;
 	}
 
 	.factory-chimney {
 		position: absolute;
-		bottom: 40px; left: 50%; transform: translateX(-50%);
-		width: 16px; height: 70px;
+		bottom: 60px; left: 50%; transform: translateX(-50%);
+		width: 20px; height: 90px;
 		background: repeating-linear-gradient(180deg,
-			#ffffff 0, #ffffff 12px, #cc2222 12px, #cc2222 18px,
-			#ffffff 18px, #ffffff 24px, #cc2222 24px, #cc2222 30px,
-			#ffffff 30px, #ffffff 36px, #cc2222 36px, #cc2222 42px,
-			#ffffff 42px, #ffffff 48px, #cc2222 48px, #cc2222 54px,
-			#ffffff 54px, #ffffff 60px, #cc2222 60px, #cc2222 66px,
-			#ffffff 66px, #ffffff 70px);
-		box-shadow: 2px 0 0 #3a3a4a;
+			#ffffff 0, #ffffff 14px, #cc2222 14px, #cc2222 22px,
+			#ffffff 22px, #ffffff 30px, #cc2222 30px, #cc2222 38px,
+			#ffffff 38px, #ffffff 46px, #cc2222 46px, #cc2222 54px,
+			#ffffff 54px, #ffffff 62px, #cc2222 62px, #cc2222 70px,
+			#ffffff 70px, #ffffff 78px, #cc2222 78px, #cc2222 86px,
+			#ffffff 86px, #ffffff 90px);
+		box-shadow: 3px 0 0 #3a3a4a;
 	}
 
 	.chimney-top {
 		position: absolute;
-		top: -4px; left: -4px; right: -4px; height: 6px;
-		background: #555; border-radius: 1px;
+		top: -5px; left: -5px; right: -5px;
+		height: 8px;
+		background: #555;
+		border-radius: 1px;
 	}
 
+	/* Humo */
 	.factory-smoke {
 		position: absolute;
-		bottom: 108px;
-		width: 10px; height: 10px;
-		background: rgba(200,200,200,0.3);
+		bottom: 148px;
+		width: 12px; height: 12px;
+		background: rgba(220,220,220,0.35);
 		border-radius: 50%;
-		animation: smoke-rise 3s ease-out infinite;
+		animation: smoke-rise 4s ease-out infinite;
 	}
-	.factory-smoke.s1 { left: 47%; animation-delay: 0s; }
-	.factory-smoke.s2 { left: 53%; animation-delay: 1.5s; }
+	.factory-smoke.s1 { left: 46%; animation-delay: 0s; }
+	.factory-smoke.s2 { left: 54%; animation-delay: 2s; }
 
 	@keyframes smoke-rise {
-		0% { transform: translateY(0) scale(1); opacity: 0.4; }
-		100% { transform: translateY(-40px) scale(2); opacity: 0; }
+		0%   { transform: translateY(0) scale(1); opacity: 0.4; }
+		100% { transform: translateY(-60px) scale(2.5); opacity: 0; }
 	}
 
 	/* ─── Árboles pixel art ──────────────────── */
