@@ -78,6 +78,21 @@
 			<div class="road-line l2"></div>
 		</div>
 
+		<!-- Tren azul y blanco animado -->
+		<div class="train">
+			<div class="train-body">
+				<div class="train-cabin">
+					<div class="cabin-window"></div>
+				</div>
+				<div class="train-stripe"></div>
+				<div class="train-wheels">
+					<div class="wheel w1"></div>
+					<div class="wheel w2"></div>
+					<div class="wheel w3"></div>
+				</div>
+			</div>
+		</div>
+
 		<!-- Líneas de velocidad -->
 		<div class="hero-speed"></div>
 	</div>
@@ -276,67 +291,164 @@
 	/* ─── Estación de tren ────────────────────── */
 	.station {
 		position: absolute;
-		bottom: 44%;
-		right: 12%;
-		width: 120px;
-		height: 80px;
+		bottom: 42%;
+		right: 8%;
+		width: 160px;
+		height: 110px;
 		z-index: 3;
 		pointer-events: none;
 	}
 
+	/* Pared principal */
 	.station-body {
 		position: absolute;
-		bottom: 14px; left: 10px; right: 10px; height: 50px;
-		background: #8a6a3a;
+		bottom: 16px; left: 15px; right: 15px; height: 65px;
+		background: #c49a6c;
 		box-shadow:
-			-4px 0 0 #6a4a2a,
-			4px 0 0 #6a4a2a,
-			0 -2px 0 #a08050,
-			inset 0 8px 0 #7a5a30,
-			inset 0 10px 0 #6a4a2a;
+			-5px 0 0 #8a6a3a,
+			5px 0 0 #8a6a3a,
+			0 -3px 0 #d4aa7c;
 	}
 
-	/* Ventanas de la estación */
+	/* Pilares de la estación */
 	.station-body::before {
 		content: '';
-		position: absolute; top: 12px; left: 8px; right: 8px;
-		height: 12px;
+		position: absolute; top: 0; left: 10px; right: 10px; bottom: 0;
 		background:
-			linear-gradient(90deg, transparent 0, transparent 8px, #ffd700 8px, #ffd700 20px, transparent 20px, transparent 28px, #ffd700 28px, #ffd700 40px, transparent 40px);
-		opacity: 0.6;
+			/* Pilar izquierdo */
+			linear-gradient(90deg, #8a6a3a 0, #8a6a3a 6px, transparent 6px),
+			/* Pilar derecho */
+			linear-gradient(90deg, transparent calc(100% - 6px), #8a6a3a calc(100% - 6px), #8a6a3a 100%);
 	}
 
+	/* Ventanas iluminadas */
+	.station-body::after {
+		content: '';
+		position: absolute; top: 14px; left: 20px; right: 20px;
+		height: 18px;
+		background:
+			linear-gradient(90deg,
+				transparent 0, transparent 6px,
+				#ffd700 6px, #ffd700 22px,
+				transparent 22px, transparent 28px,
+				#ffd700 28px, #ffd700 44px,
+				transparent 44px, transparent 50px,
+				#ffd700 50px, #ffd700 66px,
+				transparent 66px, transparent 72px,
+				#ffd700 72px, #ffd700 88px,
+				transparent 88px);
+		opacity: 0.7;
+		box-shadow: 0 0 8px rgba(255,215,0,0.3);
+	}
+
+	/* Techo */
 	.station-roof {
 		position: absolute;
-		top: 0; left: 0; right: 0; height: 16px;
+		top: 0; left: 0; right: 0; height: 20px;
 		background: #5a3a1a;
-		clip-path: polygon(5% 100%, 0% 0%, 100% 0%, 95% 100%);
+		clip-path: polygon(3% 100%, 0% 10%, 100% 10%, 97% 100%);
 	}
 
+	/* Andén */
 	.station-platform {
 		position: absolute;
-		bottom: 0; left: -10px; right: -10px; height: 6px;
-		background: #666;
-		box-shadow: 0 2px 0 #888;
+		bottom: 0; left: -15px; right: -15px; height: 8px;
+		background: #777;
+		box-shadow: 0 3px 0 #999, 0 5px 0 #555;
 	}
 
-	/* Cartel BERAZATEGUI */
+	/* ─── Cartel BERAZATEGUI ──────────────────── */
 	.station-sign {
 		position: absolute;
-		top: -18px; left: 50%; transform: translateX(-50%);
-		background: var(--orange);
-		padding: 3px 8px;
-		z-index: 4;
-		box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+		top: -28px; left: 50%; transform: translateX(-50%);
+		background: #111;
+		padding: 5px 14px;
+		z-index: 5;
+		box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
 		white-space: nowrap;
+		border: 2px solid #444;
 	}
 
 	.sign-text {
 		font-family: 'VT323', monospace;
-		font-size: 0.7rem;
-		color: var(--arcade-black);
+		font-size: 1rem;
+		color: #ffffff;
 		font-weight: 700;
-		letter-spacing: 0.15em;
+		letter-spacing: 0.2em;
+	}
+
+	/* ─── Tren azul y blanco ──────────────────── */
+	.train {
+		position: absolute;
+		bottom: 48%;
+		right: -200px;
+		width: 120px;
+		height: 40px;
+		z-index: 4;
+		pointer-events: none;
+		animation: train-move 12s linear infinite;
+	}
+
+	@keyframes train-move {
+		0% { transform: translateX(0); }
+		100% { transform: translateX(-120vw); }
+	}
+
+	.train-body {
+		position: absolute;
+		bottom: 12px; left: 0; right: 40px; height: 28px;
+		background: #1a5a9e;
+		border-radius: 3px 0 0 3px;
+		box-shadow: 0 -2px 0 #0d3a6e;
+	}
+
+	/* Cabina del conductor */
+	.train-cabin {
+		position: absolute;
+		right: -36px; top: -8px;
+		width: 36px; height: 36px;
+		background: #1a5a9e;
+		border-radius: 0 4px 4px 0;
+		box-shadow: 0 -2px 0 #0d3a6e, 2px 0 0 #0d3a6e;
+	}
+
+	/* Ventana de cabina */
+	.cabin-window {
+		position: absolute;
+		top: 8px; left: 6px; right: 4px; height: 14px;
+		background: #a0d4ff;
+		border-radius: 2px;
+		box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+	}
+
+	/* Franja blanca decorativa */
+	.train-stripe {
+		position: absolute;
+		bottom: 6px; left: 2px; right: 38px;
+		height: 4px;
+		background: #ffffff;
+	}
+
+	/* Ruedas */
+	.train-wheels {
+		position: absolute;
+		bottom: 0; left: 8px; right: 34px;
+		display: flex;
+		justify-content: space-around;
+	}
+
+	.wheel {
+		width: 10px; height: 10px;
+		background: #333;
+		border-radius: 50%;
+		border: 2px solid #666;
+		box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+		animation: wheel-spin 1s linear infinite;
+	}
+
+	@keyframes wheel-spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
 	}
 
 	/* ─── Ruta en perspectiva ─────────────────── */
@@ -403,9 +515,29 @@
 
 	.hero-title { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
 	.title-line { display: block; }
-	.title-line:first-child { font-size: 3rem; color: var(--orange); text-shadow: 0 0 20px rgba(245,158,11,0.5), 0 0 40px rgba(245,158,11,0.2); }
-	.subtitle { font-size: 1.25rem; color: var(--text-primary); font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0.2em; }
-	.hero-desc { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
+	.title-line:first-child {
+		font-size: 3rem;
+		color: #ffffff;
+		text-shadow:
+			0 0 20px rgba(245,158,11,0.6),
+			0 0 40px rgba(245,158,11,0.3),
+			2px 2px 0 rgba(0,0,0,0.5),
+			-1px -1px 0 rgba(0,0,0,0.3);
+	}
+	.subtitle {
+		font-size: 1.25rem;
+		color: #ffffff;
+		font-family: 'Inter', sans-serif;
+		text-transform: none;
+		letter-spacing: 0.2em;
+		text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+	}
+	.hero-desc {
+		color: #f0f0f0;
+		font-size: 1.1rem;
+		margin-bottom: 2rem;
+		text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+	}
 
 	.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
