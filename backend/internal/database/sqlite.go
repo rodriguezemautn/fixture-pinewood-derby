@@ -92,6 +92,17 @@ func Migrate(db *sql.DB) error {
 			created_at TEXT NOT NULL DEFAULT (datetime('now')),
 			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 		)`,
+		`CREATE TABLE IF NOT EXISTS competencias (
+			id TEXT PRIMARY KEY,
+			categoria_id TEXT NOT NULL,
+			numero INTEGER NOT NULL DEFAULT 1,
+			nombre TEXT NOT NULL DEFAULT '',
+			estado TEXT NOT NULL DEFAULT 'abierta',
+			rondas INTEGER NOT NULL DEFAULT 3,
+			created_at TEXT NOT NULL DEFAULT (datetime('now')),
+			FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+		)`,
+		`ALTER TABLE fixtures ADD COLUMN competencia_id TEXT REFERENCES competencias(id)`,
 	}
 
 	for i, m := range migrations {

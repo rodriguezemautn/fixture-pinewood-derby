@@ -5,6 +5,7 @@
 	import { apiFetch } from '$lib/api';
 
 	const categoriaId = $derived($page.params.id);
+	const competenciaId = $derived($page.url.searchParams.get('competencia'));
 
 	let fixture = $state<any>(null);
 	let posiciones = $state<any[]>([]);
@@ -13,6 +14,8 @@
 	let autoMap = $state<Record<string, {nombre: string; numero: number}>>({});
 	let loading = $state(true);
 	let error = $state('');
+	let competencia = $state<any>(null);
+	let competencias = $state<any[]>([]);
 
 	let rondas = $state(3);
 	let actionLoading = $state(false);
@@ -22,10 +25,16 @@
 	// Estado para registro de resultado
 	let resultadoState = $state<Record<string, string[]>>({});
 
+	// Desempate
+	let desempateAutoIDs = $state<string[]>([]);
+	let showDesempate = $state(false);
+
 	onMount(() => {
 		cargarDatos();
 		cargarArchivos();
 	});
+
+	const esFinalizada = $derived(competencia?.estado === 'finalizada');
 
 	async function cargarArchivos() {
 		try {
@@ -34,51 +43,51 @@
 		} catch {}
 	}
 
-	async function archivarCompetencia() {
-		if (!confirm('¿Archivar esta competencia y empezar una nueva? Se borrarán los heats actuales.')) return;
-		actionLoading = true;
-		error = '';
-		try {
-			const res = await apiFetch(`/api/categorias/${categoriaId}/archivar`, { method: 'POST' });
-			if (!res.ok) {
-				const d = await res.json();
-				error = d.error || 'Error al archivar';
-				return;
-			}
-			await cargarDatos();
-			await cargarArchivos();
-		} catch { error = 'Error de conexión'; }
-		finally { actionLoading = false; }
-	}
-
 	async function cargarDatos() {
 		loading = true;
 		error = '';
 		try {
-			const [fixtureRes, posRes, catRes, autosRes] = await Promise.all([
-				fetch(`/api/categorias/${categoriaId}/fixture`),
-				fetch(`/api/categorias/${categoriaId}/posiciones`),
+			// Cargar competencias
+			const compRes = await fetch(`/api/categorias/${categoriaId}/competencias`);
+			if (compRes.ok) {
+				competencias = await compRes.json();
+				if (competenciaId) {
+					competencia = competencias.find((c: any) => c.id === competenciaId) || null;
+				} else if (competencias.length > 0) {
+					competencia = competencias[0]; // más reciente
+				}
+			}
+
+			const actualCompId = competencia?.id;
+
+			const [catRes, autosRes] = await Promise.all([
 				fetch(`/api/categorias/${categoriaId}`),
 				fetch(`/api/categorias/${categoriaId}/autos`)
 			]);
-			if (fixtureRes.ok) {
-				fixture = await fixtureRes.json();
-				// Inicializar estado de resultado para heats sin completar
-				if (fixture?.heats) {
-					for (const h of fixture.heats) {
-						if (!h.completado) {
-							resultadoState[h.id] = [];
-						}
-					}
-				}
-			}
-			if (posRes.ok) posiciones = await posRes.json();
+
 			if (catRes.ok) categoria = await catRes.json();
 			if (autosRes.ok) {
 				autos = await autosRes.json();
 				for (const a of autos) {
 					autoMap[a.id] = { nombre: a.nombre, numero: a.numero };
 				}
+			}
+
+			if (actualCompId) {
+				// Cargar fixture y posiciones de la competencia específica
+				const [fRes, pRes] = await Promise.all([
+					fetch(`/api/competencias/${actualCompId}/fixture`),
+					fetch(`/api/competencias/${actualCompId}/posiciones`)
+				]);
+				if (fRes.ok) {
+					fixture = await fRes.json();
+					if (fixture?.heats) {
+						for (const h of fixture.heats) {
+							if (!h.completado) resultadoState[h.id] = [];
+						}
+					}
+				}
+				if (pRes.ok) posiciones = await pRes.json();
 			}
 		} catch (e) {
 			error = 'Error al cargar datos. ¿El backend está corriendo?';
@@ -164,7 +173,45 @@
 		finally { actionLoading = false; }
 	}
 
+	async function finalizarCompetencia() {
+		if (!competenciaId) return;
+		actionLoading = true;
+		error = '';
+		try {
+			const res = await apiFetch(`/api/competencias/${competenciaId}/finalizar`, { method: 'POST' });
+			if (!res.ok) {
+				const d = await res.json();
+				error = d.error || 'Error al finalizar';
+				return;
+			}
+			await cargarDatos();
+		} catch { error = 'Error de conexión'; }
+		finally { actionLoading = false; }
+	}
+
+	async function crearDesempate() {
+		if (!competenciaId || desempateAutoIDs.length < 2) return;
+		actionLoading = true;
+		error = '';
+		try {
+			const res = await apiFetch(`/api/competencias/${competenciaId}/desempate`, {
+				method: 'POST',
+				body: JSON.stringify({ auto_ids: desempateAutoIDs })
+			});
+			if (!res.ok) {
+				const d = await res.json();
+				error = d.error || 'Error al crear desempate';
+				return;
+			}
+			desempateAutoIDs = [];
+			showDesempate = false;
+			await cargarDatos();
+		} catch { error = 'Error de conexión'; }
+		finally { actionLoading = false; }
+	}
+
 	async function generarFinal() {
+		if (!competenciaId) return;
 		actionLoading = true;
 		error = '';
 		try {
@@ -180,7 +227,7 @@
 	}
 
 	const puedeGenerarFinal = $derived(
-		fixture?.heats?.length > 0 && fixture?.heats?.every((h: any) => h.completado)
+		!esFinalizada && fixture?.heats?.length > 0 && fixture?.heats?.every((h: any) => h.completado)
 	);
 
 	function getAutoDisplay(autoId: string): string {
@@ -195,8 +242,31 @@
 			<a href="/admin/categorias/{categoriaId}/autos" class="back-link">← Autos</a>
 			<h1>{categoria?.nombre ?? 'Cargando...'}</h1>
 		</div>
-		<a href="/carreras/{categoriaId}" class="btn btn-view" target="_blank">👁️ Vista Pública</a>
+		<div class="header-actions">
+			{#if competencias.length > 1}
+				<select class="comp-select" onchange={(e) => {
+					const id = e.target.value;
+					if (id) window.location.href = `/admin/categorias/${categoriaId}/fixture?competencia=${id}`;
+				}}>
+					{#each competencias as comp (comp.id)}
+						<option value={comp.id} selected={comp.id === competencia?.id}>
+							{comp.nombre} ({comp.estado === 'abierta' ? 'En curso' : 'Finalizada'})
+						</option>
+					{/each}
+				</select>
+			{/if}
+			<a href="/carreras/{categoriaId}" class="btn btn-view" target="_blank">👁️ Vista Pública</a>
+		</div>
 	</div>
+
+	{#if competencia}
+		<div class="comp-status" class:finalizada={esFinalizada}>
+			<span class="comp-badge">{esFinalizada ? '🏁 Competencia Finalizada' : '🔴 Competencia en curso'}</span>
+			{#if esFinalizada}
+				<span class="comp-readonly">Solo lectura — no se pueden modificar resultados</span>
+			{/if}
+		</div>
+	{/if}
 
 	{#if error}
 		<div class="error-banner" in:fade>{error}</div>
@@ -264,7 +334,7 @@
 							</div>
 						{/if}
 
-						{#if !heat.completado}
+						{#if !heat.completado && !esFinalizada}
 							<div class="result-form">
 								<p class="result-hint">Asigná la posición de cada auto:</p>
 								{#each heat.auto_ids as autoId}
@@ -301,9 +371,30 @@
 					<button class="btn btn-racing" onclick={generarFinal} disabled={actionLoading}>🏆 Generar Carrera Final</button>
 				</div>
 			{/if}
-			{#if fixture?.estado === 'finalizado'}
+			{#if fixture?.estado === 'finalizado' && !esFinalizada}
 				<div class="final-section" in:fade>
-					<button class="btn btn-archive" onclick={archivarCompetencia} disabled={actionLoading}>📦 Archivar Competencia</button>
+					<button class="btn btn-racing" onclick={finalizarCompetencia} disabled={actionLoading}>🔒 Finalizar Competencia</button>
+				</div>
+			{/if}
+			{#if esFinalizada}
+				<div class="final-section" in:fade>
+					<button class="btn btn-archive" onclick={() => showDesempate = !showDesempate}>
+						⚖️ {showDesempate ? 'Ocultar' : 'Agregar Desempate'}
+					</button>
+					{#if showDesempate}
+						<div class="desempate-form">
+							<p class="result-hint">Seleccioná los autos para el desempate (al menos 2):</p>
+							{#each posiciones as pos}
+								<label class="desempate-item">
+									<input type="checkbox" bind:group={desempateAutoIDs} value={pos.auto_id} />
+									#{pos.numero} {pos.nombre} ({pos.puntos} pts)
+								</label>
+							{/each}
+							<button class="btn btn-sm btn-primary" onclick={crearDesempate} disabled={desempateAutoIDs.length < 2}>
+								⚖️ Crear Carrera de Desempate
+							</button>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</section>
@@ -384,6 +475,19 @@
 	.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; background: #334155; color: #e2e8f0; }
 	.btn-sm:hover { background: #475569; }
 	.btn-view { text-decoration: none; padding: 0.5rem 1rem; background: #334155; color: #e2e8f0; border-radius: 0.25rem; font-size: 0.875rem; }
+
+	.header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+	.comp-select {
+		padding: 0.4rem 0.5rem; border: 1px solid var(--racing-border); border-radius: 0.25rem;
+		background: var(--racing-dark); color: var(--racing-text); font-size: 0.85rem;
+	}
+	.comp-select:focus { outline: none; border-color: var(--racing-amber); }
+
+	.comp-status { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem; margin-bottom: 1rem; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 0.35rem; flex-wrap: wrap; }
+	.comp-status.finalizada { background: rgba(100,116,139,0.1); border-color: var(--racing-border); }
+	.comp-badge { font-weight: 700; font-size: 0.85rem; }
+	.comp-readonly { color: var(--racing-text-dim); font-size: 0.8rem; }
 	.btn-racing { background: linear-gradient(135deg, var(--racing-amber), var(--racing-amber-light)); color: var(--racing-black); font-weight: 800; font-size: 1.1rem; padding: 0.75rem 2rem; border: none; border-radius: 0.25rem; cursor: pointer; }
 	.btn-racing:hover { transform: translateY(-2px); }
 	.badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; text-transform: uppercase; background: var(--racing-amber); color: var(--racing-black); font-weight: 700; }
@@ -422,6 +526,10 @@
 
 	.btn-archive { padding: 0.5rem 1.5rem; background: #334155; color: #e2e8f0; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.2s; }
 	.btn-archive:hover { background: #475569; }
+
+	.desempate-form { margin-top: 1rem; padding: 1rem; background: var(--racing-black); border-radius: 0.35rem; text-align: left; }
+	.desempate-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.9rem; color: var(--racing-text); cursor: pointer; }
+	.desempate-item input { accent-color: var(--racing-amber); }
 
 	.archivos-list { display: flex; flex-direction: column; gap: 0.5rem; }
 	.archivo-card { display: flex; justify-content: space-between; align-items: center; background: var(--racing-black); border: 1px solid var(--racing-border); border-radius: 0.35rem; padding: 0.75rem 1rem; }

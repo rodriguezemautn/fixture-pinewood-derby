@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import AutoForm from '$lib/components/AutoForm.svelte';
 	import { apiFetch } from '$lib/api';
@@ -11,6 +11,9 @@
 	let categoria = $state<any>(null);
 	let loading = $state(true);
 	let error = $state('');
+	let competencias = $state<any[]>([]);
+	let genLoading = $state(false);
+	let rondas = $state(3);
 
 	let showForm = $state(false);
 	let editingId = $state<string | null>(null);
@@ -23,12 +26,14 @@
 		loading = true;
 		error = '';
 		try {
-			const [autosRes, catRes] = await Promise.all([
+			const [autosRes, catRes, compRes] = await Promise.all([
 				fetch(`/api/categorias/${categoriaId}/autos`),
-				fetch(`/api/categorias/${categoriaId}`)
+				fetch(`/api/categorias/${categoriaId}`),
+				fetch(`/api/categorias/${categoriaId}/competencias`)
 			]);
 			if (autosRes.ok) autos = await autosRes.json();
 			if (catRes.ok) categoria = await catRes.json();
+			if (compRes.ok) competencias = await compRes.json();
 		} catch (e) {
 			error = 'Error al cargar datos. ¿El backend está corriendo?';
 		} finally {
@@ -66,6 +71,29 @@
 	const editingAuto = $derived(
 		editingId ? autos.find((a: any) => a.id === editingId) ?? null : null
 	);
+
+	const tieneAutos = $derived(autos.length >= 4);
+
+	async function nuevaCompetencia() {
+		genLoading = true;
+		error = '';
+		try {
+			const res = await apiFetch(`/api/categorias/${categoriaId}/competencias?rondas=${rondas}`, { method: 'POST' });
+			if (!res.ok) {
+				const d = await res.json();
+				error = d.error || 'Error al crear competencia';
+				return;
+			}
+			await cargarDatos();
+		} catch { error = 'Error de conexión'; }
+		finally { genLoading = false; }
+	}
+
+	function estadoLabel(estado: string): string {
+		if (estado === 'abierta') return '🔴 En curso';
+		if (estado === 'finalizada') return '🏁 Finalizada';
+		return estado;
+	}
 </script>
 
 <div class="header">
@@ -135,9 +163,45 @@
 	{/if}
 </div>
 
-<div class="nav-links">
-	<a href="/admin/categorias/{categoriaId}/fixture" class="btn btn-fixture">🏁 Ir al Fixture</a>
-</div>
+<!-- ═══ COMPETENCIAS ═══ -->
+<section class="comp-section" in:fade>
+	<div class="comp-header">
+		<h2>🏁 Competencias</h2>
+		{#if tieneAutos}
+			<div class="comp-create">
+				<label class="rondas-label">
+					Rondas:
+					<input type="number" bind:value={rondas} min="1" max="10" class="rondas-input" />
+				</label>
+				<button class="btn btn-primary" onclick={nuevaCompetencia} disabled={genLoading}>
+					{genLoading ? 'Creando...' : '➕ Nueva Competencia'}
+				</button>
+			</div>
+		{/if}
+	</div>
+
+	{#if !tieneAutos}
+		<p class="comp-hint">Se necesitan al menos 4 autos para crear una competencia</p>
+	{/if}
+
+	{#if competencias.length === 0 && tieneAutos}
+		<p class="comp-hint">Todavía no hay competencias. Creá la primera para empezar las carreras.</p>
+	{/if}
+
+	{#if competencias.length > 0}
+		<div class="comp-list">
+			{#each competencias as comp (comp.id)}
+				<a href="/admin/categorias/{categoriaId}/fixture?competencia={comp.id}" class="comp-card" class:finalizada={comp.estado === 'finalizada'}>
+					<div class="comp-info">
+						<span class="comp-nombre">{comp.nombre}</span>
+						<span class="comp-meta">{comp.rondas} rondas · {comp.estado === 'finalizada' ? 'Solo lectura' : 'Editable'}</span>
+					</div>
+					<span class="comp-estado">{estadoLabel(comp.estado)}</span>
+				</a>
+			{/each}
+		</div>
+	{/if}
+</section>
 
 <style>
 	.header {
@@ -232,4 +296,35 @@
 	.actions { display: flex; gap: 0.5rem; }
 	.empty { text-align: center; color: #64748b; padding: 3rem; font-style: italic; }
 	.nav-links { margin-top: 1.5rem; }
+
+	/* Competencias */
+	.comp-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--racing-amber); }
+
+	.comp-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+	.comp-header h2 { color: var(--racing-amber); font-size: 1.25rem; margin: 0; }
+
+	.comp-create { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+	.rondas-label { display: flex; align-items: center; gap: 0.3rem; color: var(--racing-text-dim); font-size: 0.85rem; }
+	.rondas-input { width: 60px; padding: 0.35rem; border: 1px solid var(--racing-border); border-radius: 0.25rem; background: var(--racing-black); color: var(--racing-text); text-align: center; }
+	.rondas-input:focus { outline: none; border-color: var(--racing-amber); }
+
+	.comp-hint { color: var(--racing-text-dim); font-size: 0.9rem; text-align: center; padding: 2rem; }
+
+	.comp-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+	.comp-card {
+		display: flex; justify-content: space-between; align-items: center;
+		background: var(--racing-dark); border: 1px solid var(--racing-border);
+		border-radius: 0.5rem; padding: 1rem 1.25rem; text-decoration: none;
+		transition: all 0.2s;
+	}
+	.comp-card:hover { border-color: var(--racing-amber); transform: translateX(4px); }
+	.comp-card.finalizada { opacity: 0.7; }
+	.comp-card.finalizada:hover { border-color: var(--racing-text-dim); opacity: 1; }
+
+	.comp-info { display: flex; flex-direction: column; gap: 0.15rem; }
+	.comp-nombre { color: var(--racing-amber); font-weight: 600; }
+	.comp-meta { color: var(--racing-text-dim); font-size: 0.8rem; }
+	.comp-estado { font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
 </style>

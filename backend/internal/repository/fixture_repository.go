@@ -6,6 +6,7 @@ import "github.com/ema/fixture/backend/internal/domain"
 type FixtureRepository interface {
 	Create(f *domain.Fixture) error
 	GetByCategoria(categoriaID string) (*domain.Fixture, error)
+	GetByCompetencia(competenciaID string) (*domain.Fixture, error)
 	SaveHeat(heat *domain.Heat, fixtureID string) error
 	UpdateHeatResult(heatID string, ordenLlegada []string) error
 	GetHeatsByFixture(fixtureID string) ([]domain.Heat, error)

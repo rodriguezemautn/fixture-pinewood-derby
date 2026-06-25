@@ -50,6 +50,24 @@ func (r *FixtureRepository) Create(f *domain.Fixture) error {
 	return tx.Commit()
 }
 
+func (r *FixtureRepository) GetByCompetencia(competenciaID string) (*domain.Fixture, error) {
+	row := r.db.QueryRow(`SELECT id, categoria_id, rondas, estado FROM fixtures WHERE competencia_id = ?`, competenciaID)
+	var f domain.Fixture
+	err := row.Scan(&f.ID, &f.CategoriaID, &f.Rondas, &f.Estado)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get fixture by competencia: %w", err)
+	}
+	heats, err := r.GetHeatsByFixture(f.ID)
+	if err != nil {
+		return nil, err
+	}
+	f.Heats = heats
+	return &f, nil
+}
+
 func (r *FixtureRepository) GetByCategoria(categoriaID string) (*domain.Fixture, error) {
 	row := r.db.QueryRow(`SELECT id, categoria_id, rondas, estado FROM fixtures WHERE categoria_id = ?`, categoriaID)
 	var f domain.Fixture

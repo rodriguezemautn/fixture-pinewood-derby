@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/ema/fixture/backend/internal/domain"
 	"github.com/ema/fixture/backend/internal/service"
@@ -19,30 +18,39 @@ func NewFixtureHandler(svc service.FixtureService) Handler {
 }
 
 func (h *fixtureHandler) Register(r Router) {
-	r.Post("/api/categorias/{categoriaId}/fixture", h.Generar)
 	r.Get("/api/categorias/{categoriaId}/fixture", h.Obtener)
 	r.Get("/api/categorias/{categoriaId}/posiciones", h.Posiciones)
 	r.Post("/api/carreras/{heatId}/resultado", h.RegistrarResultado)
 	r.Post("/api/categorias/{categoriaId}/final", h.GenerarFinal)
 	r.Post("/api/categorias/{categoriaId}/archivar", h.Archivar)
 	r.Get("/api/categorias/{categoriaId}/archivos", h.GetArchivos)
+	r.Get("/api/competencias/{id}/fixture", h.ObtenerPorCompetencia)
+	r.Get("/api/competencias/{id}/posiciones", h.PosicionesPorCompetencia)
 }
 
-func (h *fixtureHandler) Generar(w http.ResponseWriter, r *http.Request) {
-	categoriaID := chi.URLParam(r, "categoriaId")
-	rondas := 3
-	if r.URL.Query().Get("rondas") != "" {
-		if v, err := strconv.Atoi(r.URL.Query().Get("rondas")); err == nil && v > 0 {
-			rondas = v
-		}
-	}
-
-	f, err := h.svc.Generar(categoriaID, rondas)
+func (h *fixtureHandler) ObtenerPorCompetencia(w http.ResponseWriter, r *http.Request) {
+	f, err := h.svc.ObtenerFixturePorCompetencia(chi.URLParam(r, "id"))
 	if err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
+		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	writeJSON(w, http.StatusCreated, f)
+	if f == nil {
+		writeError(w, http.StatusNotFound, "no hay fixture")
+		return
+	}
+	writeJSON(w, http.StatusOK, f)
+}
+
+func (h *fixtureHandler) PosicionesPorCompetencia(w http.ResponseWriter, r *http.Request) {
+	pos, err := h.svc.ObtenerPosicionesPorCompetencia(chi.URLParam(r, "id"))
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if pos == nil {
+		pos = []domain.Standing{}
+	}
+	writeJSON(w, http.StatusOK, pos)
 }
 
 func (h *fixtureHandler) Obtener(w http.ResponseWriter, r *http.Request) {

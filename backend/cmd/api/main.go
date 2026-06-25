@@ -19,7 +19,6 @@ func main() {
 		port = "8080"
 	}
 
-	// Inicializar base de datos
 	db, err := database.New("fixture.db")
 	if err != nil {
 		log.Fatalf("Error al inicializar DB: %v", err)
@@ -30,11 +29,12 @@ func main() {
 	categoriaRepo := sqliteRepo.NewCategoriaRepository(db)
 	autoRepo := sqliteRepo.NewAutoRepository(db)
 	fixtureRepo := sqliteRepo.NewFixtureRepository(db)
+	competenciaRepo := sqliteRepo.NewCompetenciaRepository(db)
 
 	// Servicios
 	categoriaSvc := service.NewCategoriaService(categoriaRepo)
 	autoSvc := service.NewAutoService(autoRepo, categoriaRepo)
-	fixtureSvc := service.NewFixtureService(fixtureRepo, categoriaRepo)
+	fixtureSvc := service.NewFixtureService(fixtureRepo, categoriaRepo, competenciaRepo)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler()
@@ -42,10 +42,10 @@ func main() {
 	categoriaHandler := handler.NewCategoriaHandler(categoriaSvc)
 	autoHandler := handler.NewAutoHandler(autoSvc)
 	fixtureHandler := handler.NewFixtureHandler(fixtureSvc)
+	competenciaHandler := handler.NewCompetenciaHandler(fixtureSvc)
 
-	r := router.New(healthHandler, authHandler, categoriaHandler, autoHandler, fixtureHandler)
+	r := router.New(healthHandler, authHandler, categoriaHandler, autoHandler, fixtureHandler, competenciaHandler)
 
-	// Servir archivos estáticos (uploads)
 	os.MkdirAll("uploads", 0755)
 	r.Handle("/uploads/*", http.StripPrefix("/uploads/",
 		http.FileServer(http.Dir("uploads"))))
