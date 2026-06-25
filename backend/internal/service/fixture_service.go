@@ -186,16 +186,13 @@ func (s *fixtureService) AgregarDesempate(competenciaID string, autoIDs []string
 	if err != nil || comp == nil {
 		return nil, fmt.Errorf("competencia no encontrada")
 	}
-	if comp.Estado != "finalizada" {
-		return nil, fmt.Errorf("solo se pueden agregar desempates a competencias finalizadas")
-	}
 	if len(autoIDs) < 2 {
 		return nil, fmt.Errorf("se necesitan al menos 2 autos para el desempate")
 	}
 
 	f, err := s.fixtureRepo.GetByCompetencia(competenciaID)
 	if err != nil || f == nil {
-		return nil, fmt.Errorf("no hay fixture")
+		return nil, fmt.Errorf("no hay fixture para esta competencia")
 	}
 
 	heat := &domain.Heat{

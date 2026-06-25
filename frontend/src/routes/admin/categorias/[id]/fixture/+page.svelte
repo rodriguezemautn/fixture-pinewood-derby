@@ -3,6 +3,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { apiFetch } from '$lib/api';
+	import Podium from '$lib/components/Podium.svelte';
+	import Celebration from '$lib/components/Celebration.svelte';
 
 	const categoriaId = $derived($page.params.id);
 	const competenciaId = $derived($page.url.searchParams.get('competencia'));
@@ -25,6 +27,10 @@
 	// Estado para registro de resultado
 	let resultadoState = $state<Record<string, string[]>>({});
 
+	// Podio y celebración
+	let showPodio = $state(false);
+	let showCelebracion = $state(false);
+
 	// Desempate
 	let desempateAutoIDs = $state<string[]>([]);
 	let showDesempate = $state(false);
@@ -35,6 +41,35 @@
 	});
 
 	const esFinalizada = $derived(competencia?.estado === 'finalizada');
+
+	// Hay final generada (fixture estado 'finalizado')
+	const tieneFinal = $derived(fixture?.estado === 'finalizado');
+
+	// La final está completada (todos los heats, incluyendo la final)
+	const finalCompletada = $derived(
+		tieneFinal && fixture?.heats?.length > 0 && fixture?.heats?.every((h: any) => h.completado)
+	);
+
+	// Podio: top 3 de posiciones
+	const podioData = $derived.by(() => {
+		if (!posiciones || posiciones.length === 0) return null;
+		const top3 = posiciones.slice(0, 3);
+		return {
+			ordenLlegada: top3.map((p: any) => p.auto_id),
+			autoNombres: Object.fromEntries(top3.map((p: any) => [p.auto_id, p.nombre])),
+			autoNumeros: Object.fromEntries(top3.map((p: any) => [p.auto_id, p.numero])),
+		};
+	});
+
+	function mostrarPodio() {
+		showPodio = true;
+		showCelebracion = true;
+	}
+
+	function cerrarPodio() {
+		showPodio = false;
+		showCelebracion = false;
+	}
 
 	async function cargarArchivos() {
 		try {
@@ -227,7 +262,7 @@
 	}
 
 	const puedeGenerarFinal = $derived(
-		!esFinalizada && fixture?.heats?.length > 0 && fixture?.heats?.every((h: any) => h.completado)
+		!esFinalizada && !tieneFinal && fixture?.heats?.length > 0 && fixture?.heats?.every((h: any) => h.completado)
 	);
 
 	function getAutoDisplay(autoId: string): string {
@@ -371,12 +406,16 @@
 					<button class="btn btn-racing" onclick={generarFinal} disabled={actionLoading}>🏆 Generar Carrera Final</button>
 				</div>
 			{/if}
-			{#if fixture?.estado === 'finalizado' && !esFinalizada}
-				<div class="final-section" in:fade>
-					<button class="btn btn-racing" onclick={finalizarCompetencia} disabled={actionLoading}>🔒 Finalizar Competencia</button>
-				</div>
-			{/if}
-			{#if esFinalizada}
+
+			{#if tieneFinal}
+				<!-- Podio Final -->
+				{#if finalCompletada}
+					<div class="final-section" in:fade>
+						<button class="btn btn-racing" onclick={mostrarPodio}>🏆 Ver Podio Final</button>
+					</div>
+				{/if}
+
+				<!-- Desempate (antes o después de finalizar) -->
 				<div class="final-section" in:fade>
 					<button class="btn btn-archive" onclick={() => showDesempate = !showDesempate}>
 						⚖️ {showDesempate ? 'Ocultar' : 'Agregar Desempate'}
@@ -396,8 +435,34 @@
 						</div>
 					{/if}
 				</div>
+
+				<!-- Finalizar (solo si no está finalizada) -->
+				{#if !esFinalizada}
+					<div class="final-section" in:fade>
+						<button class="btn btn-racing" onclick={finalizarCompetencia} disabled={actionLoading}>🔒 Finalizar Competencia</button>
+					</div>
+				{/if}
 			{/if}
 		</section>
+	{/if}
+
+	<!-- Podio Final -->
+	{#if showPodio && podioData}
+		<Podium
+			ordenLlegada={podioData.ordenLlegada}
+			autoNombres={podioData.autoNombres}
+			autoNumeros={podioData.autoNumeros}
+			label="🏁 Podio Final"
+			show={showPodio}
+			onclose={cerrarPodio}
+		/>
+		<Celebration
+			winner={posiciones[0]?.nombre ?? ''}
+			winnerNumero={posiciones[0]?.numero ?? 0}
+			autoNombres={podioData.autoNombres}
+			show={showCelebracion}
+			onclose={() => showCelebracion = false}
+		/>
 	{/if}
 
 	<!-- Archivos -->
