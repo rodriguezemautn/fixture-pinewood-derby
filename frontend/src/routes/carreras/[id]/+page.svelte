@@ -18,6 +18,7 @@
 	let podiumHeat = $state<{orden: string[]; label: string} | null>(null);
 	let showCelebration = $state(false);
 	let polling = $state(false);
+	let competenciaFecha = $state('');
 
 	onMount(() => {
 		cargarDatos();
@@ -47,16 +48,25 @@
 	async function cargarDatos() {
 		loading = true;
 		try {
-			const [fixtureRes, posRes, catRes, autosRes] = await Promise.all([
+			const [fixtureRes, posRes, catRes, autosRes, compRes] = await Promise.all([
 				fetch(`/api/categorias/${categoriaId}/fixture`),
 				fetch(`/api/categorias/${categoriaId}/posiciones`),
 				fetch(`/api/categorias/${categoriaId}`),
-				fetch(`/api/categorias/${categoriaId}/autos`)
+				fetch(`/api/categorias/${categoriaId}/autos`),
+				fetch(`/api/categorias/${categoriaId}/competencias`)
 			]);
 
 			if (fixtureRes.ok) fixture = await fixtureRes.json();
 			if (posRes.ok) posiciones = await posRes.json();
 			if (catRes.ok) categoria = await catRes.json();
+
+			if (compRes.ok) {
+				const comps = await compRes.json();
+				if (comps.length > 0) {
+					const ultima = comps[0];
+					competenciaFecha = ultima.created_at?.split(' ')[0] ?? '';
+				}
+			}
 
 			if (autosRes.ok) {
 				const autos = await autosRes.json();
@@ -269,7 +279,7 @@
 </div>
 
 <Podium ordenLlegada={podiumHeat?.orden ?? []} autoNombres={autoNombres} autoNumeros={autoNumeros} label={podiumHeat?.label ?? ''} show={podiumHeat !== null} onclose={() => podiumHeat = null} />
-<Celebration winner={finalWinner?.nombre ?? ''} winnerNumero={finalWinner?.numero ?? 0} autoNombres={autoNombres} show={showCelebration} onclose={() => showCelebration = false} />
+<Celebration winner={finalWinner?.nombre ?? ''} winnerNumero={finalWinner?.numero ?? 0} autoNombres={autoNombres} categoriaNombre={categoria?.nombre ?? ''} fecha={competenciaFecha} show={showCelebration} onclose={() => showCelebration = false} />
 
 <style>
 	.carrera-page { min-height: 100vh; background: var(--arcade-black); }
