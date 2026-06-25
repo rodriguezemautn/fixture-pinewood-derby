@@ -21,11 +21,11 @@ func (h *fixtureHandler) Register(r Router) {
 	r.Get("/api/categorias/{categoriaId}/fixture", h.Obtener)
 	r.Get("/api/categorias/{categoriaId}/posiciones", h.Posiciones)
 	r.Post("/api/carreras/{heatId}/resultado", h.RegistrarResultado)
-	r.Post("/api/categorias/{categoriaId}/final", h.GenerarFinal)
 	r.Post("/api/categorias/{categoriaId}/archivar", h.Archivar)
 	r.Get("/api/categorias/{categoriaId}/archivos", h.GetArchivos)
 	r.Get("/api/competencias/{id}/fixture", h.ObtenerPorCompetencia)
 	r.Get("/api/competencias/{id}/posiciones", h.PosicionesPorCompetencia)
+	r.Post("/api/competencias/{id}/final", h.GenerarFinal)
 }
 
 func (h *fixtureHandler) ObtenerPorCompetencia(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +97,7 @@ func (h *fixtureHandler) RegistrarResultado(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *fixtureHandler) GenerarFinal(w http.ResponseWriter, r *http.Request) {
-	final, err := h.svc.GenerarFinal(chi.URLParam(r, "categoriaId"))
+	final, err := h.svc.GenerarFinal(chi.URLParam(r, "id"))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return

@@ -73,11 +73,12 @@ func (s *fixtureService) CrearCompetencia(categoriaID string, rondas int) (*repo
 	}
 
 	f := &domain.Fixture{
-		ID:          fixtureID,
-		CategoriaID: categoriaID,
-		Estado:      "pendiente",
-		Rondas:      rondas,
-		Heats:       heats,
+		ID:            fixtureID,
+		CategoriaID:   categoriaID,
+		CompetenciaID: comp.ID,
+		Estado:        "pendiente",
+		Rondas:        rondas,
+		Heats:         heats,
 	}
 
 	if err := s.fixtureRepo.Create(f); err != nil {

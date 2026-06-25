@@ -215,7 +215,7 @@
 		actionLoading = true;
 		error = '';
 		try {
-			const res = await apiFetch(`/api/categorias/${categoriaId}/final`, { method: 'POST' });
+			const res = await apiFetch(`/api/competencias/${competenciaId}/final`, { method: 'POST' });
 			if (!res.ok) {
 				const d = await res.json();
 				error = d.error || 'Error al generar final';

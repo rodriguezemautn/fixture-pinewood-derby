@@ -27,8 +27,8 @@ func (r *FixtureRepository) Create(f *domain.Fixture) error {
 	}
 	defer tx.Rollback()
 
-	_, err = tx.Exec(`INSERT INTO fixtures (id, categoria_id, rondas, estado) VALUES (?, ?, ?, ?)`,
-		f.ID, f.CategoriaID, f.Rondas, f.Estado)
+	_, err = tx.Exec(`INSERT INTO fixtures (id, categoria_id, rondas, estado, competencia_id) VALUES (?, ?, ?, ?, ?)`,
+		f.ID, f.CategoriaID, f.Rondas, f.Estado, f.CompetenciaID)
 	if err != nil {
 		return fmt.Errorf("insert fixture: %w", err)
 	}

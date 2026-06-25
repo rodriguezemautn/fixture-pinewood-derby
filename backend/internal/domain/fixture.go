@@ -2,12 +2,13 @@ package domain
 
 // Fixture representa un fixture de carreras para una categoría.
 type Fixture struct {
-	ID          string `json:"id"`
-	CategoriaID string `json:"categoria_id"`
-	Estado      string `json:"estado"`
-	Rondas      int    `json:"rondas"`
-	Heats       []Heat `json:"heats"`
-	Final       *Carrera `json:"final,omitempty"`
+	ID            string `json:"id"`
+	CategoriaID   string `json:"categoria_id"`
+	CompetenciaID string `json:"competencia_id,omitempty"`
+	Estado        string `json:"estado"`
+	Rondas        int    `json:"rondas"`
+	Heats         []Heat `json:"heats"`
+	Final         *Carrera `json:"final,omitempty"`
 }
 
 // Heat representa una carrera individual en el fixture.
