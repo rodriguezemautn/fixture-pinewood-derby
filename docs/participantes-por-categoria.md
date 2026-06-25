@@ -99,10 +99,10 @@ Categoría especial **Campeón de Campeones** incluye a todos los participantes.
 
 ---
 
-## 🏆 Campeón de Campeones — Todas las edades
+## 🏆 Campeón de Campeones
 
-Incluye a **todos los participantes** de todas las categorías (46 en total).
-Esta categoría especial define al mejor auto de la jornada.
+Se definirá al finalizar cada categoría con los **campeones de cada una**.
+Los 5 ganadores (uno por categoría) competirán por el título al mejor auto de la jornada.
 
 ---
 
@@ -116,7 +116,7 @@ Esta categoría especial define al mejor auto de la jornada.
 | 🔥 Exploradores y JVM | 14–18 | 7 |
 | 👤 Adultos | 19–99 | 10 |
 | **Total** | | **46** |
-| 🏆 Campeón de Campeones | 4–99 | 46 |
+| 🏆 Campeón de Campeones | — | A definir con ganadores |
 
 ---
 
