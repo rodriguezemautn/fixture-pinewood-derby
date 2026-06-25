@@ -235,7 +235,7 @@ func (r *FixtureRepository) GetHeatIDByNumero(fixtureID string, numero int) (str
 
 // GetAllAutos retorna todos los autos filtrados por categoria.
 func (r *FixtureRepository) GetAllAutos(categoriaIDs ...string) (map[string]*domain.Auto, error) {
-	query := `SELECT id, categoria_id, numero, nombre, creador, edad, foto_url, created_at, updated_at FROM autos`
+	query := `SELECT id, categoria_id, numero, nombre, creador, edad, peso, foto_url, created_at, updated_at FROM autos`
 	var args []interface{}
 	if len(categoriaIDs) > 0 {
 		placeholders := make([]string, len(categoriaIDs))

@@ -34,7 +34,7 @@ func main() {
 	// Servicios
 	categoriaSvc := service.NewCategoriaService(categoriaRepo)
 	autoSvc := service.NewAutoService(autoRepo, categoriaRepo)
-	fixtureSvc := service.NewFixtureService(fixtureRepo)
+	fixtureSvc := service.NewFixtureService(fixtureRepo, categoriaRepo)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler()

@@ -21,12 +21,13 @@ type FixtureService interface {
 }
 
 type fixtureService struct {
-	fixtureRepo repository.FixtureRepository
+	fixtureRepo    repository.FixtureRepository
+	categoriaRepo  repository.CategoriaRepository
 }
 
 // NewFixtureService crea un service de fixture.
-func NewFixtureService(fixtureRepo repository.FixtureRepository) FixtureService {
-	return &fixtureService{fixtureRepo: fixtureRepo}
+func NewFixtureService(fixtureRepo repository.FixtureRepository, categoriaRepo repository.CategoriaRepository) FixtureService {
+	return &fixtureService{fixtureRepo: fixtureRepo, categoriaRepo: categoriaRepo}
 }
 
 func (s *fixtureService) Generar(categoriaID string, rondas int) (*domain.Fixture, error) {
@@ -151,24 +152,12 @@ func (s *fixtureService) Archivar(categoriaID string) error {
 	}
 
 	// Obtener nombre de categoría
-	autos, err := s.fixtureRepo.GetAllAutos(categoriaID)
-	if err != nil {
-		return fmt.Errorf("obtener autos: %w", err)
-	}
-
-	// Buscar nombre de categoría desde cualquier auto (todos tienen misma categoria_id)
 	catNombre := categoriaID
-	for _, a := range autos {
-		if a.CategoriaID == categoriaID {
-			// Intentar obtener el nombre de la categoría
-			break
-		}
+	if cat, err := s.categoriaRepo.GetByID(categoriaID); err == nil && cat != nil {
+		catNombre = cat.Nombre
 	}
 
-	// Convertir posiciones a JSON
 	resultadosB, _ := json.Marshal(posiciones)
-
-	// Guardar archivo
 	winner := posiciones[0]
 	if err := s.fixtureRepo.ArchivarCompetencia(
 		categoriaID, catNombre,
@@ -178,7 +167,6 @@ func (s *fixtureService) Archivar(categoriaID string) error {
 		return fmt.Errorf("archivar: %w", err)
 	}
 
-	// Limpiar fixture para nueva competencia
 	return s.fixtureRepo.LimpiarFixture(categoriaID)
 }
 
