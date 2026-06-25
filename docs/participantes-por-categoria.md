@@ -87,7 +87,6 @@ Categoría especial **Campeón de Campeones** incluye a todos los participantes.
 | 5 | Matias Marquez | 20 | prof. Nav | 17 | ✓ | ✓ |
 | 17 | Maximiliano Llopi | 27 | Lid Exp | 28 | ✓ | ✓ |
 | 18 | Jonatan Llopi | 27 | Lid Exp | 15 | ✓ | ✓ |
-| 40 | Gonzalez Jennifer | 27 | Consejera | 80 | | ✓ |
 | 15 | Omar Maldonado | 31 | Lid Seg | 99 | ✓ | ✓ |
 | 41 | Klimczuk Sabrina | 35 | Consejera | 104 | ✓ | ✓ |
 | 12 | Emanuel Rodriguez | 40 | Lider Seg | 85 | ✓ | ✓ |
@@ -95,7 +94,7 @@ Categoría especial **Campeón de Campeones** incluye a todos los participantes.
 | 19 | Carlos Torres | 60 | Lid Exp | 5 | | ✓ |
 | 39 | Klimczuk Denise | 29 | Consejera | 61 | | ✓ |
 
-**Total: 10 participantes**
+**Total: 9 participantes**
 
 ---
 
@@ -114,8 +113,8 @@ Los 5 ganadores (uno por categoría) competirán por el título al mejor auto de
 | 🏕️ Pioneros y Margaritas | 8–10 | 11 |
 | ⭐ Seguidores y Estrellas | 11–13 | 10 |
 | 🔥 Exploradores y JVM | 14–18 | 7 |
-| 👤 Adultos | 19–99 | 10 |
-| **Total** | | **46** |
+| 👤 Adultos | 19–99 | 9 |
+| **Total** | | **45** |
 | 🏆 Campeón de Campeones | — | A definir con ganadores |
 
 ---
