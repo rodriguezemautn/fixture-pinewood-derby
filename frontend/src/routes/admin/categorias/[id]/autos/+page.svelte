@@ -11,7 +11,9 @@
 	let categoria = $state<any>(null);
 	let loading = $state(true);
 	let error = $state('');
+	let success = $state('');
 	let competencias = $state<any[]>([]);
+	let compLoading = $state(true);
 	let genLoading = $state(false);
 	let rondas = $state(3);
 
@@ -24,6 +26,7 @@
 
 	async function cargarDatos() {
 		loading = true;
+		compLoading = true;
 		error = '';
 		try {
 			const [autosRes, catRes, compRes] = await Promise.all([
@@ -31,9 +34,10 @@
 				fetch(`/api/categorias/${categoriaId}`),
 				fetch(`/api/categorias/${categoriaId}/competencias`)
 			]);
-			if (autosRes.ok) autos = await autosRes.json();
-			if (catRes.ok) categoria = await catRes.json();
-			if (compRes.ok) competencias = await compRes.json();
+			if (autosRes.ok) { autos = await autosRes.json(); }
+			if (catRes.ok) { categoria = await catRes.json(); }
+			if (compRes.ok) { competencias = await compRes.json(); compLoading = false; }
+			else { compLoading = false; }
 		} catch (e) {
 			error = 'Error al cargar datos. ¿El backend está corriendo?';
 		} finally {
@@ -77,15 +81,23 @@
 	async function nuevaCompetencia() {
 		genLoading = true;
 		error = '';
+		success = '';
 		try {
 			const res = await apiFetch(`/api/categorias/${categoriaId}/competencias?rondas=${rondas}`, { method: 'POST' });
 			if (!res.ok) {
-				const d = await res.json();
-				error = d.error || 'Error al crear competencia';
+				const text = await res.text();
+				try { const d = JSON.parse(text); error = d.error || text; }
+				catch { error = text || `Error ${res.status}`; }
 				return;
 			}
-			await cargarDatos();
-		} catch { error = 'Error de conexión'; }
+			// Recargar solo competencias
+			const compRes = await fetch(`/api/categorias/${categoriaId}/competencias`);
+			if (compRes.ok) {
+				competencias = await compRes.json();
+				success = '✅ Competencia creada con éxito';
+				setTimeout(() => success = '', 3000);
+			}
+		} catch (e: any) { error = `Error: ${e.message || 'desconocido'}`; }
 		finally { genLoading = false; }
 	}
 
@@ -108,6 +120,9 @@
 
 {#if error}
 	<div class="error" in:fade>{error}</div>
+{/if}
+{#if success}
+	<div class="success" in:fade>{success}</div>
 {/if}
 
 {#if showForm}
@@ -184,7 +199,9 @@
 		<p class="comp-hint">Se necesitan al menos 4 autos para crear una competencia</p>
 	{/if}
 
-	{#if competencias.length === 0 && tieneAutos}
+	{#if compLoading}
+		<p class="comp-hint">Cargando competencias...</p>
+	{:else if competencias.length === 0 && tieneAutos}
 		<p class="comp-hint">Todavía no hay competencias. Creá la primera para empezar las carreras.</p>
 	{/if}
 
@@ -234,6 +251,16 @@
 		border-radius: 0.25rem;
 		margin-bottom: 1rem;
 		font-size: 0.9rem;
+	}
+
+	.success {
+		color: #a3e635;
+		background: rgba(101,163,13,0.15);
+		padding: 0.75rem 1rem;
+		border-radius: 0.25rem;
+		margin-bottom: 1rem;
+		font-size: 0.9rem;
+		font-weight: 600;
 	}
 
 	.loading {
