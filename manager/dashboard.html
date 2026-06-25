@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏁 Gestor Fixture D15</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#141824;--surface:#1C2233;--card:#242B3D;--border:#3E4860;--orange:#E07B0A;--orange-glow:#FBBF24;--green:#34D399;--red:#EF4444;--text:#F5F8FC;--text-dim:#94A0B5}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(180deg,var(--bg),var(--surface));border-bottom:2px solid var(--orange);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.header h1{font-family:'Press Start 2P',monospace;font-size:.85rem;color:var(--orange)}
+.header .sub{color:var(--text-dim);font-size:.8rem}
+.header-ip{font-family:'VT323',monospace;font-size:1.1rem;color:var(--text-dim);background:var(--card);padding:.3rem .8rem;border:1px solid var(--border)}
+.last-update{font-family:'VT323',monospace;font-size:.9rem;color:var(--text-dim)}
+.container{max-width:1400px;margin:0 auto;padding:1.5rem;display:grid;gap:1.5rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--border);padding:1.25rem;transition:border-color .2s}
+.card:hover{border-color:var(--orange)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.card-title{font-family:'Black Ops One',sans-serif;font-size:1rem;color:var(--orange);text-transform:uppercase;letter-spacing:.05em}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid rgba(62,72,96,.3)}
+.status-row:last-child{border:0}
+.status-label{color:var(--text-dim);font-size:.85rem}
+.status-value{font-weight:600;font-size:.9rem}
+.running{color:var(--green)}
+.stopped{color:var(--red)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.4rem}
+.dot.on{background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.4)}
+.dot.off{background:var(--red);box-shadow:0 0 8px rgba(239,68,68,.3)}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;font-family:'VT323',monospace;font-size:1rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;border:2px solid var(--orange);background:var(--surface);color:var(--orange);transition:all .15s ease;box-shadow:2px 2px 0 0 var(--orange)}
+.btn:hover{background:var(--orange);color:var(--bg);transform:translate(-1px,-1px);box-shadow:2px 2px 0 0 var(--orange)}
+.btn:active{transform:translate(1px,1px);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.btn-sm{padding:.3rem .7rem;font-size:.85rem;box-shadow:1.5px 1.5px 0 0 var(--orange)}
+.btn-green{border-color:var(--green);color:var(--green);box-shadow:2px 2px 0 0 var(--green)}
+.btn-green:hover{background:var(--green);color:var(--bg);box-shadow:2px 2px 0 0 var(--green)}
+.btn-red{border-color:var(--red);color:var(--red);box-shadow:2px 2px 0 0 var(--red)}
+.btn-red:hover{background:var(--red);color:#fff;box-shadow:2px 2px 0 0 var(--red)}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.log-box{background:#0A0E17;border:1px solid var(--border);font-family:'VT323',monospace;font-size:.85rem;padding:.75rem;height:350px;overflow-y:auto;color:var(--text-dim);line-height:1.5;white-space:pre-wrap;word-break:break-all}
+.log-box .info{color:var(--text)}
+.log-box .warn{color:var(--orange-glow)}
+.log-box .err{color:var(--red)}
+.log-controls{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;flex-wrap:wrap}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);border:1px solid var(--orange);padding:1rem 1.5rem;z-index:100;box-shadow:4px 4px 0 0 var(--orange);font-family:'VT323',monospace;font-size:1rem;transform:translateY(200%);transition:transform .3s ease;max-width:400px}
+.toast.show{transform:translateY(0)}
+.toast.success{border-color:var(--green);box-shadow:4px 4px 0 0 var(--green)}
+.toast.error{border-color:var(--red);box-shadow:4px 4px 0 0 var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.loading{animation:pulse 1s ease-in-out infinite}
+@media(max-width:640px){.container{padding:.75rem}.header h1{font-size:.65rem}}
+</style>
+</head>
+<body>
+
+<div class="header">
+	<div>
+		<h1>🏁 Consola de Gestión Fixture D15</h1>
+		<div class="sub">Panel independiente para monitorear y administrar el sistema</div>
+	</div>
+	<div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+		<span class="header-ip" id="headerIp">cargando...</span>
+		<span class="last-update" id="lastUpdate"></span>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="grid-4" id="statusGrid">
+		<!-- Backend -->
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">⚙️ Backend</span>
+				<span id="beDot" class="dot off"></span>
+			</div>
+			<div id="beStatus"><span class="loading">Cargando...</span></div>
+			<div class="actions">
+				<button class="btn btn-sm btn-green" onclick="act('start-backend')">▶ Iniciar</button>
+				<button class="btn btn-sm btn-red" onclick="act('stop-backend')">⏹ Detener</button>
+				<button class="btn btn-sm" onclick="act('restart-backend')">🔄 Reiniciar</button>
+			</div>
+		</div>
+
+		<!-- Frontend -->
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">🎨 Frontend</span>
+				<span id="feDot" class="dot off"></span>
+			</div>
+			<div id="feStatus"><span class="loading">Cargando...</span></div>
+			<div class="actions">
+				<button class="btn btn-sm btn-green" onclick="act('start-frontend')">▶ Iniciar</button>
+				<button class="btn btn-sm btn-red" onclick="act('stop-frontend')">⏹ Detener</button>
+				<button class="btn btn-sm" onclick="act('restart-frontend')">🔄 Reiniciar</button>
+			</div>
+		</div>
+
+		<!-- DB -->
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">🗄️ Base de Datos</span>
+				<span id="dbDot" class="dot off"></span>
+			</div>
+			<div id="dbStatus"><span class="loading">Cargando...</span></div>
+			<div class="actions">
+				<button class="btn btn-sm btn-red" onclick="act('db-reset')">🗑️ Resetear</button>
+				<button class="btn btn-sm" onclick="act('build')">🔨 Compilar</button>
+			</div>
+		</div>
+
+		<!-- Sistema -->
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">🖥️ Sistema</span>
+				<span id="sysDot" class="dot on"></span>
+			</div>
+			<div id="sysStatus"><span class="loading">Cargando...</span></div>
+			<div class="actions">
+				<button class="btn btn-sm" onclick="act('ports')">🌐 Firewall</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logs -->
+	<div class="card">
+		<div class="card-header">
+			<span class="card-title">📋 Logs en vivo</span>
+			<div class="log-controls">
+				<button class="btn btn-sm" id="logBtn" onclick="toggleLog()">📄 Backend</button>
+				<button class="btn btn-sm btn-red" onclick="document.getElementById('logBox').textContent=''">🗑️ Limpiar</button>
+			</div>
+		</div>
+		<div class="log-box" id="logBox">Conectando al stream de logs...</div>
+	</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let logSource = 'backend';
+let es = null;
+let si = setInterval(load, 5000);
+
+load();
+connectLogs();
+
+async function load() {
+	try {
+		const r = await fetch('/api/status');
+		const d = await r.json();
+		render(d);
+		document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+	} catch(e) { console.error(e); }
+}
+
+function render(d) {
+	// Backend
+	const be = d.backend;
+	dot('beDot', be.running);
+	document.getElementById('beStatus').innerHTML = be.running
+		? srow('Estado', `<span class="running"><span class="dot on"></span>Corriendo</span>`) +
+		  srow('PID', be.pid) + srow('CPU', (be.cpu||'0')+'%') + srow('RAM', (be.mem||'0')+'%') + srow('Uptime', be.uptime||'—')
+		: srow('Estado', `<span class="stopped"><span class="dot off"></span>Detenido</span>`);
+
+	// Frontend
+	const fe = d.frontend;
+	dot('feDot', fe.running);
+	document.getElementById('feStatus').innerHTML = fe.running
+		? srow('Estado', `<span class="running"><span class="dot on"></span>Corriendo</span>`) +
+		  srow('PID', fe.pid) + srow('URL', `<span style="font-family:VT323">http://${d.system.ip}:5173</span>`)
+		: srow('Estado', `<span class="stopped"><span class="dot off"></span>Detenido</span>`);
+
+	// DB
+	const db = d.db;
+	dot('dbDot', db.exists);
+	document.getElementById('dbStatus').innerHTML = db.exists
+		? srow('Estado', `<span class="running"><span class="dot on"></span>Disponible</span>`) +
+		  srow('Tamaño', db.size) + srow('Autos', db.autos) + srow('Competencias', db.competencias) + srow('Archivadas', db.archivos)
+		: srow('Estado', `<span class="stopped"><span class="dot off"></span>No existe</span>`);
+
+	// Sistema
+	const sys = d.system;
+	document.getElementById('headerIp').textContent = `🌐 ${sys.ip}`;
+	document.getElementById('sysStatus').innerHTML =
+		srow('Host', sys.hostname) + srow('IP', sys.ip) +
+		srow('CPU', sys.cpu) + srow('RAM', sys.mem) + srow('Disco', sys.disk) +
+		srow('Uptime', sys.uptime) + srow('Arquitectura', sys.arch);
+}
+
+function srow(l, v) { return `<div class="status-row"><span class="status-label">${l}</span><span class="status-value">${v}</span></div>`; }
+function dot(id, on) { document.getElementById(id).className = 'dot ' + (on ? 'on' : 'off'); }
+
+async function act(name) {
+	const btn = event?.target;
+	if (btn) btn.disabled = true;
+	toast(`⏳ ${name}...`);
+	try {
+		const r = await fetch(`/api/action/${name}`, {method:'POST'});
+		const d = await r.json();
+		toast(d.success ? `✅ ${d.message}` : `❌ ${d.message}`, d.success ? 'success' : 'error');
+	} catch(e) { toast(`❌ ${e.message}`, 'error'); }
+	if (btn) btn.disabled = false;
+	setTimeout(load, 1500);
+}
+
+function connectLogs() {
+	if (es) es.close();
+	const box = document.getElementById('logBox');
+	es = new EventSource(`/api/logs?source=${logSource}`);
+	es.onmessage = e => {
+		const line = e.data;
+		const d = document.createElement('div');
+		if (line.match(/error|err|fail/i)) d.className = 'err';
+		else if (line.match(/warn/i)) d.className = 'warn';
+		else if (line.match(/ok|✅/i)) d.className = 'info';
+		d.textContent = line;
+		box.appendChild(d);
+		box.scrollTop = box.scrollHeight;
+	};
+	es.onerror = () => setTimeout(connectLogs, 3000);
+}
+
+function toggleLog() {
+	logSource = logSource === 'backend' ? 'frontend' : 'backend';
+	document.getElementById('logBtn').textContent = `📄 ${logSource === 'backend' ? 'Backend' : 'Frontend'}`;
+	document.getElementById('logBox').innerHTML = `Conectando a logs de ${logSource}...`;
+	connectLogs();
+}
+
+function toast(msg, type) {
+	const t = document.getElementById('toast');
+	t.textContent = msg;
+	t.className = 'toast show' + (type ? ' '+type : '');
+	clearTimeout(t._hide);
+	t._hide = setTimeout(() => t.classList.remove('show'), type==='error'?5000:3000);
+}
+</script>
+</body>
+</html>
