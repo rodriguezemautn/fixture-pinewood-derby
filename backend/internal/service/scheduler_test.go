@@ -79,6 +79,43 @@ func TestGenerarHeats_3autos_2rondas(t *testing.T) {
 	}
 }
 
+func TestGenerarHeats_distintasRondas(t *testing.T) {
+	autos := []string{"a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"}
+	heats := GenerarHeats(autos, 3)
+
+	// 8 autos = 2 heats por ronda, 3 rondas = 6 heats
+	if len(heats) != 6 {
+		t.Fatalf("expected 6 heats, got %d", len(heats))
+	}
+
+	// Verificar que las rondas NO tengan los mismos grupos
+	// Ronda 1: heats 0-1, Ronda 2: heats 2-3, Ronda 3: heats 4-5
+	ronda1 := [][]string{heats[0].AutoIDs, heats[1].AutoIDs}
+	ronda2 := [][]string{heats[2].AutoIDs, heats[3].AutoIDs}
+
+	// Aplanar ambas rondas y verificar que el orden sea distinto
+	orden1 := make([]string, 0, 8)
+	for _, h := range ronda1 {
+		orden1 = append(orden1, h...)
+	}
+	orden2 := make([]string, 0, 8)
+	for _, h := range ronda2 {
+		orden2 = append(orden2, h...)
+	}
+
+	// Verificar que las rondas no sean identicas (deberian ser diferentes por el shuffle)
+	mismaRonda := true
+	for i := 0; i < 8; i++ {
+		if orden1[i] != orden2[i] {
+			mismaRonda = false
+			break
+		}
+	}
+	if mismaRonda {
+		t.Error("all rounds produced identical heat compositions — shuffle not working")
+	}
+}
+
 func TestGenerarHeats_empty(t *testing.T) {
 	if h := GenerarHeats(nil, 3); h != nil {
 		t.Error("expected nil for nil input")

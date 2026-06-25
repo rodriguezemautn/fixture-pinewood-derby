@@ -12,7 +12,8 @@ import (
 var PuntosPorPosicion = map[int]int{1: 5, 2: 3, 3: 2, 4: 1}
 
 // GenerarHeats genera heats de clasificación para N autos con R rondas.
-// Usa Swiss-system: en cada ronda, agrupa autos de performance similar.
+// Cada ronda MEZCLA los autos para que los grupos sean siempre distintos.
+// Cuando hay resultados, usa Swiss-system (agrupa por performance similar).
 func GenerarHeats(autoIDs []string, rondas int) []domain.Heat {
 	if len(autoIDs) == 0 || rondas < 1 {
 		return nil
@@ -28,18 +29,50 @@ func GenerarHeats(autoIDs []string, rondas int) []domain.Heat {
 	heatNum := 0
 
 	for ronda := 0; ronda < rondas; ronda++ {
-		// Ordenar por puntaje ascendente (Swiss-system)
 		ordenados := make([]string, n)
 		copy(ordenados, autoIDs)
-		sort.SliceStable(ordenados, func(i, j int) bool {
-			pi := puntos[ordenados[i]]
-			pj := puntos[ordenados[j]]
-			if pi != pj {
-				return pi < pj
+
+		// Si hay puntos (resultados de rondas anteriores), ordenar por rendimiento
+		// Sino, mezclar aleatoriamente para que cada ronda sea distinta
+		tienePuntos := false
+		for _, p := range puntos {
+			if p > 0 {
+				tienePuntos = true
+				break
 			}
-			// Misma cantidad de puntos → orden aleatorio pero consistente
-			return ordenados[i] < ordenados[j]
-		})
+		}
+
+		if tienePuntos {
+			// Swiss-system: agrupar autos de rendimiento similar
+			sort.SliceStable(ordenados, func(i, j int) bool {
+				pi := puntos[ordenados[i]]
+				pj := puntos[ordenados[j]]
+				if pi != pj {
+					return pi < pj
+				}
+				// Mismos puntos: shuffle para variar
+				return rand.Intn(2) == 0
+			})
+
+			// Mezcla parcial intra-grupo de performance para variar carriles
+			for i := 0; i < n; i += 4 {
+				end := i + 4
+				if end > n {
+					end = n
+				}
+				sub := ordenados[i:end]
+				if len(sub) > 1 {
+					rand.Shuffle(len(sub), func(i, j int) {
+						sub[i], sub[j] = sub[j], sub[i]
+					})
+				}
+			}
+		} else {
+			// Sin resultados: mezcla completa para variedad entre rondas
+			rand.Shuffle(len(ordenados), func(i, j int) {
+				ordenados[i], ordenados[j] = ordenados[j], ordenados[i]
+			})
+		}
 
 		// Dividir en grupos de hasta 4
 		for i := 0; i < n; i += 4 {
@@ -49,13 +82,6 @@ func GenerarHeats(autoIDs []string, rondas int) []domain.Heat {
 			}
 			grupo := make([]string, end-i)
 			copy(grupo, ordenados[i:end])
-
-			// Pequeño shuffle dentro del grupo para variar carriles
-			if len(grupo) == 4 {
-				rand.Shuffle(len(grupo), func(i, j int) {
-					grupo[i], grupo[j] = grupo[j], grupo[i]
-				})
-			}
 
 			heatNum++
 			heats = append(heats, domain.Heat{

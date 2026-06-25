@@ -74,14 +74,12 @@
 	}
 
 	let finalWinner = $derived.by(() => {
-		if (!fixture?.heats) return null;
-		const completados = fixture.heats.filter((h: any) => h.completado && h.orden_llegada?.length);
-		if (completados.length === 0) return null;
-		const last = completados[completados.length - 1];
+		if (!posiciones || posiciones.length === 0) return null;
+		const primero = posiciones[0];
 		return {
-			id: last.orden_llegada[0],
-			nombre: autoNombres[last.orden_llegada[0]] || last.orden_llegada[0],
-			numero: autoNumeros[last.orden_llegada[0]] || '?'
+			id: primero.auto_id,
+			nombre: autoNombres[primero.auto_id] || primero.nombre || primero.auto_id,
+			numero: autoNumeros[primero.auto_id] ?? primero.numero
 		};
 	});
 
