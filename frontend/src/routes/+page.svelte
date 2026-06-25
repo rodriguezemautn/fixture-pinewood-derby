@@ -56,6 +56,16 @@
 		<!-- Montañas lejanas -->
 		<div class="mountains"></div>
 
+		<!-- Fábrica con chimenea -->
+		<div class="factory">
+			<div class="factory-building"></div>
+			<div class="factory-chimney">
+				<div class="chimney-top"></div>
+			</div>
+			<div class="factory-smoke s1"></div>
+			<div class="factory-smoke s2"></div>
+		</div>
+
 		<!-- Estación de tren -->
 		<div class="station">
 			<div class="station-body"></div>
@@ -78,18 +88,36 @@
 			<div class="road-line l2"></div>
 		</div>
 
-		<!-- Tren azul y blanco animado -->
+		<!-- Tren bala (Shinkansen) animado -->
 		<div class="train">
-			<div class="train-body">
-				<div class="train-cabin">
-					<div class="cabin-window"></div>
+			<!-- Locomotora -->
+			<div class="car locomotive">
+				<div class="car-body">
+					<div class="nose"></div>
+					<div class="cab-window"></div>
+					<div class="stripe-blue"></div>
+					<div class="stripe-white"></div>
 				</div>
-				<div class="train-stripe"></div>
-				<div class="train-wheels">
-					<div class="wheel w1"></div>
-					<div class="wheel w2"></div>
-					<div class="wheel w3"></div>
+				<div class="wheel w1"></div>
+				<div class="wheel w2"></div>
+			</div>
+			<!-- Vagón 1 -->
+			<div class="car wagon">
+				<div class="car-body">
+					<div class="stripe-blue"></div>
+					<div class="stripe-white"></div>
 				</div>
+				<div class="wheel w1"></div>
+				<div class="wheel w2"></div>
+			</div>
+			<!-- Vagón 2 -->
+			<div class="car wagon">
+				<div class="car-body">
+					<div class="stripe-blue"></div>
+					<div class="stripe-white"></div>
+				</div>
+				<div class="wheel w1"></div>
+				<div class="wheel w2"></div>
 			</div>
 		</div>
 
@@ -257,6 +285,77 @@
 		pointer-events: none;
 	}
 
+	/* ─── Fábrica con chimenea ────────────────── */
+	.factory {
+		position: absolute;
+		bottom: 44%;
+		left: 28%;
+		width: 100px;
+		height: 60px;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.factory-building {
+		position: absolute;
+		bottom: 0; left: 20px; right: 20px; height: 40px;
+		background: #4a4a5a;
+		box-shadow: -3px 0 0 #3a3a4a, 3px 0 0 #3a3a4a;
+	}
+
+	.factory-building::after {
+		content: '';
+		position: absolute; top: 8px; left: 6px; right: 6px; height: 14px;
+		background:
+			linear-gradient(90deg,
+				transparent 0, transparent 4px,
+				#ffd700 4px, #ffd700 12px,
+				transparent 12px, transparent 16px,
+				#ffd700 16px, #ffd700 24px,
+				transparent 24px, transparent 28px,
+				#ffd700 28px, #ffd700 36px,
+				transparent 36px, transparent 40px,
+				#ffd700 40px, #ffd700 48px,
+				transparent 48px);
+		opacity: 0.5;
+	}
+
+	.factory-chimney {
+		position: absolute;
+		bottom: 40px; left: 50%; transform: translateX(-50%);
+		width: 16px; height: 70px;
+		background: repeating-linear-gradient(180deg,
+			#ffffff 0, #ffffff 12px, #cc2222 12px, #cc2222 18px,
+			#ffffff 18px, #ffffff 24px, #cc2222 24px, #cc2222 30px,
+			#ffffff 30px, #ffffff 36px, #cc2222 36px, #cc2222 42px,
+			#ffffff 42px, #ffffff 48px, #cc2222 48px, #cc2222 54px,
+			#ffffff 54px, #ffffff 60px, #cc2222 60px, #cc2222 66px,
+			#ffffff 66px, #ffffff 70px);
+		box-shadow: 2px 0 0 #3a3a4a;
+	}
+
+	.chimney-top {
+		position: absolute;
+		top: -4px; left: -4px; right: -4px; height: 6px;
+		background: #555; border-radius: 1px;
+	}
+
+	.factory-smoke {
+		position: absolute;
+		bottom: 108px;
+		width: 10px; height: 10px;
+		background: rgba(200,200,200,0.3);
+		border-radius: 50%;
+		animation: smoke-rise 3s ease-out infinite;
+	}
+	.factory-smoke.s1 { left: 47%; animation-delay: 0s; }
+	.factory-smoke.s2 { left: 53%; animation-delay: 1.5s; }
+
+	@keyframes smoke-rise {
+		0% { transform: translateY(0) scale(1); opacity: 0.4; }
+		100% { transform: translateY(-40px) scale(2); opacity: 0; }
+	}
+
 	/* ─── Árboles pixel art ──────────────────── */
 	.tree {
 		position: absolute; z-index: 2; pointer-events: none;
@@ -288,167 +387,175 @@
 	.t1 .foliage { width: 28px; height: 28px; }
 	.t1 .trunk { height: 26px; }
 
-	/* ─── Estación de tren ────────────────────── */
+	/* ─── Estación de tren (más grande) ───────── */
 	.station {
 		position: absolute;
-		bottom: 42%;
-		right: 8%;
-		width: 160px;
-		height: 110px;
+		bottom: 41%;
+		right: 5%;
+		width: 200px;
+		height: 130px;
 		z-index: 3;
 		pointer-events: none;
 	}
 
-	/* Pared principal */
 	.station-body {
 		position: absolute;
-		bottom: 16px; left: 15px; right: 15px; height: 65px;
+		bottom: 18px; left: 18px; right: 18px; height: 78px;
 		background: #c49a6c;
-		box-shadow:
-			-5px 0 0 #8a6a3a,
-			5px 0 0 #8a6a3a,
-			0 -3px 0 #d4aa7c;
+		box-shadow: -6px 0 0 #8a6a3a, 6px 0 0 #8a6a3a, 0 -3px 0 #d4aa7c;
 	}
 
-	/* Pilares de la estación */
 	.station-body::before {
 		content: '';
-		position: absolute; top: 0; left: 10px; right: 10px; bottom: 0;
+		position: absolute; top: 0; left: 12px; right: 12px; bottom: 0;
 		background:
-			/* Pilar izquierdo */
-			linear-gradient(90deg, #8a6a3a 0, #8a6a3a 6px, transparent 6px),
-			/* Pilar derecho */
-			linear-gradient(90deg, transparent calc(100% - 6px), #8a6a3a calc(100% - 6px), #8a6a3a 100%);
+			linear-gradient(90deg, #8a6a3a 0, #8a6a3a 8px, transparent 8px),
+			linear-gradient(90deg, transparent calc(100% - 8px), #8a6a3a calc(100% - 8px), #8a6a3a 100%);
 	}
 
-	/* Ventanas iluminadas */
 	.station-body::after {
 		content: '';
-		position: absolute; top: 14px; left: 20px; right: 20px;
-		height: 18px;
+		position: absolute; top: 16px; left: 24px; right: 24px;
+		height: 22px;
 		background:
 			linear-gradient(90deg,
-				transparent 0, transparent 6px,
-				#ffd700 6px, #ffd700 22px,
-				transparent 22px, transparent 28px,
-				#ffd700 28px, #ffd700 44px,
-				transparent 44px, transparent 50px,
-				#ffd700 50px, #ffd700 66px,
-				transparent 66px, transparent 72px,
-				#ffd700 72px, #ffd700 88px,
-				transparent 88px);
+				transparent 0, transparent 8px,
+				#ffd700 8px, #ffd700 28px,
+				transparent 28px, transparent 36px,
+				#ffd700 36px, #ffd700 56px,
+				transparent 56px, transparent 64px,
+				#ffd700 64px, #ffd700 84px,
+				transparent 84px, transparent 92px,
+				#ffd700 92px, #ffd700 112px,
+				transparent 112px);
 		opacity: 0.7;
-		box-shadow: 0 0 8px rgba(255,215,0,0.3);
+		box-shadow: 0 0 10px rgba(255,215,0,0.3);
 	}
 
-	/* Techo */
 	.station-roof {
 		position: absolute;
-		top: 0; left: 0; right: 0; height: 20px;
+		top: 0; left: 0; right: 0; height: 24px;
 		background: #5a3a1a;
 		clip-path: polygon(3% 100%, 0% 10%, 100% 10%, 97% 100%);
 	}
 
-	/* Andén */
 	.station-platform {
 		position: absolute;
-		bottom: 0; left: -15px; right: -15px; height: 8px;
+		bottom: 0; left: -20px; right: -20px; height: 10px;
 		background: #777;
-		box-shadow: 0 3px 0 #999, 0 5px 0 #555;
+		box-shadow: 0 3px 0 #999, 0 6px 0 #555;
 	}
 
-	/* ─── Cartel BERAZATEGUI ──────────────────── */
+	/* ─── Cartel BERAZATEGUI grande ────────────── */
 	.station-sign {
 		position: absolute;
-		top: -28px; left: 50%; transform: translateX(-50%);
+		top: -34px; left: 50%; transform: translateX(-50%);
 		background: #111;
-		padding: 5px 14px;
+		padding: 6px 18px;
 		z-index: 5;
-		box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+		box-shadow: 5px 5px 0 rgba(0,0,0,0.6);
 		white-space: nowrap;
 		border: 2px solid #444;
 	}
 
 	.sign-text {
 		font-family: 'VT323', monospace;
-		font-size: 1rem;
+		font-size: 1.2rem;
 		color: #ffffff;
 		font-weight: 700;
-		letter-spacing: 0.2em;
+		letter-spacing: 0.25em;
 	}
 
-	/* ─── Tren azul y blanco ──────────────────── */
+	/* ─── Tren bala (Shinkansen) ───────────────── */
 	.train {
 		position: absolute;
-		bottom: 48%;
-		right: -200px;
-		width: 120px;
-		height: 40px;
+		bottom: 43%;
+		left: 110vw;
+		display: flex;
+		gap: 3px;
 		z-index: 4;
 		pointer-events: none;
-		animation: train-move 12s linear infinite;
+		animation: train-express 20s ease-in-out infinite;
 	}
 
-	@keyframes train-move {
-		0% { transform: translateX(0); }
-		100% { transform: translateX(-120vw); }
+	@keyframes train-express {
+		0%   { left: 110vw; }
+		25%  { left: 55vw; }   /* frena en la estación */
+		45%  { left: 55vw; }   /* espera */
+		50%  { left: 54vw; }   /* arranca */
+		100% { left: -500px; } /* desaparece */
 	}
 
-	.train-body {
+	.car {
+		position: relative;
+		width: 55px;
+		height: 20px;
+	}
+
+	.car-body {
 		position: absolute;
-		bottom: 12px; left: 0; right: 40px; height: 28px;
-		background: #1a5a9e;
-		border-radius: 3px 0 0 3px;
-		box-shadow: 0 -2px 0 #0d3a6e;
-	}
-
-	/* Cabina del conductor */
-	.train-cabin {
-		position: absolute;
-		right: -36px; top: -8px;
-		width: 36px; height: 36px;
-		background: #1a5a9e;
-		border-radius: 0 4px 4px 0;
-		box-shadow: 0 -2px 0 #0d3a6e, 2px 0 0 #0d3a6e;
-	}
-
-	/* Ventana de cabina */
-	.cabin-window {
-		position: absolute;
-		top: 8px; left: 6px; right: 4px; height: 14px;
-		background: #a0d4ff;
+		bottom: 6px; left: 0; right: 0; height: 16px;
+		background: #d0d8e0;
 		border-radius: 2px;
-		box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+		border-bottom: 1px solid #aaa;
+		overflow: hidden;
 	}
 
-	/* Franja blanca decorativa */
-	.train-stripe {
+	.locomotive .car-body {
+		border-radius: 6px 2px 2px 2px;
+		background: linear-gradient(90deg, #e8eef5, #d0d8e0 30%, #b8c4d0);
+		box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 #999;
+	}
+
+	.nose {
 		position: absolute;
-		bottom: 6px; left: 2px; right: 38px;
-		height: 4px;
+		left: -6px; top: 2px;
+		width: 10px; height: 14px;
+		background: #d0d8e0;
+		clip-path: polygon(0 50%, 100% 0, 100% 100%);
+	}
+
+	.cab-window {
+		position: absolute;
+		left: 6px; top: 3px;
+		width: 10px; height: 8px;
+		background: #7ab8e8;
+		border-radius: 1px;
+		box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+	}
+
+	.stripe-blue {
+		position: absolute;
+		bottom: 5px; left: 0; right: 0;
+		height: 3px;
+		background: #1a5a9e;
+	}
+
+	.stripe-white {
+		position: absolute;
+		bottom: 8px; left: 0; right: 0;
+		height: 2px;
 		background: #ffffff;
 	}
 
-	/* Ruedas */
-	.train-wheels {
-		position: absolute;
-		bottom: 0; left: 8px; right: 34px;
-		display: flex;
-		justify-content: space-around;
-	}
-
 	.wheel {
-		width: 10px; height: 10px;
-		background: #333;
+		position: absolute;
+		bottom: 0;
+		width: 7px; height: 7px;
+		background: #444;
 		border-radius: 50%;
-		border: 2px solid #666;
-		box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
-		animation: wheel-spin 1s linear infinite;
+		border: 1.5px solid #777;
+	}
+	.wheel.w1 { left: 8px; }
+	.wheel.w2 { right: 8px; }
+
+	.train .wheel {
+		animation: wheel-spin 0.8s linear infinite;
 	}
 
 	@keyframes wheel-spin {
 		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		100% { transform: rotate(-360deg); }
 	}
 
 	/* ─── Ruta en perspectiva ─────────────────── */
