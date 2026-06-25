@@ -91,6 +91,27 @@ func (r *CategoriaRepository) Update(c *domain.Categoria) error {
 	return nil
 }
 
+// HasArchivos verifica si la categoría tiene carreras archivadas.
+func (r *CategoriaRepository) HasArchivos(id string) (bool, error) {
+	var count int
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM archivos_carrera WHERE categoria_id = ?`, id).Scan(&count)
+	return count > 0, err
+}
+
+// HasCompetencias verifica si la categoría tiene competencias.
+func (r *CategoriaRepository) HasCompetencias(id string) (bool, error) {
+	var count int
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM competencias WHERE categoria_id = ?`, id).Scan(&count)
+	return count > 0, err
+}
+
+// HasAutos verifica si la categoría tiene autos registrados.
+func (r *CategoriaRepository) HasAutos(id string) (bool, error) {
+	var count int
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM autos WHERE categoria_id = ?`, id).Scan(&count)
+	return count > 0, err
+}
+
 // Delete elimina una categoría por ID.
 func (r *CategoriaRepository) Delete(id string) error {
 	res, err := r.db.Exec(`DELETE FROM categorias WHERE id = ?`, id)

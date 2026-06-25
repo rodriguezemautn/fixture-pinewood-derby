@@ -45,6 +45,10 @@ func (m *mockCategoriaRepo) Delete(id string) error {
 	return nil
 }
 
+func (m *mockCategoriaRepo) HasArchivos(id string) (bool, error)    { return false, nil }
+func (m *mockCategoriaRepo) HasCompetencias(id string) (bool, error) { return false, nil }
+func (m *mockCategoriaRepo) HasAutos(id string) (bool, error)       { return false, nil }
+
 func newMockRepo() *mockCategoriaRepo {
 	return &mockCategoriaRepo{data: make(map[string]*domain.Categoria)}
 }

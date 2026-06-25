@@ -55,6 +55,7 @@ func (m *autoMock) ExistsByNumero(categoriaID string, numero int) (bool, error) 
 	}
 	return false, nil
 }
+func (m *autoMock) IsWinnerInArchive(id string) (bool, error) { return false, nil }
 
 // categoriaMock implementa CategoriaRepository para tests.
 type categoriaMock struct {
@@ -72,6 +73,9 @@ func (m *categoriaMock) GetByID(id string) (*domain.Categoria, error) {
 func (m *categoriaMock) Save(c *domain.Categoria) error  { return nil }
 func (m *categoriaMock) Update(c *domain.Categoria) error { return nil }
 func (m *categoriaMock) Delete(id string) error           { return nil }
+func (m *categoriaMock) HasArchivos(id string) (bool, error)    { return false, nil }
+func (m *categoriaMock) HasCompetencias(id string) (bool, error) { return false, nil }
+func (m *categoriaMock) HasAutos(id string) (bool, error)       { return false, nil }
 
 func newAutoMocks() (*autoMock, *categoriaMock) {
 	return &autoMock{autos: make(map[string]*domain.Auto)},

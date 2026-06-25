@@ -68,6 +68,30 @@ func (s *categoriaService) Update(id, nombre string, edadMin, edadMax int) (*dom
 }
 
 func (s *categoriaService) Delete(id string) error {
+	has, err := s.repo.HasArchivos(id)
+	if err != nil {
+		return fmt.Errorf("verificar archivos: %w", err)
+	}
+	if has {
+		return fmt.Errorf("no se puede eliminar una categoría con carreras archivadas")
+	}
+
+	has, err = s.repo.HasCompetencias(id)
+	if err != nil {
+		return fmt.Errorf("verificar competencias: %w", err)
+	}
+	if has {
+		return fmt.Errorf("no se puede eliminar una categoría con competencias")
+	}
+
+	has, err = s.repo.HasAutos(id)
+	if err != nil {
+		return fmt.Errorf("verificar autos: %w", err)
+	}
+	if has {
+		return fmt.Errorf("no se puede eliminar una categoría con autos registrados")
+	}
+
 	return s.repo.Delete(id)
 }
 

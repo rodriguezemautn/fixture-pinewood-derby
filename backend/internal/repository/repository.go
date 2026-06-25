@@ -10,6 +10,9 @@ type CategoriaRepository interface {
 	Save(c *domain.Categoria) error
 	Update(c *domain.Categoria) error
 	Delete(id string) error
+	HasArchivos(id string) (bool, error)
+	HasCompetencias(id string) (bool, error)
+	HasAutos(id string) (bool, error)
 }
 
 // AutoRepository define operaciones sobre autos.
@@ -21,6 +24,7 @@ type AutoRepository interface {
 	Update(a *domain.Auto) error
 	Delete(id string) error
 	ExistsByNumero(categoriaID string, numero int) (bool, error)
+	IsWinnerInArchive(id string) (bool, error)
 }
 
 // CarreraRepository define operaciones sobre carreras.

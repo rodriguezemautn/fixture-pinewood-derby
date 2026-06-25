@@ -108,6 +108,12 @@ func (r *AutoRepository) Update(a *domain.Auto) error {
 	return nil
 }
 
+func (r *AutoRepository) IsWinnerInArchive(id string) (bool, error) {
+	var count int
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM archivos_carrera WHERE winner_id = ?`, id).Scan(&count)
+	return count > 0, err
+}
+
 func (r *AutoRepository) Delete(id string) error {
 	res, err := r.db.Exec(`DELETE FROM autos WHERE id = ?`, id)
 	if err != nil {

@@ -21,6 +21,11 @@ func New(dsn string) (*sql.DB, error) {
 		return nil, fmt.Errorf("error setting WAL mode: %w", err)
 	}
 
+	// Foreign keys: integridad referencial
+	if _, err := db.Exec("PRAGMA foreign_keys=ON"); err != nil {
+		return nil, fmt.Errorf("error enabling foreign keys: %w", err)
+	}
+
 	if err := Migrate(db); err != nil {
 		return nil, fmt.Errorf("error running migrations: %w", err)
 	}

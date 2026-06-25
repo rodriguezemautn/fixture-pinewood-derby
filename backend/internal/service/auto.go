@@ -128,5 +128,12 @@ func validateAuto(numero int, nombre, creador string, edad int, peso int) error 
 }
 
 func (s *autoService) Delete(id string) error {
+	winner, err := s.autoRepo.IsWinnerInArchive(id)
+	if err != nil {
+		return fmt.Errorf("verificar si es campeón: %w", err)
+	}
+	if winner {
+		return fmt.Errorf("no se puede eliminar un auto que fue campeón en una carrera archivada")
+	}
 	return s.autoRepo.Delete(id)
 }
