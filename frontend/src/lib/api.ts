@@ -18,8 +18,19 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
 		headers['Authorization'] = `Bearer ${token}`;
 	}
 
-	return fetch(`${API_BASE}${url}`, {
+	const res = await fetch(`${API_BASE}${url}`, {
 		...options,
 		headers
 	});
+
+	// Si el token expiró o es inválido, redirigir al login
+	if (res.status === 401 && token) {
+		localStorage.removeItem('auth_token');
+		localStorage.removeItem('auth_role');
+		if (typeof window !== 'undefined') {
+			window.location.href = '/login';
+		}
+	}
+
+	return res;
 }
