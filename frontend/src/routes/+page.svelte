@@ -643,14 +643,17 @@
 
 	.hero-title { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
 	.title-line { display: block; }
-	.title-line:first-child {
-		font-size: 3rem;
+	.title-line {
 		color: #ffffff;
 		text-shadow:
 			0 0 20px rgba(245,158,11,0.6),
 			0 0 40px rgba(245,158,11,0.3),
 			2px 2px 0 rgba(0,0,0,0.5),
 			-1px -1px 0 rgba(0,0,0,0.3);
+	}
+
+	.title-line:first-child {
+		font-size: 3rem;
 	}
 	.subtitle {
 		font-size: 1.6rem;
