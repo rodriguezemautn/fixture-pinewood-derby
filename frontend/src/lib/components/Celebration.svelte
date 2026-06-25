@@ -5,6 +5,8 @@
 		winner = '',
 		winnerNumero = 0,
 		autoNombres = {} as Record<string, number>,
+		categoriaNombre = '',
+		fecha = '',
 		show = false,
 		onclose
 	} = $props();
@@ -55,7 +57,8 @@
 				<span class="winner-name">{winner}</span>
 			</div>
 			<p class="celebration-sub" in:fade={{ duration: 500, delay: 800 }}>
-				Ganador de la Gran Final — Pinewood Derby D15
+				Campeón de la Categoría: {categoriaNombre || '—'}
+				{#if fecha} &bull; {fecha}{/if}
 			</p>
 			<button class="btn-close" onclick={onclose} in:fade={{ delay: 1000 }}>
 				Cerrar

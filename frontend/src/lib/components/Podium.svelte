@@ -6,6 +6,8 @@
 		autoNombres = {} as Record<string, string>,
 		autoNumeros = {} as Record<string, number>,
 		label = 'Podio',
+		categoriaNombre = '',
+		fecha = '',
 		show = false,
 		onclose
 	} = $props();
@@ -41,6 +43,12 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div class="podium-content" onclick={(e: MouseEvent) => e.stopPropagation()}>
 			<h2 class="podium-title" in:fly={{ y: -20, duration: 300 }}>{label}</h2>
+			{#if categoriaNombre || fecha}
+				<p class="podium-meta" in:fade={{ duration: 300 }}>
+					{categoriaNombre}{#if categoriaNombre && fecha} &bull;{/if}
+					{fecha}
+				</p>
+			{/if}
 
 			<div class="podium-steps">
 				{#each ordenLlegada as autoId, i}
@@ -86,8 +94,16 @@
 	.podium-title {
 		color: var(--orange);
 		font-size: 2.5rem;
-		margin: 0 0 2rem 0;
+		margin: 0 0 0.5rem 0;
 		text-shadow: 0 0 30px rgba(245,158,11,0.5);
+	}
+
+	.podium-meta {
+		color: var(--text-dim);
+		font-size: 0.9rem;
+		margin: 0 0 2rem 0;
+		font-family: 'VT323', monospace;
+		letter-spacing: 0.05em;
 	}
 
 	.podium-steps {

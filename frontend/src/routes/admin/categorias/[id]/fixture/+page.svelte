@@ -453,6 +453,8 @@
 			autoNombres={podioData.autoNombres}
 			autoNumeros={podioData.autoNumeros}
 			label="🏁 Podio Final"
+			categoriaNombre={categoria?.nombre ?? ''}
+			fecha={competencia?.created_at?.split(' ')[0] ?? ''}
 			show={showPodio}
 			onclose={cerrarPodio}
 		/>
@@ -460,6 +462,8 @@
 			winner={posiciones[0]?.nombre ?? ''}
 			winnerNumero={posiciones[0]?.numero ?? 0}
 			autoNombres={podioData.autoNombres}
+			categoriaNombre={categoria?.nombre ?? ''}
+			fecha={competencia?.created_at?.split(' ')[0] ?? ''}
 			show={showCelebracion}
 			onclose={() => showCelebracion = false}
 		/>
