@@ -132,7 +132,8 @@
 			</div>
 			<div class="hero-text" in:fly={{ y: 30, duration: 600, delay: 200 }}>
 				<h1 class="hero-title">
-					<span class="title-line">Pinewood Derby</span>
+					<span class="title-line">Autitos Derby</span>
+					<span class="title-line">Exploradores del Rey</span>
 					<span class="title-line subtitle">Destacamento 15</span>
 				</h1>
 				<p class="hero-desc">Controlador de fixture para carreras de autitos de madera</p>
@@ -652,12 +653,13 @@
 			-1px -1px 0 rgba(0,0,0,0.3);
 	}
 	.subtitle {
-		font-size: 1.25rem;
+		font-size: 1.6rem;
 		color: #ffffff;
-		font-family: 'Inter', sans-serif;
-		text-transform: none;
-		letter-spacing: 0.2em;
-		text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+		font-family: 'Black Ops One', 'Inter', sans-serif;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		text-shadow: 2px 2px 0 rgba(0,0,0,0.6);
+		margin-top: 0.5rem;
 	}
 	.hero-desc {
 		color: #f0f0f0;
