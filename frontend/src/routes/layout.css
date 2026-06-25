@@ -6,35 +6,41 @@
    ═══════════════════════════════════════════════════ */
 
 :root {
-	/* ─── Fondos ─── */
-	--arcade-black:   #0A0E17;
-	--arcade-dark:    #131A2E;
-	--arcade-surface: #1E293B;
-	--arcade-card:    #243044;
-	--arcade-hover:   #2A3A50;
+	/* ═══════════════════════════════════════════════════
+	   Proyector-friendly: fondos más claros que #0A para
+	   que no se laven en proyectores. Se mantiene la
+	   estética arcade oscura pero con piso elevado.
+	   ═══════════════════════════════════════════════════ */
 
-	/* ─── Naranja (no fuerte, estilo retro) ─── */
-	--orange-glow:    #F59E0B;  /* brillo / hover */
-	--orange:         #D97706;  /* naranja principal, cálido */
-	--orange-border:  #92400E;  /* bordes */
-	--orange-dark:    #78350F;  /* hover backgrounds */
-	--orange-dim:     #5A2D0E;  /* muy oscuro para fondos */
+	/* ─── Fondos (piso elevado para proyector) ─── */
+	--arcade-black:   #1A1F2E;  /* antes #0A0E17 — oscuro pero projectable */
+	--arcade-dark:    #232A3D;  /* antes #131A2E */
+	--arcade-surface: #2A3348;  /* antes #1E293B */
+	--arcade-card:    #303A50;  /* antes #243044 */
+	--arcade-hover:   #3A4660;  /* antes #2A3A50 */
 
-	/* ─── Acentos ─── */
-	--blue-neon:      #3B82F6;  /* azul NFS */
-	--red-race:       #DC2626;
-	--red-race-light: #EF4444;
-	--green-go:       #059669;
+	/* ─── Naranja (más brillante para proyector) ─── */
+	--orange-glow:    #FBBF24;  /* antes #F59E0B — más brillante */
+	--orange:         #E07B0A;  /* antes #D97706 — un toque más vivo */
+	--orange-border:  #A85B0A;  /* antes #92400E — más visible */
+	--orange-dark:    #78350F;
+	--orange-dim:     #5A2D0E;
 
-	/* ─── Texto ─── */
-	--text-primary: #E2E8F0;
-	--text-body:    #CBD5E1;
-	--text-dim:     #64748B;
-	--text-muted:   #475569;
+	/* ─── Acentos (más brillantes para proyector) ─── */
+	--blue-neon:      #60A5FA;  /* antes #3B82F6 */
+	--red-race:       #EF4444;  /* antes #DC2626 */
+	--red-race-light: #F87171;
+	--green-go:       #34D399;  /* antes #059669 */
 
-	/* ─── Bordes ─── */
-	--border-color:  #334155;
-	--border-light:  #475569;
+	/* ─── Texto (más contraste sobre fondos más claros) ─── */
+	--text-primary: #F0F4F8;  /* antes #E2E8F0 — más blanco */
+	--text-body:    #CED6E0;  /* antes #CBD5E1 */
+	--text-dim:     #8895A7;  /* antes #64748B — más claro y legible */
+	--text-muted:   #5C6A7D;  /* antes #475569 */
+
+	/* ─── Bordes (más visibles sobre fondos más claros) ─── */
+	--border-color:  #3A4459;  /* antes #334155 */
+	--border-light:  #4A556D;  /* antes #475569 */
 }
 
 /* ─── Reset ──────────────────────────────────── */
@@ -66,8 +72,8 @@ body::after {
 		0deg,
 		transparent 0,
 		transparent 2px,
-		rgba(0, 0, 0, 0.08) 2px,
-		rgba(0, 0, 0, 0.08) 4px
+		rgba(0, 0, 0, 0.04) 2px,
+		rgba(0, 0, 0, 0.04) 4px
 	);
 }
 
