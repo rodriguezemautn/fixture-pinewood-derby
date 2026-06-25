@@ -16,5 +16,5 @@ type FixtureRepository interface {
 	GetAllAutos(categoriaIDs ...string) (map[string]*domain.Auto, error)
 	ArchivarCompetencia(categoriaID, categoriaNombre, winnerID, winnerNombre string, winnerNumero int, resultadosJSON string) error
 	GetArchivosByCategoria(categoriaID string) ([]map[string]any, error)
-	LimpiarFixture(categoriaID string) error
+	LimpiarFixture(fixtureID string) error
 }

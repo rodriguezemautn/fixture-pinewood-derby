@@ -318,15 +318,10 @@ func (r *FixtureRepository) GetArchivosByCategoria(categoriaID string) ([]map[st
 	return archivos, nil
 }
 
-// LimpiarFixture elimina heats, heat_autos y fixture de una categoría.
-func (r *FixtureRepository) LimpiarFixture(categoriaID string) error {
-	f, err := r.GetByCategoria(categoriaID)
-	if err != nil || f == nil {
-		return err
-	}
-	// Borrar heat_autos, heats, y fixture
-	r.db.Exec(`DELETE FROM heat_autos WHERE heat_id IN (SELECT id FROM heats WHERE fixture_id = ?)`, f.ID)
-	r.db.Exec(`DELETE FROM heats WHERE fixture_id = ?`, f.ID)
-	r.db.Exec(`DELETE FROM fixtures WHERE id = ?`, f.ID)
+// LimpiarFixture elimina heats, heat_autos y fixture por ID de fixture.
+func (r *FixtureRepository) LimpiarFixture(fixtureID string) error {
+	r.db.Exec(`DELETE FROM heat_autos WHERE heat_id IN (SELECT id FROM heats WHERE fixture_id = ?)`, fixtureID)
+	r.db.Exec(`DELETE FROM heats WHERE fixture_id = ?`, fixtureID)
+	r.db.Exec(`DELETE FROM fixtures WHERE id = ?`, fixtureID)
 	return nil
 }

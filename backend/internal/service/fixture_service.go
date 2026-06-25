@@ -21,7 +21,7 @@ type FixtureService interface {
 	GenerarFinal(competenciaID string) (*domain.Heat, error)
 	FinalizarCompetencia(competenciaID string) error
 	AgregarDesempate(competenciaID string, autoIDs []string) (*domain.Heat, error)
-	Archivar(categoriaID string) error
+	Archivar(competenciaID string) error
 	GetArchivos(categoriaID string) ([]map[string]any, error)
 }
 
@@ -210,30 +210,38 @@ func (s *fixtureService) AgregarDesempate(competenciaID string, autoIDs []string
 	return heat, nil
 }
 
-func (s *fixtureService) Archivar(categoriaID string) error {
-	posiciones, err := s.ObtenerPosiciones(categoriaID)
+func (s *fixtureService) Archivar(competenciaID string) error {
+	f, err := s.fixtureRepo.GetByCompetencia(competenciaID)
 	if err != nil {
-		return err
+		return fmt.Errorf("obtener fixture: %w", err)
+	}
+	if f == nil {
+		return fmt.Errorf("no hay fixture para esta competencia")
+	}
+
+	posiciones, err := s.ObtenerPosicionesPorCompetencia(competenciaID)
+	if err != nil {
+		return fmt.Errorf("obtener posiciones: %w", err)
 	}
 	if len(posiciones) == 0 {
 		return fmt.Errorf("no hay posiciones para archivar")
 	}
 
-	catNombre := categoriaID
-	if cat, err := s.categoriaRepo.GetByID(categoriaID); err == nil && cat != nil {
+	catNombre := f.CategoriaID
+	if cat, err := s.categoriaRepo.GetByID(f.CategoriaID); err == nil && cat != nil {
 		catNombre = cat.Nombre
 	}
 
 	resultadosB, _ := json.Marshal(posiciones)
 	winner := posiciones[0]
 	if err := s.fixtureRepo.ArchivarCompetencia(
-		categoriaID, catNombre,
+		f.CategoriaID, catNombre,
 		winner.AutoID, winner.Nombre, winner.Numero,
 		string(resultadosB),
 	); err != nil {
 		return fmt.Errorf("archivar: %w", err)
 	}
-	return s.fixtureRepo.LimpiarFixture(categoriaID)
+	return s.fixtureRepo.LimpiarFixture(f.ID)
 }
 
 func (s *fixtureService) GetArchivos(categoriaID string) ([]map[string]any, error) {

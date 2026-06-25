@@ -106,7 +106,19 @@ func (h *fixtureHandler) GenerarFinal(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *fixtureHandler) Archivar(w http.ResponseWriter, r *http.Request) {
-	if err := h.svc.Archivar(chi.URLParam(r, "categoriaId")); err != nil {
+	var req struct {
+		CompetenciaID string `json:"competencia_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "JSON inválido")
+		return
+	}
+	if req.CompetenciaID == "" {
+		writeError(w, http.StatusBadRequest, "competencia_id es requerido")
+		return
+	}
+
+	if err := h.svc.Archivar(req.CompetenciaID); err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
