@@ -124,16 +124,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 		</div>
 	</div>
 
-	<!-- Logs -->
-	<div class="card">
-		<div class="card-header">
-			<span class="card-title">📋 Logs en vivo</span>
-			<div class="log-controls">
-				<button class="btn btn-sm" id="logBtn" onclick="toggleLog()">📄 Backend</button>
-				<button class="btn btn-sm btn-red" onclick="document.getElementById('logBox').textContent=''">🗑️ Limpiar</button>
+	<!-- Logs: Backend + Frontend en paralelo -->
+	<div class="grid-2">
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">⚙️ Logs Backend</span>
+				<button class="btn btn-sm btn-red" onclick="document.getElementById('logBackend').textContent=''">🗑️</button>
 			</div>
+			<div class="log-box" id="logBackend">Conectando...</div>
 		</div>
-		<div class="log-box" id="logBox">Conectando al stream de logs...</div>
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">🎨 Logs Frontend</span>
+				<button class="btn btn-sm btn-red" onclick="document.getElementById('logFrontend').textContent=''">🗑️</button>
+			</div>
+			<div class="log-box" id="logFrontend">Conectando...</div>
+		</div>
 	</div>
 
 </div>
@@ -141,12 +147,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 <div class="toast" id="toast"></div>
 
 <script>
-let logSource = 'backend';
-let es = null;
 let si = setInterval(load, 5000);
 
 load();
-connectLogs();
+connectLog('backend', 'logBackend');
+connectLog('frontend', 'logFrontend');
 
 async function load() {
 	try {
@@ -165,6 +170,7 @@ function render(d) {
 		? srow('Estado', `<span class="running"><span class="dot on"></span>Corriendo</span>`) +
 		  srow('PID', be.pid) + srow('CPU', (be.cpu||'0')+'%') + srow('RAM', (be.mem||'0')+'%') + srow('Uptime', be.uptime||'—')
 		: srow('Estado', `<span class="stopped"><span class="dot off"></span>Detenido</span>`);
+	toggleButtons('be', be.running);
 
 	// Frontend
 	const fe = d.frontend;
@@ -173,6 +179,7 @@ function render(d) {
 		? srow('Estado', `<span class="running"><span class="dot on"></span>Corriendo</span>`) +
 		  srow('PID', fe.pid) + srow('URL', `<span style="font-family:VT323">http://${d.system.ip}:5173</span>`)
 		: srow('Estado', `<span class="stopped"><span class="dot off"></span>Detenido</span>`);
+	toggleButtons('fe', fe.running);
 
 	// DB
 	const db = d.db;
@@ -194,6 +201,18 @@ function render(d) {
 function srow(l, v) { return `<div class="status-row"><span class="status-label">${l}</span><span class="status-value">${v}</span></div>`; }
 function dot(id, on) { document.getElementById(id).className = 'dot ' + (on ? 'on' : 'off'); }
 
+function toggleButtons(prefix, running) {
+	// Buscar los botones dentro del contenedor de acciones del mismo card
+	const card = document.getElementById(prefix + 'Status')?.closest?.('.card');
+	if (!card) return;
+	const btns = card.querySelectorAll('.actions .btn');
+	if (btns.length < 3) return;
+	// [0]=Start, [1]=Stop, [2]=Restart
+	btns[0].disabled = running;  // Start se deshabilita si ya corre
+	btns[1].disabled = !running; // Stop se deshabilita si no corre
+	btns[2].disabled = !running; // Restart se deshabilita si no corre
+}
+
 async function act(name) {
 	const btn = event?.target;
 	if (btn) btn.disabled = true;
@@ -207,28 +226,20 @@ async function act(name) {
 	setTimeout(load, 1500);
 }
 
-function connectLogs() {
-	if (es) es.close();
-	const box = document.getElementById('logBox');
-	es = new EventSource(`/api/logs?source=${logSource}`);
+function connectLog(source, elementId) {
+	const box = document.getElementById(elementId);
+	const es = new EventSource(`/api/logs?source=${source}`);
 	es.onmessage = e => {
 		const line = e.data;
 		const d = document.createElement('div');
 		if (line.match(/error|err|fail/i)) d.className = 'err';
 		else if (line.match(/warn/i)) d.className = 'warn';
-		else if (line.match(/ok|✅/i)) d.className = 'info';
+		else if (line.match(/ok|✅|iniciado|corriendo/i)) d.className = 'info';
 		d.textContent = line;
 		box.appendChild(d);
 		box.scrollTop = box.scrollHeight;
 	};
-	es.onerror = () => setTimeout(connectLogs, 3000);
-}
-
-function toggleLog() {
-	logSource = logSource === 'backend' ? 'frontend' : 'backend';
-	document.getElementById('logBtn').textContent = `📄 ${logSource === 'backend' ? 'Backend' : 'Frontend'}`;
-	document.getElementById('logBox').innerHTML = `Conectando a logs de ${logSource}...`;
-	connectLogs();
+	es.onerror = () => setTimeout(() => connectLog(source, elementId), 3000);
 }
 
 function toast(msg, type) {
