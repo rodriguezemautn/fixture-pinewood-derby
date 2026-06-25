@@ -173,6 +173,8 @@
 		padding: 2rem;
 		width: 100%;
 		max-width: 500px;
+		max-height: 85vh;
+		overflow-y: auto;
 		box-shadow: 4px 4px 0 0 var(--orange-border);
 	}
 
