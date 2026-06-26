@@ -56,6 +56,8 @@
 	);
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
 <svelte:head>
 	<title>Autos — Fixture D15</title>
 </svelte:head>
@@ -112,8 +114,6 @@
 	</main>
 
 	<!-- Modal de detalle -->
-	<svelte:window onkeydown={handleKeydown} />
-
 	{#if selectedAuto}
 		<!-- svelte-ignore a11y_click_events_have_key_events a11y_interactive_supports_focus -->
 		<div class="modal-overlay" onclick={closeDetail} role="presentation" in:fade={{ duration: 150 }}>
