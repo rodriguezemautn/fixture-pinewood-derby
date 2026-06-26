@@ -148,7 +148,14 @@
 	.table-container {
 		background: var(--arcade-surface);
 		border: 1px solid var(--border-color);
-		overflow: hidden;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	@media (max-width: 640px) {
+		.actions { flex-wrap: wrap; }
+		.actions .btn { font-size: 0.75rem; padding: 0.2rem 0.5rem; }
+		td, th { padding: 0.5rem; }
 	}
 
 	table { width: 100%; border-collapse: collapse; }

@@ -300,8 +300,16 @@
 	.table-container {
 		background: #1e293b;
 		border-radius: 0.5rem;
-		overflow: hidden;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
 		border: 1px solid #334155;
+	}
+
+	@media (max-width: 640px) {
+		.actions { flex-wrap: wrap; }
+		.actions .btn { font-size: 0.75rem; padding: 0.2rem 0.5rem; }
+		td, th { padding: 0.5rem; }
+		.auto-foto { width: 32px; height: 32px; }
 	}
 
 	table { width: 100%; border-collapse: collapse; }
