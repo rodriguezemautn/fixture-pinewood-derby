@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade, fly } from 'svelte/transition';
+	import { fade, fly, scale } from 'svelte/transition';
 
 	let autos = $state<any[]>([]);
 	let categorias = $state<any[]>([]);
 	let loading = $state(true);
+
+	let selectedAuto = $state<any | null>(null);
 
 	onMount(async () => {
 		try {
@@ -36,6 +38,22 @@
 		}
 		return grupos;
 	});
+
+	function openDetail(auto: any) {
+		selectedAuto = auto;
+	}
+
+	function closeDetail() {
+		selectedAuto = null;
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') closeDetail();
+	}
+
+	const categoriaNombre = $derived(
+		selectedAuto ? catMap()[selectedAuto.categoria_id] || '—' : ''
+	);
 </script>
 
 <svelte:head>
@@ -70,7 +88,7 @@
 					<h2 class="cat-title">{catMap()[catId] || catId}</h2>
 					<div class="autos-grid">
 						{#each autosCat as auto (auto.id)}
-							<div class="auto-card">
+							<button class="auto-card" onclick={() => openDetail(auto)}>
 								{#if auto.foto_url}
 									<img src={auto.foto_url} alt={auto.nombre} class="auto-foto" />
 								{:else}
@@ -83,7 +101,7 @@
 								<span class="auto-edad">{auto.edad} años</span>
 								{#if auto.peso > 0}<span class="auto-peso">{auto.peso}g</span>{/if}
 								</div>
-							</div>
+							</button>
 						{/each}
 					</div>
 				</section>
@@ -92,6 +110,53 @@
 			<p class="total">{autos.length} auto{autos.length !== 1 ? 's' : ''} registrado{autos.length !== 1 ? 's' : ''}</p>
 		{/if}
 	</main>
+
+	<!-- Modal de detalle -->
+	<svelte:window onkeydown={handleKeydown} />
+
+	{#if selectedAuto}
+		<!-- svelte-ignore a11y_click_events_have_key_events a11y_interactive_supports_focus -->
+		<div class="modal-overlay" onclick={closeDetail} role="presentation" in:fade={{ duration: 150 }}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Detalle del auto" in:scale={{ duration: 200, start: 0.9 }}>
+				<button class="modal-close" onclick={closeDetail}>✕</button>
+
+				<div class="modal-foto">
+					{#if selectedAuto.foto_url}
+						<img src={selectedAuto.foto_url} alt={selectedAuto.nombre} class="modal-img" />
+					{:else}
+						<div class="modal-img-placeholder">🏎️</div>
+					{/if}
+				</div>
+
+				<div class="modal-body">
+					<h2 class="modal-numero">#{selectedAuto.numero}</h2>
+					<h3 class="modal-nombre">{selectedAuto.nombre}</h3>
+
+					<div class="modal-details">
+						<div class="detail-row">
+							<span class="detail-label">Creador</span>
+							<span class="detail-value">{selectedAuto.creador}</span>
+						</div>
+						<div class="detail-row">
+							<span class="detail-label">Edad</span>
+							<span class="detail-value">{selectedAuto.edad} años</span>
+						</div>
+						{#if selectedAuto.peso > 0}
+							<div class="detail-row">
+								<span class="detail-label">Peso</span>
+								<span class="detail-value">{selectedAuto.peso}g</span>
+							</div>
+						{/if}
+						<div class="detail-row">
+							<span class="detail-label">Categoría</span>
+							<span class="detail-value">{categoriaNombre}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -134,10 +199,14 @@
 		display: flex; align-items: center; gap: 0.75rem;
 		background: var(--arcade-dark); border: 1px solid var(--border-color);
 		border-radius: 0.5rem; padding: 0.75rem;
-		transition: border-color 0.2s;
+		transition: border-color 0.2s, transform 0.15s;
+		cursor: pointer; text-align: left; width: 100%;
+		font-family: inherit; font-size: inherit; color: inherit;
+		appearance: none; -webkit-appearance: none;
 	}
 
-	.auto-card:hover { border-color: var(--orange); }
+	.auto-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+	.auto-card:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 
 	.auto-foto { width: 52px; height: 52px; object-fit: cover; border-radius: 0.25rem; border: 1px solid var(--border-color); }
 	.auto-foto-placeholder { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--arcade-surface); border-radius: 0.25rem; }
@@ -151,5 +220,61 @@
 
 	.total { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding: 1rem; }
 
-	@media (max-width: 640px) { .autos-grid { grid-template-columns: 1fr; } }
+	/* ─── Modal ─── */
+	.modal-overlay {
+		position: fixed; inset: 0;
+		background: rgba(0, 0, 0, 0.8);
+		display: flex; align-items: center; justify-content: center;
+		z-index: 200;
+		padding: 1rem;
+	}
+
+	.modal {
+		background: var(--arcade-surface);
+		border: 2px solid var(--orange-border);
+		border-radius: 0.75rem;
+		width: 100%;
+		max-width: 420px;
+		max-height: 90vh;
+		overflow-y: auto;
+		box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+		position: relative;
+	}
+
+	.modal-close {
+		position: absolute; top: 0.5rem; right: 0.5rem;
+		background: var(--arcade-dark); border: 1px solid var(--border-color);
+		color: var(--text-dim); width: 32px; height: 32px;
+		border-radius: 50%;
+		font-size: 1rem; cursor: pointer;
+		display: flex; align-items: center; justify-content: center;
+		z-index: 10; transition: all 0.15s;
+	}
+	.modal-close:hover { background: var(--orange); color: var(--arcade-black); }
+
+	.modal-foto { width: 100%; height: 260px; overflow: hidden; border-radius: 0.75rem 0.75rem 0 0; background: var(--arcade-dark); }
+	.modal-img { width: 100%; height: 100%; object-fit: cover; }
+	.modal-img-placeholder {
+		width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+		font-size: 4rem; color: var(--text-dim);
+	}
+
+	.modal-body { padding: 1.25rem; }
+	.modal-numero { color: var(--orange); font-size: 1.5rem; margin: 0; }
+	.modal-nombre { color: var(--text-primary); font-size: 1.1rem; margin: 0.25rem 0 1rem 0; }
+
+	.modal-details { display: flex; flex-direction: column; gap: 0.5rem; }
+	.detail-row {
+		display: flex; justify-content: space-between; align-items: center;
+		padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);
+	}
+	.detail-row:last-child { border-bottom: none; }
+	.detail-label { color: var(--text-dim); font-size: 0.85rem; }
+	.detail-value { color: var(--text-primary); font-weight: 600; font-size: 0.95rem; }
+
+	/* ─── Responsive ─── */
+	@media (max-width: 640px) {
+		.autos-grid { grid-template-columns: 1fr; }
+		.modal-foto { height: 200px; }
+	}
 </style>
